@@ -1,0 +1,24 @@
+#Protect inc files from being read
+<FilesMatch "\.(inc)$">
+ Order Allow,Deny
+ Deny from all
+</FilesMatch>
+
+#Rewrites
+RewriteEngine On
+Options +FollowSymlinks
+##################
+#Monthly archives
+RewriteRule ^20*(.*)/(.*)/index.html?$ index.php?type=month&year=$1&month=$2 [L]
+
+#Indivdual archives
+RewriteRule ^20*(.*)/(.*)/(.*).html?$ index.php?type=entry&basename=$3 [L]
+
+#Category archives
+RewriteRule ^cat/(.*).html?$ index.php?type=cat&basename=$1 [L]
+
+
+<Files 403.shtml>
+order allow,deny
+allow from all
+</Files>
