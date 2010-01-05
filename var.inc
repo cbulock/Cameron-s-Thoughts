@@ -22,5 +22,4 @@ $settings['db'] = array(
 );
 
 define('MAINPAGE_COUNT',5);
-#test
 ?>
