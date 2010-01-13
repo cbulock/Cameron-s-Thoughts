@@ -30,6 +30,40 @@ public function getItem($table, $value, $options = array()) {
  return sqlProcess($sql);
 }
 
+public function insertItem($table, $data, $options = array()) {
+ $defaults = array();
+ $options = setOptions($options,$defaults);
+ selectDatabase($table, $options['database']);
+ foreach($data as $key => $val)
+ {
+  $keys .= '`'.$key.'`,';
+  $vals .= '\''.sqlclean($val).'\', ';
+ }
+ $keys = rtrim($keys, ', ');
+ $vals = rtrim($vals, ', ');
+ $sql = 'INSERT INTO `'.$table.'` (';
+ $sql .= $keys.') VALUES ('.$vals.')';
+ if (sqlQuery($sql)) {
+  return mysql_insert_id();
+ } 
+ else {
+  return FALSE;
+ }
+}
+
+public function updateItem($table, $value, $data, $options = array()) {
+ $defaults = array(
+  $field => 'id'
+ );
+ $options = setOptions($options,$defaults);
+ selectDatabase($table, $options['database']);
+ foreach($data as $key => $val) {
+  $sql .= '`'.$key.'`=\''.sqlclean($val).'\', ';
+ }
+ $sql = rtrim($sql, ', ');
+ $sql .= ' WHERE `'.$field.'`=\''.$value.'\'';
+ return sqlQuery($sql); //investigate if more should be returned
+}
 
 public function deleteItem($table, $value,  $options = array()) { 
  $defaults = array(
@@ -37,7 +71,8 @@ public function deleteItem($table, $value,  $options = array()) {
  );
  $options = setOptions($options,$defaults);
  selectDatabase($table, $options['database']);
-//work in progress
+ $sql = 'DELETE FROM `'.$table.'` WHERE `'.sqlClean($options['field']).'` = \''.sqlclean($value) . '\'';
+ return sqlQuery($sql); //investigate if more should be returned
 }
 
 private function sqlQuery($sql) {
