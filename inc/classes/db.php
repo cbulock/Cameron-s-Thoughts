@@ -176,8 +176,9 @@ public function getLastQuery() {
  return $this->lastQuery;
 }
 
-public function directQuery($sql) { //to track direct SQL queries, this should rarely be used
+public function directQuery($sql,$db) { //this should rarely be used
  $this->directQueryCount++; 
+ $this->selectDatabase($db);
  return $this->sqlQuery($sql);
 }
 
