@@ -3,6 +3,7 @@
 class DB {
 
 private $queryCount;
+private $directQueryCount;
 private $lastQuery;
 private $link;
 
@@ -156,11 +157,13 @@ private function sqlClean($str) {
    Core Functions
 **********************************/
 
-public function __construct($host,$user,$pass,$db) {
+public function __construct($host,$user,$pass) {
  $this->link = mysql_connect($host,$user,$pass);
- mysql_select_db($db,$this->link);
 }
 
+public function __destruct() {
+ mysql_close($this->link);
+}
 
 /**********************************
    Class Management
@@ -171,6 +174,11 @@ public function getQueryCount() {
 
 public function getLastQuery() {
  return $this->lastQuery;
+}
+
+public function directQuery($sql) { //to track direct SQL queries, this should rarely be used
+ $this->directQueryCount++; 
+ return $this->sqlQuery($sql);
 }
 
 //End DB
