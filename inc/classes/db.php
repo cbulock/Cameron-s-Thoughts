@@ -18,6 +18,7 @@ public function getTable($table, $options = array()) {
   'key' => 'id'
  );
  $options = $this->setOptions($options,$defaults);
+ $this->selectDatabase($table, $options['database']);
  $sql = 'SELECT * FROM `'.$table.'` WHERE '.$options['where'].' ORDER BY '.$options['orderBy'].' LIMIT '.$options['limit'];
  return $this->sqlProcessMulti($sql,$options['key']);
 }
@@ -27,6 +28,7 @@ public function getItem($table, $value, $options = array()) {
   'field' => 'id'
  );
  $options = $this->setOptions($options,$defaults);
+ $this->selectDatabase($table, $options['database']);
  $sql = 'SELECT * FROM `'.$table.'` WHERE `'.$this->sqlClean($options['field']).'` = \''.$this->sqlClean($value).'\'';
  return $this->sqlProcess($sql);
 }
@@ -34,6 +36,7 @@ public function getItem($table, $value, $options = array()) {
 public function insertItem($table, $data, $options = array()) {
  $defaults = array();
  $options = $this->setOptions($options,$defaults);
+ $this->selectDatabase($table, $options['database']);
  foreach($data as $key => $val)
  {
   $keys .= '`'.$key.'`,';
@@ -56,6 +59,7 @@ public function updateItem($table, $value, $data, $options = array()) {
   'field' => 'id'
  );
  $options = $this->setOptions($options,$defaults);
+ $this->selectDatabase($table, $options['database']);
  $sql = 'UPDATE `'.$table.'` SET ';
  foreach($data as $key => $val) {
   $sql .= '`'.$key.'`=\''.$this->sqlclean($val).'\', ';
@@ -70,6 +74,7 @@ public function deleteItem($table, $value,  $options = array()) {
   'field' => 'id'
  );
  $options = setOptions($options,$defaults);
+ $this->selectDatabase($table, $options['database']);
  $sql = 'DELETE FROM `'.$table.'` WHERE `'.sqlClean($options['field']).'` = \''.sqlclean($value) . '\'';
  return sqlQuery($sql); //investigate if more should be returned
 }
@@ -83,6 +88,23 @@ private function sqlQuery($sql) {
 /**********************************
    Helper Functions
 **********************************/
+
+private function selectDatabase($table, $db=NULL) {
+ mysql_select_db(determineDatabase($table, $db),$this->link);
+}
+
+private function determineDatabase($table, $db=NULL) { //$table can be overloaded with $db value
+ if ($db) return $db;
+ $databases['cbulock_accesslog'] = array('cbulock_accesslog','referers','sessions');
+ $databases['cbulock_cbulock'] = array('cbulock_cbulock','ads','ads_cat','blockedips','guid_admins','images','quotes','styles','users','comments');
+ $databases['cbulock_mt2'] = array('cbulock_mt2','mt_blog','mt_entry');
+ $databases['cbulock_ct3'] = array('cbulock_ct3','settings');
+ foreach ($databases as $dbname => $database) {
+  foreach ($database as $tablename) {
+   if ($tablename == $table) return $dbname;
+  }
+ }
+}
 
 private function setOptions($options, $defaults) {
  foreach($defaults as $option => $value)
