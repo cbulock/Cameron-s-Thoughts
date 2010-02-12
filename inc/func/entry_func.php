@@ -82,7 +82,7 @@ function next_entry($id,$blogid='2',$where='1') {
 function last_entry($blogid='2',$where='1') {
  global $db;
  $sql = "select max(entry_id) FROM `mt_entry` WHERE (entry_blog_id = ".DB::sqlClean($blogid)." AND ".$where.")";
- $result = $db->directQuery($sql,'cbulock_mt2');
+ $result = $api->db->directQuery($sql,'cbulock_mt2');
 // return $row[0];//need to figure out the correct return
 }
 

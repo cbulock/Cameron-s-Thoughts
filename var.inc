@@ -1,6 +1,7 @@
 <?php
 include('dbpass.inc');
-define('INCLUDE_DIR','inc/');
+define('ROOT_DIR','/home/ct3/public_html/');
+define('INCLUDE_DIR',ROOT_DIR.'inc/');
 define('T_DIR',INCLUDE_DIR.'templates/');
 define('LOG_DIR',INCLUDE_DIR.'logs/');
 define('API_DIR',INCLUDE_DIR.'api/');
