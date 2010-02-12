@@ -4,21 +4,14 @@
 //Content type, might want to do more to enable XML types
 header("Content-type: text/html; charset='UTF-8'");
 
-//Database connection //This is now handled by the DB class
-//$link = mysql_connect($settings['db']['host'],$settings['db']['user'],$settings['db']['pass']);
-//if (!$link) die('Could not connect: ' . mysql_error());
-
-//Pull in main variable data
-//require('var.inc'); This is in the index.php page now
-
 //Initialize APIs
 require_once(FUNC_DIR.'main_func.php');
 require_once(FUNC_DIR.'entry_func.php');
-//require_once(FUNC_DIR.'db_func.php');
-require(CLASS_DIR.'db.php');
+require_once(API_DIR.'db.php');
+require_once(API_DIR.'api.php');
 $db = new DB($settings['db']['host'],$settings['db']['user'],$settings['db']['pass']);
-//require(INCLUDE_DIR.'api.class.php');
-//$db = new DB_API;
+//I'm thinking $api should initiate opening $db
+$api = new API;
 //$api = new CT_API;
 
 //Settings stored in database
@@ -34,12 +27,13 @@ $db = new DB($settings['db']['host'],$settings['db']['user'],$settings['db']['pa
 //include(INCLUDE_DIR.'images/func.php');
 
 //HTML Template
+/*
 require(FUNC_DIR.'htmltemp.class.php');
 $html = new HTMLTemp;
 $html->ml = $site['ml'];
 $html->mlver = $site['mlver'];
 $html->htmlattrib = array("lang"=>$site['lang']);
-
+*/
 
 
 ?>

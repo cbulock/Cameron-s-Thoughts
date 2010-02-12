@@ -1,12 +1,10 @@
-<?
+<?php
 //This file will direct to what is required
 
 require_once('var.inc');
 require_once(INCLUDE_DIR.'main.inc');
-//require_once(INCLUDE_DIR.'entry_func.php'); This was added to main.inc
 
-switch($_GET['type'])
-{
+switch($_GET['type']) {
  case 'entry':
   $basename =  $_GET['basename'];
   $id = $_GET['id'];
@@ -27,5 +25,4 @@ switch($_GET['type'])
  default:
   include(INCLUDE_DIR.'start.php');
 }
-
-
+?>
