@@ -91,7 +91,7 @@ private function sqlQuery($sql) {
 **********************************/
 
 private function selectDatabase($table, $db=NULL) {
- mysql_select_db(determineDatabase($table, $db),$this->link);
+ mysql_select_db($this->determineDatabase($table, $db),$this->link);
 }
 
 private function determineDatabase($table, $db=NULL) { //$table can be overloaded with $db value
@@ -141,7 +141,7 @@ private function htmlParse($html) {
  return preg_replace("/&amp;(#[0-9]+|[a-z]+);/i", "&$1;", htmlspecialchars($html));
 }
 
-private function sqlClean($str) {
+public function sqlClean($str) {
  if(!get_magic_quotes_gpc())
  {
   $str = mysql_real_escape_string($str);
