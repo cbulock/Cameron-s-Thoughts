@@ -172,6 +172,10 @@ public function getQueryCount() {
  return $this->queryCount;
 }
 
+public function getDirectQueryCount() {
+ return $this->directQueryCount;
+}
+
 public function getLastQuery() {
  return $this->lastQuery;
 }
@@ -181,6 +185,19 @@ public function directQuery($sql,$db) { //this should rarely be used
  $this->selectDatabase($db);
  return $this->sqlQuery($sql);
 }
+
+public function directProcessQuery($sql,$db) {
+ $this->directQueryCount++;
+ $this->selectDatabase($db);
+ return $this->sqlProcess($sql);
+}
+
+public function directProcessMultiQuery($sql,$db,$sortkey='id') {
+ $this->directQueryCount++;
+ $this->selectDatabase($db);
+ return $this->sqlProcessMulti($sql,$sortkey);
+}
+
 
 //End DB
 }
