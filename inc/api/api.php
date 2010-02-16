@@ -38,6 +38,19 @@ public function lastEntry($blogid='2', $where='1') {
  return $result[0];
 }
 
+function commentCount($postid, $blogid='2') {
+ $sql = "SELECT COUNT(*) FROM `comments` WHERE blogid = '".$this->db->sqlClean($blogid)."' AND postid = '".$this->db->sqlClean($postid)."'";
+ $result = $this->db->directProcessQuery($sql,'cbulock_cbulock');
+ return $result[0];
+}
+
+public function getComments($postid, $blogid='2') {
+ $options = array(
+  'where' => 'postid = "'.$postid.'" AND blogid= "'.$blogid.'"',
+  'orderBy' => '`created`'
+ );
+ return $this->db->getTable('comments', $options);
+}
 
 /**********************************
    Debugging
