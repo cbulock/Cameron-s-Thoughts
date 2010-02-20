@@ -19,10 +19,11 @@ switch($_GET['type']) {
   $basename = $_GET['basename'];
   include(INCLUDE_DIR.'cat/display.php');
  break;
- case 'test':
-  include('test.php');
- break;
+ case 'api':
+  $format = $_GET['format'];
+  $method = $_GET['method'];
+  include(API_DIR.$format.'index.php');
  default:
-  include(INCLUDE_DIR.'start.php');
+  include(INCLUDE_DIR.'home.php');
 }
 ?>

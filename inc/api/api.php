@@ -53,6 +53,20 @@ public function getComments($postid, $blogid='2') {
 }
 
 /**********************************
+   Category Methods
+**********************************/
+
+public function getCatID($entry_id) {
+ $options = array(
+  'field' => 'placement_entry_id'
+ ); 
+ $item = $this->db->getItem('mt_placement',$entry_id);
+ return $item['placement_category_id'];
+}
+
+
+
+/**********************************
    Debugging
 **********************************/
 

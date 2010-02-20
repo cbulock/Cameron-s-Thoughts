@@ -39,52 +39,8 @@ function process_images($text) {
  return $output;
 }
 
-function get_entry($value, $blogid='2',$callby='basename') {
- global $db;
- switch($callby) {
-  case 'basename':
-   $sql = "SELECT * FROM `mt_entry` WHERE entry_blog_id='".DB::sqlClean($blogid)."' AND entry_basename='".DB::sqlClean($value)."'";
-  break;
-  case 'id':
-   $sql = "SELECT * FROM `mt_entry` WHERE entry_blog_id='".DB::sqlClean($blogid)."' AND entry_id='".DB::sqlClean($value)."'";
-  break;
- }
- return $db->directQuery($sql,'cbulock_mt2');
-}
 
-function comment_count($postid, $blogid='2') {
- global $db;
- $sql = "SELECT COUNT(*) FROM `comments` WHERE blogid = '".DB::sqlClean($blogid)."' AND postid = '".DB::sqlClean($postid)."'";
- $result = $db->directQuery($sql,'cbulock_cbulock');
- //return $row[0]; //need to figure out what exactly to return
-}
 
-function get_comments($postid, $blogid='2') {
- global $db;
- $comments = $db->getTable('comments', "postid = '".$postid."' AND blogid= '".$blogid."'", "`created`",'cbulock');
- return $comments;
-}
-
-function prev_entry($id,$blogid='2',$where='1') {
- global $db;
- $sql = "select max(entry_id) FROM `mt_entry` WHERE (entry_id < ".DB::sqlClean($id)." AND entry_blog_id =".DB::sqlClean($blogid)." AND ".$where.")";
- $result = $db->directQuery($sql,'cbulock_mt2');
-// return $row[0];//need to figure out the correct return
-}
-
-function next_entry($id,$blogid='2',$where='1') {
- global $db;
- $sql = "select min(entry_id) FROM `mt_entry` WHERE (entry_id > ".DB::sqlClean($id)." AND entry_blog_id = ".DB::sqlClean($blogid)." AND ".$where.")"; 
- $result = $db->directQuery($sql,'cbulock_mt2');
-// return $row[0];//need to figure out the correct return
-}
-
-function last_entry($blogid='2',$where='1') {
- global $db;
- $sql = "select max(entry_id) FROM `mt_entry` WHERE (entry_blog_id = ".DB::sqlClean($blogid)." AND ".$where.")";
- $result = $api->db->directQuery($sql,'cbulock_mt2');
-// return $row[0];//need to figure out the correct return
-}
 
 function entry_link($entry) {
  $year = date('Y',strtotime($entry['entry_created_on']));
