@@ -8,48 +8,76 @@ private $db;
    Entry Methods
 **********************************/
 
-public function getEntry($value, $blogid='2', $callby='basename') {
- switch($callby) {
+public function getEntry($value, $options = array()) {
+ $defaults = array(
+  'blogid' => '2',
+  'callby' => 'basename'
+ );
+ $options = $this->setOptions($options,$defaults);
+ switch($options['callby']) {
   case 'basename':
-   $sql = "SELECT * FROM `mt_entry` WHERE entry_blog_id='".$this->db->sqlClean($blogid)."' AND entry_basename='".$this->db->sqlClean($value)."'";
+   $sql = "SELECT * FROM `mt_entry` WHERE entry_blog_id='".$this->db->sqlClean($options['blogid'])."' AND entry_basename='".$this->db->sqlClean($value)."'";
   break;
   case 'id':
-   $sql = "SELECT * FROM `mt_entry` WHERE entry_blog_id='".$this->db->sqlClean($blogid)."' AND entry_id='".$this->db->sqlClean($value)."'";
+   $sql = "SELECT * FROM `mt_entry` WHERE entry_blog_id='".$this->db->sqlClean($options['blogid'])."' AND entry_id='".$this->db->sqlClean($value)."'";
   break;
  }
  return $this->db->directProcessQuery($sql,'cbulock_mt2');
 }
 
-public function prevEntry($id, $blogid='2', $where='1') {
- $sql = "select max(entry_id) FROM `mt_entry` WHERE (entry_id < ".$this->db->sqlClean($id)." AND entry_blog_id =".$this->db->sqlClean($blogid)." AND ".$where.")";
+public function prevEntry($id, $options = array()) {//where is very open
+ $defaults = array(
+  'blogid' => '2',
+  'where' => '1'
+ );
+ $options = $this->setOptions($options,$defaults);
+ $sql = "select max(entry_id) FROM `mt_entry` WHERE (entry_id < ".$this->db->sqlClean($id)." AND entry_blog_id =".$this->db->sqlClean($options['blogid'])." AND ".$options['where'].")";
  $result = $this->db->directProcessQuery($sql,'cbulock_mt2');
  return $result[0];
 }
 
-public function nextEntry($id, $blogid='2', $where='1') {
- $sql = "select min(entry_id) FROM `mt_entry` WHERE (entry_id > ".$this->db->sqlClean($id)." AND entry_blog_id = ".$this->db->sqlClean($blogid)." AND ".$where.")";
+public function nextEntry($id, $options = array()) {//where is very open
+ $defaults = array(
+  'blogid' => '2',
+  'where' => '1'
+ );
+ $options = $this->setOptions($options,$defaults);
+ $sql = "select min(entry_id) FROM `mt_entry` WHERE (entry_id > ".$this->db->sqlClean($id)." AND entry_blog_id = ".$this->db->sqlClean($options['blogid'])." AND ".$options['where'].")";
  $result = $this->db->directProcessQuery($sql,'cbulock_mt2');
  return $result[0];
 }
 
-public function lastEntry($blogid='2', $where='1') {
- $sql = "select max(entry_id) FROM `mt_entry` WHERE (entry_blog_id = ".$this->db->sqlClean($blogid)." AND ".$where.")";
+public function lastEntry($options = array()) {//where is very open
+ $defaults = array(
+  'blogid' => '2',
+  'where' => '1'
+ );
+ $options = $this->setOptions($options,$defaults);
+ $sql = "select max(entry_id) FROM `mt_entry` WHERE (entry_blog_id = ".$this->db->sqlClean($options['blogid'])." AND ".$options['where'].")";
  $result = $this->db->directProcessQuery($sql,'cbulock_mt2');
  return $result[0];
 }
 
-function commentCount($postid, $blogid='2') {
- $sql = "SELECT COUNT(*) FROM `comments` WHERE blogid = '".$this->db->sqlClean($blogid)."' AND postid = '".$this->db->sqlClean($postid)."'";
+function commentCount($postid, $options = array()) {
+ $defaults = array(
+ 'blogid' => '2'
+ );
+ $options = $this->setOptions($options,$defaults);
+ $sql = "SELECT COUNT(*) FROM `comments` WHERE blogid = '".$this->db->sqlClean($options['blogid'])."' AND postid = '".$this->db->sqlClean($postid)."'";
  $result = $this->db->directProcessQuery($sql,'cbulock_cbulock');
  return $result[0];
 }
 
-public function getComments($postid, $blogid='2') {
- $options = array(
-  'where' => 'postid = "'.$postid.'" AND blogid= "'.$blogid.'"',
+public function getComments($postid, $options = array()) {
+ $defaults = array(
+  'blogid' => '2'
+ );
+ $options = $this->setOptions($options,$defaults);
+ $tableoptions = array(
+  'where' => 'postid = "'.$this->db->sqlClean($postid).'" AND blogid= "'.$this->db->sqlClean($options['blogid']).'"',
   'orderBy' => '`created`'
  );
- return $this->db->getTable('comments', $options);
+ return $this->db->getTable('comments', $tableoptions);
 }
 
 /**********************************
@@ -86,6 +114,20 @@ public function getQueryCount() {
 public function getDirectQueryCount() {
  return $this->getDirectQueryCount;
 }
+
+
+/**********************************
+   Helper Methods
+**********************************/
+
+private function setOptions($options, $defaults) {
+ foreach($defaults as $option => $value)
+ {
+  if (!$options[$option]) $options[$option] = $value;
+ }
+ return $options;
+}
+
 
 /**********************************
    Core Methods
