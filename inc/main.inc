@@ -11,7 +11,7 @@ require_once(API_DIR.'db.php');
 require_once(API_DIR.'api.php');
 //$db = new DB($settings['db']['host'],$settings['db']['user'],$settings['db']['pass']);
 //I'm thinking $api should initiate opening $db
-$api = new API($settings);
+$ct = new API($settings);
 //$api = new CT_API;
 
 //Settings stored in database

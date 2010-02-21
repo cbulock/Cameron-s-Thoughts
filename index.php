@@ -20,9 +20,9 @@ switch($_GET['type']) {
   include(INCLUDE_DIR.'cat/display.php');
  break;
  case 'api':
-  $format = $_GET['format'];
-  $method = $_GET['method'];
-  include(API_DIR.$format.'index.php');
+  $request = $_GET['request'];
+  include(API_DIR.'public.php');
+ break;
  default:
   include(INCLUDE_DIR.'home.php');
 }
