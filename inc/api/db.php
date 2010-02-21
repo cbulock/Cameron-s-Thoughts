@@ -14,7 +14,7 @@ private $link;
 public function getTable($table, $options = array()) {
  $defaults = array(
   'where' => '1',
-  'orderBy' => '`id` DESC',
+  'orderBy' => '`id` ASC',
   'limit' => '5000',
   'key' => 'id'
  );

@@ -84,11 +84,11 @@ public function getComments($postid, $options = array()) {
    Category Methods
 **********************************/
 
-public function getCatID($entry_id) {
+public function getCatID($entryid, $options = array()) {
  $options = array(
   'field' => 'placement_entry_id'
  ); 
- $item = $this->db->getItem('mt_placement',$entry_id);
+ $item = $this->db->getItem('mt_placement',$entryid);
  return $item['placement_category_id'];
 }
 
@@ -98,8 +98,19 @@ public function getCatID($entry_id) {
    Debugging
 **********************************/
 
-public function getLastQuery() {
+public function getLastQuery($options = array()) {
  return $this->db->getLastQuery();
+}
+
+public function getAPIMethods($options = array()) {
+ return $this->db->getTable('api_methods');
+}
+
+public function getMethodParameters($methodid, $options = array()) {
+ $options = array(
+  'where' => 'method = '.$this->db->sqlClean($methodid)
+ );
+ return $this->db->getTable('api_parameters',$options);
 }
 
 
