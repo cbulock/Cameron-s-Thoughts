@@ -97,7 +97,7 @@ private function selectDatabase($table, $db=NULL) {
 private function determineDatabase($table, $db=NULL) { //$table can be overloaded with $db value
  if ($db) return $db;
  $databases['cbulock_accesslog'] = array('cbulock_accesslog','referers','sessions');
- $databases['cbulock_cbulock'] = array('cbulock_cbulock','ads','ads_cat','blockedips','guid_admins','images','quotes','styles','users','comments');
+ $databases['cbulock_cbulock'] = array('cbulock_cbulock','ads','ads_cat','blockedips','guid_admins','images','quotes','styles','users','comments','api_methods','api_parameters');
  $databases['cbulock_mt2'] = array('cbulock_mt2','mt_blog','mt_entry');
  $databases['cbulock_ct3'] = array('cbulock_ct3','settings');
  foreach ($databases as $dbname => $database) {
