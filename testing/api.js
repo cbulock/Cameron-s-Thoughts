@@ -36,7 +36,7 @@ function addParam(param) {
 }
 
 function sendAPI() {
- var post = [];
+ var post = {};
  $('#submit').click(function() {
   req = $('#req_param_boxes').find('input');
   opt = $('#param_boxes').find('input');
@@ -49,9 +49,6 @@ function sendAPI() {
   for (i=0;i<=opt.length-1;i++) {
     post[opt[i].name]=opt[i].value;
   }
-//alert (post['blogid']);
-//  alert(url);
-  
   $.ajax({
     type: 'post',
     url: url,
