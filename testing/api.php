@@ -7,13 +7,15 @@ require_once(INCLUDE_DIR.'main.inc');
 <script type='text/javascript' src='api.js'></script>
 <form>
 Method:
-<select name='method' id='method'>
+<select name='method_menu' id='method_menu'>
 <option value=''></option>
 <?php echo displayMethods();?>
 </select><br/>
+<div id='req_param_boxes'></div>
 <div id='param_boxes'></div>
+<input type='button' value='Send' id='submit' /><br/>
 Response:<br/>
-<textarea rows='15' cols='40' name='response' id='response'></textarea>
+<textarea rows='20' cols='60' name='response_box' id='response_box'></textarea>
 </form>
 </html>
 
