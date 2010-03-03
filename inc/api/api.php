@@ -4,16 +4,27 @@ class API {
 
 private $db;
 
+/*API Method Template
+public function nameName($setup['options'] = array()) {
+ $setup['defaults'] = array(
+  'setting' => 'value',
+ );
+ extract($setup_result = $this->api_call_setup($setup));
+ <code goes here>
+ return $result;
+}
+*/
+
 /**********************************
    Entry Methods
 **********************************/
 
-public function getEntry($value, $options = array()) {
- $defaults = array(
+public function getEntry($value, $setup['options'] = array()) {
+ $setup['defaults'] = array(
   'blogid' => '2',
   'callby' => 'basename'
  );
- $options = $this->setOptions($options,$defaults);
+ extract($setup_result = $this->api_call_setup($setup));
  switch($options['callby']) {
   case 'basename':
    $sql = "SELECT * FROM `mt_entry` WHERE entry_blog_id='".$this->db->sqlClean($options['blogid'])."' AND entry_basename='".$this->db->sqlClean($value)."'";
@@ -25,54 +36,54 @@ public function getEntry($value, $options = array()) {
  return $this->db->directProcessQuery($sql,'cbulock_mt2');
 }
 
-public function prevEntry($id, $options = array()) {//where is very open
+public function prevEntry($id, $setup['options'] = array()) {//where is very open
  $defaults = array(
   'blogid' => '2',
   'where' => '1'
  );
- $options = $this->setOptions($options,$defaults);
+ extract($setup_result = $this->api_call_setup($setup));
  $sql = "select max(entry_id) FROM `mt_entry` WHERE (entry_id < ".$this->db->sqlClean($id)." AND entry_blog_id =".$this->db->sqlClean($options['blogid'])." AND ".$options['where'].")";
  $result = $this->db->directProcessQuery($sql,'cbulock_mt2');
  return $result[0];
 }
 
-public function nextEntry($id, $options = array()) {//where is very open
+public function nextEntry($id, $setup['options'] = array()) {//where is very open
  $defaults = array(
   'blogid' => '2',
   'where' => '1'
  );
- $options = $this->setOptions($options,$defaults);
+ extract($setup_result = $this->api_call_setup($setup));
  $sql = "select min(entry_id) FROM `mt_entry` WHERE (entry_id > ".$this->db->sqlClean($id)." AND entry_blog_id = ".$this->db->sqlClean($options['blogid'])." AND ".$options['where'].")";
  $result = $this->db->directProcessQuery($sql,'cbulock_mt2');
  return $result[0];
 }
 
-public function lastEntry($options = array()) {//where is very open
+public function lastEntry($setup['options'] = array()) {//where is very open
  $defaults = array(
   'blogid' => '2',
   'where' => '1'
  );
- $options = $this->setOptions($options,$defaults);
+ extract($setup_result = $this->api_call_setup($setup));
  $sql = "select max(entry_id) FROM `mt_entry` WHERE (entry_blog_id = ".$this->db->sqlClean($options['blogid'])." AND ".$options['where'].")";
  $result = $this->db->directProcessQuery($sql,'cbulock_mt2');
  return $result[0];
 }
 
-function commentCount($postid, $options = array()) {
+function commentCount($postid, $setup['options'] = array()) {
  $defaults = array(
  'blogid' => '2'
  );
- $options = $this->setOptions($options,$defaults);
+ extract($setup_result = $this->api_call_setup($setup));
  $sql = "SELECT COUNT(*) FROM `comments` WHERE blogid = '".$this->db->sqlClean($options['blogid'])."' AND postid = '".$this->db->sqlClean($postid)."'";
  $result = $this->db->directProcessQuery($sql,'cbulock_cbulock');
  return $result[0];
 }
 
-public function getComments($postid, $options = array()) {
+public function getComments($postid, $setup['options'] = array()) {
  $defaults = array(
   'blogid' => '2'
  );
- $options = $this->setOptions($options,$defaults);
+ extract($setup_result = $this->api_call_setup($setup));
  $tableoptions = array(
   'where' => 'postid = "'.$this->db->sqlClean($postid).'" AND blogid= "'.$this->db->sqlClean($options['blogid']).'"',
   'orderBy' => '`created`'
@@ -84,7 +95,7 @@ public function getComments($postid, $options = array()) {
    Category Methods
 **********************************/
 
-public function getCatID($entryid, $options = array()) {
+public function getCatID($entryid, $setup['options'] = array()) {
  $options = array(
   'field' => 'placement_entry_id'
  ); 
@@ -98,15 +109,15 @@ public function getCatID($entryid, $options = array()) {
    Debugging
 **********************************/
 
-public function getLastQuery($options = array()) {
+public function getLastQuery($setup['options'] = array()) {
  return $this->db->getLastQuery();
 }
 
-public function getAPIMethods($options = array()) {
+public function getAPIMethods($setup['options'] = array()) {
  return $this->db->getTable('api_methods');
 }
 
-public function getMethodParameters($methodid, $options = array()) {
+public function getMethodParameters($methodid, $setup['options'] = array()) {
  $options = array(
   'where' => 'method = '.$this->db->sqlClean($methodid)
  );
@@ -130,6 +141,11 @@ public function getDirectQueryCount() {
 /**********************************
    Helper Methods
 **********************************/
+
+private function api_call_setup($setup) {
+ $result['options'] = $this->setOptions($setup['options'],$setup['defaults']);
+ return $result;
+}
 
 private function setOptions($options, $defaults) {
  foreach($defaults as $option => $value)
