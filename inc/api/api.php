@@ -5,7 +5,8 @@ class API {
 private $db;
 
 /*API Method Template
-public function nameName($setup['options'] = array()) {
+public function nameName($options = array()) {
+ $setup['options'] = $options;
  $setup['defaults'] = array(
   'setting' => 'value',
  );
@@ -19,7 +20,8 @@ public function nameName($setup['options'] = array()) {
    Entry Methods
 **********************************/
 
-public function getEntry($value, $setup['options'] = array()) {
+public function getEntry($value, $options = array()) {
+ $setup['options'] = $options;
  $setup['defaults'] = array(
   'blogid' => '2',
   'callby' => 'basename'
@@ -36,8 +38,9 @@ public function getEntry($value, $setup['options'] = array()) {
  return $this->db->directProcessQuery($sql,'cbulock_mt2');
 }
 
-public function prevEntry($id, $setup['options'] = array()) {//where is very open
- $defaults = array(
+public function prevEntry($id, $options = array()) {//where is very open
+ $setup['options'] = $options;
+ $setup['defaults'] = array(
   'blogid' => '2',
   'where' => '1'
  );
@@ -47,8 +50,9 @@ public function prevEntry($id, $setup['options'] = array()) {//where is very ope
  return $result[0];
 }
 
-public function nextEntry($id, $setup['options'] = array()) {//where is very open
- $defaults = array(
+public function nextEntry($id, $options = array()) {//where is very open
+ $setup['options'] = $options;
+ $setup['defaults'] = array(
   'blogid' => '2',
   'where' => '1'
  );
@@ -58,8 +62,9 @@ public function nextEntry($id, $setup['options'] = array()) {//where is very ope
  return $result[0];
 }
 
-public function lastEntry($setup['options'] = array()) {//where is very open
- $defaults = array(
+public function lastEntry($options = array()) {//where is very open
+ $setup['options'] = $options;
+ $setup['defaults'] = array(
   'blogid' => '2',
   'where' => '1'
  );
@@ -69,8 +74,9 @@ public function lastEntry($setup['options'] = array()) {//where is very open
  return $result[0];
 }
 
-function commentCount($postid, $setup['options'] = array()) {
- $defaults = array(
+function commentCount($postid, $options = array()) {
+ $setup['options'] = $options;
+ $setup['defaults'] = array(
  'blogid' => '2'
  );
  extract($setup_result = $this->api_call_setup($setup));
@@ -79,8 +85,9 @@ function commentCount($postid, $setup['options'] = array()) {
  return $result[0];
 }
 
-public function getComments($postid, $setup['options'] = array()) {
- $defaults = array(
+public function getComments($postid, $options = array()) {
+ $setup['options'] = $options;
+ $setup['defaults'] = array(
   'blogid' => '2'
  );
  extract($setup_result = $this->api_call_setup($setup));
@@ -95,7 +102,8 @@ public function getComments($postid, $setup['options'] = array()) {
    Category Methods
 **********************************/
 
-public function getCatID($entryid, $setup['options'] = array()) {
+public function getCatID($entryid, $options = array()) {
+ $setup['options'] = $options;
  $options = array(
   'field' => 'placement_entry_id'
  ); 
@@ -109,15 +117,15 @@ public function getCatID($entryid, $setup['options'] = array()) {
    Debugging
 **********************************/
 
-public function getLastQuery($setup['options'] = array()) {
+public function getLastQuery($options = array()) {
  return $this->db->getLastQuery();
 }
 
-public function getAPIMethods($setup['options'] = array()) {
+public function getAPIMethods($options = array()) {
  return $this->db->getTable('api_methods');
 }
 
-public function getMethodParameters($methodid, $setup['options'] = array()) {
+public function getMethodParameters($methodid, $options = array()) {
  $options = array(
   'where' => 'method = '.$this->db->sqlClean($methodid)
  );
