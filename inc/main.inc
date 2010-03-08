@@ -5,8 +5,8 @@
 header("Content-type: text/html; charset='UTF-8'");
 
 //Initialize APIs
-require_once(FUNC_DIR.'main_func.php');
-require_once(FUNC_DIR.'entry_func.php');
+//require_once(FUNC_DIR.'main_func.php');
+//require_once(FUNC_DIR.'entry_func.php');
 require_once(API_DIR.'db.php');
 require_once(API_DIR.'api.php');
 //$db = new DB($settings['db']['host'],$settings['db']['user'],$settings['db']['pass']);
