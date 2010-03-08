@@ -119,8 +119,10 @@ private function sqlProcess($sql) {//It may be more consistant to just use sqlPr
  $sqlReturn = $this->sqlQuery($sql);
  if (!$sqlReturn) return false;
  $row = mysql_fetch_array($sqlReturn);
- foreach($row as $key => $value) {
-  $result[$key] = $this->htmlParse(stripslashes($value));
+ if ($row) {
+  foreach($row as $key => $value) {
+   $result[$key] = $this->htmlParse(stripslashes($value));
+  }
  }
  return $result;
 }
