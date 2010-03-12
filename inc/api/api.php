@@ -40,6 +40,7 @@ public function getEntry($value, $options = array()) {
  $month = date('m',strtotime($result['entry_created_on']));
  $result['entry_link'] = "/".$year."/".$month."/".$result['entry_basename'].".html";
  return $result;
+ //return $this->getLastQuery();
 }
 
 public function prevEntry($id, $options = array()) {//where is very open
@@ -108,21 +109,20 @@ public function getComments($postid, $options = array()) {
 
 public function getCatID($entryid, $options = array()) {
  $setup['options'] = $options;
- extract($setup_result = $this->api_call_setup($setup));
  $options = array(
   'field' => 'placement_entry_id'
  ); 
- $item = $this->db->getItem('mt_placement',$entryid);
+ $item = $this->db->getItem('mt_placement',$entryid,$options);
  return $item['placement_category_id'];
 }
 
 public function getCat($catid, $options = array()) {
  $setup['options'] = $options;
- extract($setup_result = $this->api_call_setup($setup));
  $options = array(
   'field' => 'category_id'
  );
  return $this->db->getItem('mt_category',$catid,$options);
+// return $this->getLastQuery();
 }
 
 /**********************************
