@@ -1,13 +1,17 @@
 <html>
-
 <!--This is a very base design and will be expanded on greatly-->
-
 <title>Cameron's Thoughts<title>
 
 {foreach from=$entries item=entry}
-<h3>{$entry.entry_title}</h3>
-<div>{$entry.entry_text|nl2br|html_entity_decode}</div>
-<div>{$comment_counts[$entry.entry_id]} comment(s)</div>
+{include file='entry_body.tpl'}
+<div><a href='{$entry.entry_link}#comments'>
+{if $comment_counts[$entry.entry_id] == 0}
+No comments yet
+{elseif $comment_counts[$entry.entry_id] == 1}
+1 comment
+{else}
+{$comment_counts[$entry.entry_id]} comments
+{/if}
+</div>
 {/foreach}
-
-</html>
+{include file='footer.tpl'}
