@@ -1,6 +1,8 @@
 <html>
 <!--This is a very base design and will be expanded on greatly-->
-<title>Cameron's Thoughts<title>
+<title>{$settings.site.title}<title>
+
+{include file='header.tpl'}
 
 {foreach from=$entries item=entry}
 {include file='entry_body.tpl'}

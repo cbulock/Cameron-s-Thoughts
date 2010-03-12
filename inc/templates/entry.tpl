@@ -1,6 +1,8 @@
 <html>
 <!--This is a very base design and will be expanded on greatly-->
-<title>Cameron's Thoughts - {$entry.entry_title}<title>
+<title>{$settings.site.title} - {$entry.entry_title}<title>
+
+{include file='header.tpl'}
 
 {include file='entry_body.tpl'}
 {include file='entry_foot.tpl'}

@@ -14,11 +14,10 @@ for($i = 0; $i < MAINPAGE_COUNT; $i++) {
 }
 $query_count = $ct->getQueryCount();
 
-//print_r($entries);
-
 
 $tpl->assign('entries',$entries);
 $tpl->assign('comment_counts',$comment_counts);
+$tpl->assign('query_count',$query_count);
 
 $tpl->display('home.tpl');
 ?>
