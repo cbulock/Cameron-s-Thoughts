@@ -21,7 +21,7 @@ public function getTable($table, $options = array()) {
  $options = $this->setOptions($options,$defaults);
  $this->selectDatabase($table, $options['database']);
  $sql = 'SELECT * FROM `'.$table.'` WHERE '.$options['where'].' ORDER BY '.$options['orderBy'].' LIMIT '.$options['limit'];
- return $this->sqlProcessMulti($sql,$options['key']);
+ return $this->sqlProcessMulti($sql,array('sortkey'=>$options['key']));
 }
 
 public function getItem($table, $value, $options = array()) {
@@ -115,23 +115,37 @@ private function setOptions($options, $defaults) {
  return $options;
 }
 
-private function sqlProcess($sql) {//It may be more consistant to just use sqlProcessMulti for everything
+private function sqlProcess($sql,$options = array()) {//It may be more consistant to just use sqlProcessMulti for everything
+ $defaults = array(
+  'return' => 'all'
+ );
+ $options = $this->setOptions($options, $defaults);
  $sqlReturn = $this->sqlQuery($sql);
  if (!$sqlReturn) return false;
  $row = mysql_fetch_array($sqlReturn,MYSQL_ASSOC);
  if ($row) {
-  foreach($row as $key => $value) {
-   $result[$key] = $this->htmlParse(stripslashes($value));
+  if ($options['return'] == 'all') {
+   foreach($row as $key => $value) {
+    $result[$key] = $this->htmlParse(stripslashes($value));
+   }
+   return $result;
+  }
+  else {
+   return $this->htmlParse(stripslashes(reset($row)));
   }
  }
- return $result;
+ return false;
 }
 
-private function sqlProcessMulti($sql,$sortkey = 'id') {
+private function sqlProcessMulti($sql,$options = array()) {
+ $defaults = array(
+  'sortkey' => 'id'
+ );
+ $options = $this->setOptions($options, $defaults);
  $sqlReturn = $this->sqlQuery($sql);
  if (!$sqlReturn) return false;
  while ($row = mysql_fetch_array($sqlReturn,MYSQL_ASSOC)) {
-  $id = $row[$sortkey];
+  $id = $row[$options['sortkey']];
   foreach($row as $key => $value) {
    $result[$id][$key] = $this->htmlParse(stripslashes($value));
   }
@@ -188,16 +202,16 @@ public function directQuery($sql,$db) { //this should rarely be used
  return $this->sqlQuery($sql);
 }
 
-public function directProcessQuery($sql,$db) {
+public function directProcessQuery($sql,$db,$options = array()) {
  $this->directQueryCount++;
  $this->selectDatabase($db);
- return $this->sqlProcess($sql);
+ return $this->sqlProcess($sql,$options);
 }
 
-public function directProcessMultiQuery($sql,$db,$sortkey='id') {
+public function directProcessMultiQuery($sql,$db,$options = array()) {
  $this->directQueryCount++;
  $this->selectDatabase($db);
- return $this->sqlProcessMulti($sql,$sortkey);
+ return $this->sqlProcessMulti($sql,$options);
 }
 
 

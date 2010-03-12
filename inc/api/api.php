@@ -40,7 +40,6 @@ public function getEntry($value, $options = array()) {
  $month = date('m',strtotime($result['entry_created_on']));
  $result['entry_link'] = "/".$year."/".$month."/".$result['entry_basename'].".html";
  return $result;
- //return $this->getLastQuery();
 }
 
 public function prevEntry($id, $options = array()) {//where is very open
@@ -51,8 +50,8 @@ public function prevEntry($id, $options = array()) {//where is very open
  );
  extract($setup_result = $this->api_call_setup($setup));
  $sql = "select max(entry_id) FROM `mt_entry` WHERE (entry_id < ".$this->db->sqlClean($id)." AND entry_blog_id =".$this->db->sqlClean($options['blogid'])." AND ".$options['where'].")";
- $result = $this->db->directProcessQuery($sql,'cbulock_mt2');
- return $result[0];
+ $result = $this->db->directProcessQuery($sql,'cbulock_mt2',array('return'=>'single'));
+ return $result;
 }
 
 public function nextEntry($id, $options = array()) {//where is very open
@@ -63,8 +62,8 @@ public function nextEntry($id, $options = array()) {//where is very open
  );
  extract($setup_result = $this->api_call_setup($setup));
  $sql = "select min(entry_id) FROM `mt_entry` WHERE (entry_id > ".$this->db->sqlClean($id)." AND entry_blog_id = ".$this->db->sqlClean($options['blogid'])." AND ".$options['where'].")";
- $result = $this->db->directProcessQuery($sql,'cbulock_mt2');
- return $result[0];
+ $result = $this->db->directProcessQuery($sql,'cbulock_mt2',array('return'=>'single'));
+ return $result;
 }
 
 public function lastEntry($options = array()) {//where is very open
@@ -75,8 +74,8 @@ public function lastEntry($options = array()) {//where is very open
  );
  extract($setup_result = $this->api_call_setup($setup));
  $sql = "select max(entry_id) FROM `mt_entry` WHERE (entry_blog_id = ".$this->db->sqlClean($options['blogid'])." AND ".$options['where'].")";
- $result = $this->db->directProcessQuery($sql,'cbulock_mt2');
- return $result[0];
+ $result = $this->db->directProcessQuery($sql,'cbulock_mt2',array('return'=>'single'));
+ return $result;
 }
 
 function commentCount($postid, $options = array()) {
@@ -86,8 +85,8 @@ function commentCount($postid, $options = array()) {
  );
  extract($setup_result = $this->api_call_setup($setup));
  $sql = "SELECT COUNT(*) FROM `comments` WHERE blogid = '".$this->db->sqlClean($options['blogid'])."' AND postid = '".$this->db->sqlClean($postid)."'";
- $result = $this->db->directProcessQuery($sql,'cbulock_cbulock');
- return $result[0];
+ $result = $this->db->directProcessQuery($sql,'cbulock_cbulock',array('return'=>'single'));
+ return $result;
 }
 
 public function getComments($postid, $options = array()) {
