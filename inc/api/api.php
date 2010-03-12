@@ -35,7 +35,11 @@ public function getEntry($value, $options = array()) {
    $sql = "SELECT * FROM `mt_entry` WHERE entry_blog_id='".$this->db->sqlClean($options['blogid'])."' AND entry_id='".$this->db->sqlClean($value)."'";
   break;
  }
- return $this->db->directProcessQuery($sql,'cbulock_mt2');
+ $result = $this->db->directProcessQuery($sql,'cbulock_mt2');
+ $year = date('Y',strtotime($result['entry_created_on']));
+ $month = date('m',strtotime($result['entry_created_on']));
+ $result['entry_link'] = "/".$year."/".$month."/".$result['entry_basename'].".html";
+ return $result;
 }
 
 public function prevEntry($id, $options = array()) {//where is very open
