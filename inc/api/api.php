@@ -108,6 +108,7 @@ public function getComments($postid, $options = array()) {
 
 public function getCatID($entryid, $options = array()) {
  $setup['options'] = $options;
+ extract($setup_result = $this->api_call_setup($setup));
  $options = array(
   'field' => 'placement_entry_id'
  ); 
@@ -115,7 +116,14 @@ public function getCatID($entryid, $options = array()) {
  return $item['placement_category_id'];
 }
 
-
+public function getCat($catid, $options = array()) {
+ $setup['options'] = $options;
+ extract($setup_result = $this->api_call_setup($setup));
+ $options = array(
+  'field' => 'category_id'
+ );
+ return $this->db->getItem('mt_category',$catid,$options);
+}
 
 /**********************************
    Debugging
