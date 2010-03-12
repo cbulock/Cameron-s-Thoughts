@@ -118,7 +118,7 @@ private function setOptions($options, $defaults) {
 private function sqlProcess($sql) {//It may be more consistant to just use sqlProcessMulti for everything
  $sqlReturn = $this->sqlQuery($sql);
  if (!$sqlReturn) return false;
- $row = mysql_fetch_array($sqlReturn);
+ $row = mysql_fetch_array($sqlReturn,MYSQL_ASSOC);
  if ($row) {
   foreach($row as $key => $value) {
    $result[$key] = $this->htmlParse(stripslashes($value));
@@ -130,7 +130,7 @@ private function sqlProcess($sql) {//It may be more consistant to just use sqlPr
 private function sqlProcessMulti($sql,$sortkey = 'id') {
  $sqlReturn = $this->sqlQuery($sql);
  if (!$sqlReturn) return false;
- while ($row = mysql_fetch_array($sqlReturn)) {
+ while ($row = mysql_fetch_array($sqlReturn,MYSQL_ASSOC)) {
   $id = $row[$sortkey];
   foreach($row as $key => $value) {
    $result[$id][$key] = $this->htmlParse(stripslashes($value));
