@@ -4,7 +4,7 @@ class DB {
 
 private $queryCount;
 private $directQueryCount;
-private $lastQuery;
+private $queryLog = array();
 private $link;
 
 /**********************************
@@ -82,7 +82,7 @@ public function deleteItem($table, $value,  $options = array()) {
 
 private function sqlQuery($sql) {
  $this->queryCount++;
- $this->lastQuery = $sql;
+ $this->queryLog[] = $sql;
  return mysql_query($sql);
 }
 
@@ -193,7 +193,11 @@ public function getDirectQueryCount() {
 }
 
 public function getLastQuery() {
- return $this->lastQuery;
+ return end($this->queryLog);
+}
+
+public function getQueryLog() {
+ return $this->queryLog;
 }
 
 public function directQuery($sql,$db) { //this should rarely be used

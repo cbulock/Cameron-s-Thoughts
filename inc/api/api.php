@@ -143,6 +143,10 @@ public function getLastQuery($options = array()) {
  return $this->db->getLastQuery();
 }
 
+public function getQueryLog($options = array()) {
+ return $this->db->getQueryLog();
+}
+
 public function getAPIMethods($options = array()) {
  return $this->db->getTable('api_methods');
 }
