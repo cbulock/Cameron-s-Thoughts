@@ -7,7 +7,7 @@ require_once(INCLUDE_DIR.'main.inc');
 switch($_GET['type']) {
  case 'entry':
   $basename =  $_GET['basename'];
-  $id = $_GET['id'];
+  //$id = $_GET['id'];
   include(INCLUDE_DIR.'pages/entry.php');
  break;
  case 'month':
@@ -18,6 +18,10 @@ switch($_GET['type']) {
  case 'cat':
   $basename = $_GET['basename'];
   include(INCLUDE_DIR.'pages/cat.php');
+ break;
+ case 'css':
+  header('Content-type: text/css');
+  include(INCLUDE_DIR.'css/'.$_GET['page'].'.css');
  break;
  case 'api':
   $request = $_GET['request'];

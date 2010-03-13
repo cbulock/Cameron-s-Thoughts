@@ -17,6 +17,9 @@ RewriteRule ^20*(.*)/(.*)/(.*).html?$ index.php?type=entry&basename=$3 [L]
 #Category archives
 RewriteRule ^cat/(.*).html?$ index.php?type=cat&basename=$1 [L]
 
+#CSS
+RewriteRule ^css/(.*).css$ index.php?type=css&page=$1 [L]
+
 #API Access
 RewriteRule ^api/(.*)$ index.php?type=api&request=$1 [L]
 

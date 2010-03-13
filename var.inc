@@ -23,5 +23,5 @@ $settings['db'] = array(
  'pass' => DB_PASS
 );
 
-define('MAINPAGE_COUNT',5);
+define('MAINPAGE_COUNT',20);
 ?>

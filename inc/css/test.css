@@ -1,0 +1,72 @@
+body
+{
+ font-family: "Trebuchet MS", Trebuchet, Verdana, Tahoma, Arial, Sans-Serif;
+ font-size: 0.8em;
+ background-color: #FFF;
+ margin: 0;
+ padding: 1em;
+}
+
+html
+{
+ margin:0 auto;
+ width:780px;
+ /*background-image: url('/css/images/tile2.jpg');*/
+}
+
+code, pre {
+ display: block;
+ overflow: auto;
+ font-family: 'Lucida Console', 'Bitstream Vera Sans Mono', 'Courier New', Monaco, Courier, monospace;
+ color: #000;
+ background-color: #DCDCDC;
+ -moz-border-radius: 8px;
+ padding: 0.3em;
+ margin: 0.3em 0.1em 0.3em 0.1em;
+}
+
+fieldset
+{
+ width: 10em;
+}
+
+img
+{
+ border:none;
+}
+
+input:focus, textarea:focus 
+{
+ border: 1px solid #000;
+ padding: 1px;
+}
+
+input, textarea, select
+{
+ border: 1px solid #CCC;
+ padding: 1px;
+}
+
+
+#prev_link 
+{
+ display:inline;
+ margin:0 1em 0 0;
+}
+
+#next_link 
+{
+ display:inline;
+ margin:0 0 0 1em;
+}
+
+#login
+{
+padding: 5px 5px 2px 2px;
+margin: 0;
+position:absolute;
+top: 0;
+left: -15em;
+background-color:#FFF;
+font-size:0.85em;
+}
