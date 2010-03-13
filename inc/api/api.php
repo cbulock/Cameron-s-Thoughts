@@ -99,7 +99,18 @@ public function getComments($postid, $options = array()) {
   'where' => 'postid = "'.$this->db->sqlClean($postid).'" AND blogid= "'.$this->db->sqlClean($options['blogid']).'"',
   'orderBy' => '`created`'
  );
- return $this->db->getTable('comments', $tableoptions);
+ $results = $this->db->getTable('comments', $tableoptions);
+ if ($results) {
+  foreach ($results as $key=>$result) {
+   if ($result['user']) {
+    $user = $this->db->getItem('users',$result['user']);//this should switch to an internal getUser method at some point
+    $results[$key]['author'] = $user['name'];
+    $results[$key]['email'] = $user['email'];
+    $results[$key]['url'] = $user['url'];
+   }
+  }
+ }
+ return $results;
 }
 
 /**********************************
