@@ -1,6 +1,4 @@
-<html>
-<!--This is a very base design and will be expanded on greatly-->
-<title>{$settings.site.title}<title>
+{include file='head.tpl'}
 
 {include file='header.tpl'}
 
