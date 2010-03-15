@@ -108,6 +108,7 @@ public function getComments($postid, $options = array()) {
     $results[$key]['email'] = $user['email'];
     $results[$key]['url'] = $user['url'];
    }
+   $results[$key]['email_hash'] = md5($results[$key]['email']);
   }
  }
  return $results;
