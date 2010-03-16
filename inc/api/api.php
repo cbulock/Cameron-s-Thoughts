@@ -52,7 +52,7 @@ public function prevEntry($id, $options = array()) {//where is very open
  $sql = "select max(entry_id) FROM `mt_entry` WHERE (entry_id < ".$this->db->sqlClean($id)." AND entry_blog_id =".$this->db->sqlClean($options['blogid'])." AND ".$options['where'].")";
  $result = $this->db->directProcessQuery($sql,'cbulock_mt2',array('return'=>'single'));
  return $result;
-}
+extract($setup_result = $this->api_call_setup($setup));}
 
 public function nextEntry($id, $options = array()) {//where is very open
  $setup['options'] = $options;
@@ -103,7 +103,7 @@ public function getComments($postid, $options = array()) {
  if ($results) {
   foreach ($results as $key=>$result) {
    if ($result['user']) {
-    $user = $this->db->getItem('users',$result['user']);//this should switch to an internal getUser method at some point
+    $user = $this->getUser($result['user'],array('callby'=>'id'));
     $results[$key]['author'] = $user['name'];
     $results[$key]['email'] = $user['email'];
     $results[$key]['url'] = $user['url'];
@@ -137,6 +137,19 @@ public function getCat($catid, $options = array()) {
 }
 
 /**********************************
+   Misc Methods
+**********************************/
+
+public function getUser($value, $options = array()) {
+ $setup['options'] = $options;
+ $setup['defaults'] = array(
+  'callby' => 'login'
+ );
+ extract($setup_result = $this->api_call_setup($setup)); 
+ return $this->db->getItem('users',$value,array('field'=>$options['callby']));
+}
+
+/**********************************
    Debugging
 **********************************/
 
@@ -158,11 +171,6 @@ public function getMethodParameters($methodid, $options = array()) {
  );
  return $this->db->getTable('api_parameters',$options);
 }
-
-
-/**********************************
-   Information Methods
-**********************************/
 
 public function getQueryCount() {
  return $this->db->getQueryCount();
