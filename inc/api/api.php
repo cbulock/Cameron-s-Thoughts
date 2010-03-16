@@ -52,7 +52,7 @@ public function prevEntry($id, $options = array()) {//where is very open
  $sql = "select max(entry_id) FROM `mt_entry` WHERE (entry_id < ".$this->db->sqlClean($id)." AND entry_blog_id =".$this->db->sqlClean($options['blogid'])." AND ".$options['where'].")";
  $result = $this->db->directProcessQuery($sql,'cbulock_mt2',array('return'=>'single'));
  return $result;
-extract($setup_result = $this->api_call_setup($setup));}
+}
 
 public function nextEntry($id, $options = array()) {//where is very open
  $setup['options'] = $options;
