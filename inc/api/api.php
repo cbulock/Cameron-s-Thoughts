@@ -3,6 +3,7 @@
 class API {
 
 private $db;
+private $auth;
 
 /*API Method Template
 public function nameName($options = array()) {
@@ -133,7 +134,27 @@ public function getCat($catid, $options = array()) {
   'field' => 'category_id'
  );
  return $this->db->getItem('mt_category',$catid,$options);
-// return $this->getLastQuery();
+}
+
+
+/**********************************
+   Authentication Methods
+**********************************/
+
+public function auth($type, $options = array()) {
+ $setup['options'] = $options;
+ switch($type) {
+  case 'internal':
+   $this->auth['type']='internal';
+   $this->auth['group']='admin';
+   $this->auth['user']='API';
+  break;
+ }
+ return TRUE;
+}
+
+private function getAuth() {
+ return $this->auth;
 }
 
 /**********************************
@@ -187,6 +208,7 @@ public function getDirectQueryCount() {
 
 private function api_call_setup($setup) {
  $result['options'] = $this->setOptions($setup['options'],$setup['defaults']);
+ $result['auth'] = $this->getAuth();
  return $result;
 }
 
