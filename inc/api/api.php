@@ -106,10 +106,11 @@ public function getComments($postid, $options = array()) {
    if ($result['user']) {
     $user = $this->getUser($result['user'],array('callby'=>'id'));
     $results[$key]['author'] = $user['name'];
-    $results[$key]['email'] = $user['email'];
     $results[$key]['url'] = $user['url'];
    }
-   $results[$key]['email_hash'] = md5($results[$key]['email']);
+   else {
+    $results[$key]['email_hash'] = md5($results[$key]['email']);
+   }
   }
  }
  return $results;
@@ -167,7 +168,13 @@ public function getUser($value, $options = array()) {
   'callby' => 'login'
  );
  extract($setup_result = $this->api_call_setup($setup)); 
- return $this->db->getItem('users',$value,array('field'=>$options['callby']));
+ $user = $this->db->getItem('users',$value,array('field'=>$options['callby']));
+ $user['email_hash'] = md5($user['email']);
+ if ($auth['group'] != 'admin') {
+  unset($user['pass']);
+  unset($user['email']);
+ }
+ return $user;
 }
 
 /**********************************
