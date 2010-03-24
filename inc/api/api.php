@@ -37,10 +37,13 @@ public function getEntry($value, $options = array()) {
   break;
  }
  $result = $this->db->directProcessQuery($sql,'cbulock_mt2');
- $year = date('Y',strtotime($result['entry_created_on']));
- $month = date('m',strtotime($result['entry_created_on']));
- $result['entry_link'] = "/".$year."/".$month."/".$result['entry_basename'].".html";
- return $result;
+ if ($result) {
+  $year = date('Y',strtotime($result['entry_created_on']));
+  $month = date('m',strtotime($result['entry_created_on']));
+  $result['entry_link'] = "/".$year."/".$month."/".$result['entry_basename'].".html";
+  return $result;
+ }
+ return FALSE;
 }
 
 public function prevEntry($id, $options = array()) {//where is very open
