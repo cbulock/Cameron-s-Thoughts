@@ -49,18 +49,22 @@ input, textarea, select
  padding: 1px;
 }
 
-/* these aren't currently being used
-#prev_link 
-{
+#entry {
+font-size: 120%;
+padding:1em;
+}
+
+#prev_entry {
  display:inline;
  margin:0 1em 0 0;
 }
 
-#next_link 
-{
+#next_entry {
  display:inline;
  margin:0 0 0 1em;
 }
+
+/* this isn't currently being used
 
 #login
 {
