@@ -3,6 +3,7 @@
 class API {
 
 private $db;
+private $auth;
 
 /*API Method Template
 public function nameName($options = array()) {
@@ -36,10 +37,13 @@ public function getEntry($value, $options = array()) {
   break;
  }
  $result = $this->db->directProcessQuery($sql,'cbulock_mt2');
- $year = date('Y',strtotime($result['entry_created_on']));
- $month = date('m',strtotime($result['entry_created_on']));
- $result['entry_link'] = "/".$year."/".$month."/".$result['entry_basename'].".html";
- return $result;
+ if ($result) {
+  $year = date('Y',strtotime($result['entry_created_on']));
+  $month = date('m',strtotime($result['entry_created_on']));
+  $result['entry_link'] = "/".$year."/".$month."/".$result['entry_basename'].".html";
+  return $result;
+ }
+ return FALSE;
 }
 
 public function prevEntry($id, $options = array()) {//where is very open
@@ -105,10 +109,11 @@ public function getComments($postid, $options = array()) {
    if ($result['user']) {
     $user = $this->getUser($result['user'],array('callby'=>'id'));
     $results[$key]['author'] = $user['name'];
-    $results[$key]['email'] = $user['email'];
     $results[$key]['url'] = $user['url'];
    }
-   $results[$key]['email_hash'] = md5($results[$key]['email']);
+   else {
+    $results[$key]['email_hash'] = md5($results[$key]['email']);
+   }
   }
  }
  return $results;
@@ -133,7 +138,27 @@ public function getCat($catid, $options = array()) {
   'field' => 'category_id'
  );
  return $this->db->getItem('mt_category',$catid,$options);
-// return $this->getLastQuery();
+}
+
+
+/**********************************
+   Authentication Methods
+**********************************/
+
+public function auth($type, $options = array()) {
+ $setup['options'] = $options;
+ switch($type) {
+  case 'internal':
+   $this->auth['type']='internal';
+   $this->auth['group']='admin';
+   $this->auth['user']='API';
+  break;
+ }
+ return TRUE;
+}
+
+private function getAuth() {
+ return $this->auth;
 }
 
 /**********************************
@@ -146,7 +171,13 @@ public function getUser($value, $options = array()) {
   'callby' => 'login'
  );
  extract($setup_result = $this->api_call_setup($setup)); 
- return $this->db->getItem('users',$value,array('field'=>$options['callby']));
+ $user = $this->db->getItem('users',$value,array('field'=>$options['callby']));
+ $user['email_hash'] = md5($user['email']);
+ if ($auth['group'] != 'admin') {
+  unset($user['pass']);
+  unset($user['email']);
+ }
+ return $user;
 }
 
 /**********************************
@@ -187,6 +218,7 @@ public function getDirectQueryCount() {
 
 private function api_call_setup($setup) {
  $result['options'] = $this->setOptions($setup['options'],$setup['defaults']);
+ $result['auth'] = $this->getAuth();
  return $result;
 }
 
