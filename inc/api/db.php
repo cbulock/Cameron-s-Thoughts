@@ -6,6 +6,7 @@ private $queryCount;
 private $directQueryCount;
 private $queryLog = array();
 private $link;
+private $dbprefix;
 
 /**********************************
    Database Access
@@ -96,10 +97,10 @@ private function selectDatabase($table, $db=NULL) {
 
 private function determineDatabase($table, $db=NULL) { //$table can be overloaded with $db value
  if ($db) return $db;
- $databases['cbulock_accesslog'] = array('cbulock_accesslog','referers','sessions');
- $databases['cbulock_cbulock'] = array('cbulock_cbulock','ads','ads_cat','blockedips','guid_admins','images','quotes','styles','users','comments','api_methods','api_parameters');
- $databases['cbulock_mt2'] = array('cbulock_mt2','mt_blog','mt_entry','mt_category','mt_placement');
- $databases['cbulock_ct3'] = array('cbulock_ct3','settings');
+ $databases[$this->dbprefix.'accesslog'] = array($this->dbprefix.'accesslog','referers','sessions');
+ $databases[$this->dbprefix.'cbulock'] = array($this->dbprefix.'cbulock','ads','ads_cat','blockedips','guid_admins','images','quotes','styles','users','comments','api_methods','api_parameters');
+ $databases[$this->dbprefix.'mt2'] = array($this->dbprefix.'mt2','mt_blog','mt_entry','mt_category','mt_placement');
+ $databases[$this->dbprefix.'ct3'] = array($this->dbprefix.'ct3','settings');
  foreach ($databases as $dbname => $database) {
   foreach ($database as $tablename) {
    if ($tablename == $table) return $dbname;
@@ -173,8 +174,9 @@ public function sqlClean($str) {
    Core Functions
 **********************************/
 
-public function __construct($host,$user,$pass) {
+public function __construct($host,$user,$pass, $prefix='cbulock_') {
  $this->link = mysql_connect($host,$user,$pass);
+ $this->dbprefix = $prefix;
 }
 
 public function __destruct() {
