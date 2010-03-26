@@ -180,6 +180,10 @@ public function getUser($value, $options = array()) {
  return $user;
 }
 
+private function createGUI() {
+ return md5(uniqid(rand(), true));
+}
+
 /**********************************
    Debugging
 **********************************/
