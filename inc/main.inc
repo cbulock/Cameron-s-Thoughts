@@ -5,7 +5,7 @@
 //header("Content-type: text/html; charset='UTF-8'");
 
 //Initialize APIs
-require_once(API_DIR.'db.php');
+require_once(API_DIR.'mysql.php');
 require_once(API_DIR.'api.php');
 $ct = new API($settings);
 
