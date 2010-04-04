@@ -248,7 +248,7 @@ private function setOptions($options, $defaults) {
 **********************************/
 
 public function __construct($settings) {
- $this->db = new DB($settings['db']['host'],$settings['db']['user'],$settings['db']['pass']);
+ $this->db = new DB($settings['db']['host'],$settings['db']['user'],$settings['db']['pass'],DB_PREFIX);
 }
 
 public function __destruct() {
