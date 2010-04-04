@@ -9,6 +9,4 @@ $tpl->setConfigDir(SMARTY_DIR.'../configs');
 
 $tpl->assign('settings',$settings);
 
-$ct->auth('internal');
-
 ?>
