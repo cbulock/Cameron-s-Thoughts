@@ -29,5 +29,5 @@ CREATE TABLE `mt_entry` (
    KEY `entry_created_on` (`entry_created_on`),
    KEY `entry_basename` (`entry_basename`),
    KEY `mt_entry_week_number` (`entry_week_number`),
-   KEY `entry_keywords` (`entry_keywords`,`entry_title`,`entry_excerpt`)
+   KEY `entry_keywords` (`entry_keywords`(255),`entry_title`,`entry_excerpt`(255))
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
