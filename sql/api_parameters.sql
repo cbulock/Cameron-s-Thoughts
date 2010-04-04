@@ -4,7 +4,7 @@ CREATE TABLE `api_parameters` (
    `method` int(6),
    `required` tinyint(1) not null default '0',
    UNIQUE KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=21;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=23;
 
 INSERT INTO `api_parameters` (`id`, `value`, `method`, `required`) VALUES ('1', 'value', '1', '1');
 INSERT INTO `api_parameters` (`id`, `value`, `method`, `required`) VALUES ('2', 'blogid', '1', '0');
@@ -26,3 +26,5 @@ INSERT INTO `api_parameters` (`id`, `value`, `method`, `required`) VALUES ('17',
 INSERT INTO `api_parameters` (`id`, `value`, `method`, `required`) VALUES ('18', 'catid', '13', '1');
 INSERT INTO `api_parameters` (`id`, `value`, `method`, `required`) VALUES ('19', 'value', '15', '1');
 INSERT INTO `api_parameters` (`id`, `value`, `method`, `required`) VALUES ('20', 'callby', '15', '0');
+INSERT INTO `api_parameters` (`id`, `value`, `method`, `required`) VALUES ('21', 'user', '16', '1');
+INSERT INTO `api_parameters` (`id`, `value`, `method`, `required`) VALUES ('22', 'pass', '16', '1');

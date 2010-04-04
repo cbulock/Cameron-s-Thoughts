@@ -3,7 +3,8 @@
 class API {
 
 private $db;
-private $auth;
+private $guid;
+private $token;
 
 /*API Method Template
 public function nameName($options = array()) {
@@ -112,7 +113,7 @@ public function getComments($postid, $options = array()) {
     $results[$key]['url'] = $user['url'];
    }
    else {
-    $results[$key]['email_hash'] = md5($results[$key]['email']);
+    $results[$key]['email_hash'] = md5($results[$key]['email']);//need to filter out email address for non-authed comments
    }
   }
  }
@@ -145,26 +146,19 @@ public function getCat($catid, $options = array()) {
    Authentication Methods
 **********************************/
 
-public function auth($type, $options = array()) {
- $setup['options'] = $options;
- switch($type) {
-  case 'internal':
-   $this->auth['type']='internal';
-   $this->auth['group']='admin';
-   $this->auth['user']='API';
-  break;
- }
- return TRUE;
+public function login($user,$pass) {
+ $id = $this->checkPass($user,$pass);
+ if (!$id) return FALSE;
+ $data = array(
+  'user'=>$id,
+  'guid'=>$this->guid
+ );
+ return $this->db->insertItem('sessions',$data);//after logging in, something should happen in the api to track that we are authenticated, also should check for existing login on construct
 }
-
-private function getAuth() {
- return $this->auth;
-}
-
 
 private function checkPass($user,$pass) {
- $acct = $this->db->getItem('users',$user,array('field'=>'login'));
- if ($acct['pass'] == md5($pass)) return TRUE;
+ $acct = $this->getUser($user,array('token'=>$this->token));
+ if ($acct['pass'] == md5($pass)) return $acct['id'];
  return FALSE;
 }
 
@@ -181,15 +175,19 @@ public function getUser($value, $options = array()) {
  extract($setup_result = $this->api_call_setup($setup)); 
  $user = $this->db->getItem('users',$value,array('field'=>$options['callby']));
  $user['email_hash'] = md5($user['email']);
- if ($auth['group'] != 'admin') {
+ if ($options['token']!=$this->token) {
   unset($user['pass']);
   unset($user['email']);
  }
  return $user;
 }
 
-private function createGUI() {
+private function createGUID() {
  return md5(uniqid(rand(), true));
+}
+
+private function setCookie($name, $value, $expire=1893456000) {
+ return setcookie($name, $value, $expire, "/");
 }
 
 /**********************************
@@ -230,7 +228,6 @@ public function getDirectQueryCount() {
 
 private function api_call_setup($setup) {
  $result['options'] = $this->setOptions($setup['options'],$setup['defaults']);
- $result['auth'] = $this->getAuth();
  return $result;
 }
 
@@ -248,7 +245,15 @@ private function setOptions($options, $defaults) {
 **********************************/
 
 public function __construct($settings) {
+ $this->token = $this->createGUID();
  $this->db = new DB($settings['db']['host'],$settings['db']['user'],$settings['db']['pass'],DB_PREFIX);
+ if ($_COOKIE['guid']) {
+  $this->guid = $_COOKIE['guid'];
+ }
+ else {
+  $this->guid = $this->createGUID();
+  $this->setCookie('guid',$guid);
+ }
 }
 
 public function __destruct() {
