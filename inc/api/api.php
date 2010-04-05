@@ -153,7 +153,8 @@ public function login($user,$pass) {
   'user'=>$id,
   'guid'=>$this->guid
  );
- return $this->db->insertItem('sessions',$data);//after logging in, something should happen in the api to track that we are authenticated, also should check for existing login on construct
+ $this->db->insertItem('sessions',$data);//after logging in, something should happen in the api to track that we are authenticated, also should check for existing login on construct
+ return $this->guid;
 }
 
 private function checkPass($user,$pass) {
