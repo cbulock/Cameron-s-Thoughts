@@ -163,6 +163,16 @@ private function checkPass($user,$pass) {
  return FALSE;
 }
 
+private function tokenAuth($token) {
+ if ($token == $this->token){
+  $class = 'internal';
+ }
+ $auth = array(
+  'class'=>$class
+ );
+ return $auth;
+}
+
 
 /**********************************
    Misc Methods
@@ -229,6 +239,7 @@ public function getDirectQueryCount() {
 
 private function api_call_setup($setup) {
  $result['options'] = $this->setOptions($setup['options'],$setup['defaults']);
+ if ($setup['options']['token']) $result['auth'] = $this->tokenAuth($setup['options']['token']);
  return $result;
 }
 
