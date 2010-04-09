@@ -1,6 +1,6 @@
 <?php
 
-require_once('pages.inc');
+require_once(INCLUDE_DIR.'pages/pages.inc');
 
 $current_entry = $ct->lastEntry();
 $entries = array();

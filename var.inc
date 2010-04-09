@@ -6,8 +6,6 @@ define('TPL_DIR',INCLUDE_DIR.'templates/');
 define('SMARTY_DIR',INCLUDE_DIR.'smarty/libs/');
 define('LOG_DIR',INCLUDE_DIR.'logs/');
 define('API_DIR',INCLUDE_DIR.'api/');
-//define('FUNC_DIR',INCLUDE_DIR.'func/');
-//define('CLASS_DIR',INCLUDE_DIR.'classes/');
 
 $settings['site'] = array(
  'title' => "Cameron's Thoughts",

@@ -9,6 +9,9 @@ require_once(API_DIR.'mysql.php');
 require_once(API_DIR.'api.php');
 $ct = new API($settings);
 
+//Select page type
+require_once(INCLUDE_DIR.'/backend/pagetype.php');
+
 //Settings stored in database
 //require(INCLUDE_DIR.'/backend/read_settings.php');
 

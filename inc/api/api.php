@@ -186,7 +186,7 @@ public function getUser($value, $options = array()) {
  extract($setup_result = $this->api_call_setup($setup)); 
  $user = $this->db->getItem('users',$value,array('field'=>$options['callby']));
  $user['email_hash'] = md5($user['email']);
- if ($options['token']!=$this->token) {
+ if ($auth['class']!='internal') {
   unset($user['pass']);
   unset($user['email']);
  }

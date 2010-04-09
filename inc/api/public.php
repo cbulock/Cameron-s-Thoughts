@@ -1,5 +1,6 @@
 <?php
 
+//this needs to not use $ct->auth() to authenticate, and also needs to block that method from being allowed publically
 $format = substr(strrchr($request, '.'), 1);
 if (strpos($request,'/')) {
  $url_parameters = explode('.',substr(strstr($request, '/'), 1));
