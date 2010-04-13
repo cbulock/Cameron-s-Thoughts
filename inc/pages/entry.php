@@ -1,6 +1,6 @@
 <?php
 
-require_once(INCLUDE_DIR.'pages/pages.inc');
+require_once('pages.inc');
 
 $entry = $ct->getEntry($basename);
 $prev_entry = $ct->getEntry($ct->prevEntry($entry['entry_id']),array('callby'=>'id'));
