@@ -2,9 +2,11 @@
 
 class API {
 
-private $db;
-private $guid;
-private $token;
+private $db;	//database connection
+private $guid;	//user token
+private $token;	//internal token
+private $log;	//log file
+private $user;	//authenticated user
 
 /*API Method Template
 public function nameName($options = array()) {
@@ -29,6 +31,7 @@ public function getEntry($value, $options = array()) {
   'callby' => 'basename'
  );
  extract($setup_result = $this->api_call_setup($setup));
+ $this->writeLog('getEntry called for '.$value);
  switch($options['callby']) {
   case 'basename':
    $sql = "SELECT * FROM `mt_entry` WHERE entry_blog_id='".$this->db->sqlClean($options['blogid'])."' AND entry_basename='".$this->db->sqlClean($value)."'";
@@ -83,6 +86,10 @@ public function lastEntry($options = array()) {//where is very open
  return $result;
 }
 
+/**********************************
+   Comment Methods
+**********************************/
+
 function commentCount($postid, $options = array()) {
  $setup['options'] = $options;
  $setup['defaults'] = array(
@@ -120,6 +127,8 @@ public function getComments($postid, $options = array()) {
  return $results;
 }
 
+
+
 /**********************************
    Category Methods
 **********************************/
@@ -154,6 +163,7 @@ public function login($user,$pass) {
   'guid'=>$this->guid
  );
  $this->db->insertItem('sessions',$data);//after logging in, something should happen in the api to track that we are authenticated, also should check for existing login on construct
+ $this->user = $this->getUser($user,array('token'=>$this->token));
  return $this->guid;
 }
 
@@ -199,6 +209,12 @@ private function createGUID() {
 
 private function setCookie($name, $value, $expire=1893456000) {
  return setcookie($name, $value, $expire, "/");
+}
+
+private function writeLog($text) {
+ $timestamp = date('c');
+ $log = $timestamp.' '.$text."\n";
+ return fwrite($this->log,$log);
 }
 
 /**********************************
@@ -257,8 +273,14 @@ private function setOptions($options, $defaults) {
 **********************************/
 
 public function __construct($settings) {
+ //open logfile
+ $logfile = LOG_DIR.'api.log';
+ $this->log = fopen($logfile,'a');
+ //create internal token
  $this->token = $this->createGUID();
+ //connect to database
  $this->db = new DB($settings['db']['host'],$settings['db']['user'],$settings['db']['pass'],DB_PREFIX);
+ //setup user token
  if ($_COOKIE['guid']) {
   $this->guid = $_COOKIE['guid'];
  }
@@ -266,10 +288,14 @@ public function __construct($settings) {
   $this->guid = $this->createGUID();
   $this->setCookie('guid',$guid);
  }
+ 
 }
 
 public function __destruct() {
- unset($this->db); 
+ //close database
+ unset($this->db);
+ //close logfile
+ fclose($this->log);
 }
 
 // End API
