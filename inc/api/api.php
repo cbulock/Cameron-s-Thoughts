@@ -127,7 +127,14 @@ public function getComments($postid, $options = array()) {
  return $results;
 }
 
+public function postComment($postid, $options = array()) {
+ $setup['options'] = $options;
+ $setup['defaults'] = array(
+  'blogid' => '2'
+ );
+ extract($setup_result = $this->api_call_setup($setup));
 
+}
 
 /**********************************
    Category Methods
@@ -162,9 +169,19 @@ public function login($user,$pass) {
   'user'=>$id,
   'guid'=>$this->guid
  );
- $this->db->insertItem('sessions',$data);//after logging in, something should happen in the api to track that we are authenticated, also should check for existing login on construct
+ $this->db->insertItem('sessions',$data);
  $this->user = $this->getUser($user,array('token'=>$this->token));
  return $this->guid;
+}
+
+private function tokenLogin($token) {
+ $this->guid = $token;
+ $session = $this->db->getItem('sessions',$token,array('field'=>'guid'));
+ if ($session) {
+  $this->user = $this->getUser($session['user'],array('token'=>$this->token,'callby'=>'id'));
+  return $token;
+ }
+ return FALSE;
 }
 
 private function checkPass($user,$pass) {
@@ -173,16 +190,23 @@ private function checkPass($user,$pass) {
  return FALSE;
 }
 
-private function tokenAuth($token) {
- if ($token == $this->token){
-  $class = 'internal';
+private function methodAuth($token=NULL) {
+ if ($token) {
+  switch($token) {
+   case $this->token:
+    return array('class'=>'internal');
+   break;
+   default:
+    if (!$this->tokenLogin($token)) {
+     return FALSE;
+    } 
+  }
  }
- $auth = array(
-  'class'=>$class
- );
- return $auth;
+ if (!$this->user) {
+  return FALSE;
+ }
+ return array('class'=>'user');
 }
-
 
 /**********************************
    Misc Methods
@@ -255,7 +279,7 @@ public function getDirectQueryCount() {
 
 private function api_call_setup($setup) {
  $result['options'] = $this->setOptions($setup['options'],$setup['defaults']);
- if ($setup['options']['token']) $result['auth'] = $this->tokenAuth($setup['options']['token']);
+ $result['auth'] = $this->methodAuth($setup['options']['token']);
  return $result;
 }
 
@@ -266,7 +290,6 @@ private function setOptions($options, $defaults) {
  }
  return $options;
 }
-
 
 /**********************************
    Core Methods
@@ -280,15 +303,14 @@ public function __construct($settings) {
  $this->token = $this->createGUID();
  //connect to database
  $this->db = new DB($settings['db']['host'],$settings['db']['user'],$settings['db']['pass'],DB_PREFIX);
- //setup user token
+ //setup user token/login
  if ($_COOKIE['guid']) {
-  $this->guid = $_COOKIE['guid'];
+  $this->tokenLogin($_COOKIE['guid']);
  }
  else {
   $this->guid = $this->createGUID();
   $this->setCookie('guid',$guid);
  }
- 
 }
 
 public function __destruct() {
