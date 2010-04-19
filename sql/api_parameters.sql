@@ -26,8 +26,8 @@ INSERT INTO `api_parameters` (`id`, `value`, `method`, `required`) VALUES ('17',
 INSERT INTO `api_parameters` (`id`, `value`, `method`, `required`) VALUES ('18', 'catid', '13', '1');
 INSERT INTO `api_parameters` (`id`, `value`, `method`, `required`) VALUES ('19', 'value', '15', '1');
 INSERT INTO `api_parameters` (`id`, `value`, `method`, `required`) VALUES ('20', 'callby', '15', '0');
-INSERT INTO `api_parameters` (`id`, `value`, `method`, `required`) VALUES ('21', 'user', '16', '1');
-INSERT INTO `api_parameters` (`id`, `value`, `method`, `required`) VALUES ('22', 'pass', '16', '1');
+INSERT INTO `api_parameters` (`id`, `value`, `method`, `required`) VALUES ('21', 'user', '16', '0');
+INSERT INTO `api_parameters` (`id`, `value`, `method`, `required`) VALUES ('22', 'pass', '16', '0');
 INSERT INTO `api_parameters` (`id`, `value`, `method`, `required`) VALUES ('23', 'postid', '18', '1');
 INSERT INTO `api_parameters` (`id`, `value`, `method`, `required`) VALUES ('24', 'text', '18', '0');
 INSERT INTO `api_parameters` (`id`, `value`, `method`, `required`) VALUES ('25', 'token', '18', '0');

@@ -133,8 +133,17 @@ public function postComment($postid, $options = array()) {
   'blogid' => '2'
  );
  extract($setup_result = $this->api_call_setup($setup));
-// if (!$options[''])
-
+ $user = $this->getAuthUser();
+ if (!$user) return FALSE;
+ if (!$options['text']) return FALSE;
+ $data = array(
+  'blogid' => $options['blogid'],
+  'postid' => $postid,//this needs to be sanitized better
+  'user' => $user['id'],
+  'ip' => $remote_ip,
+  'text' => $options['text']
+ );
+ return $this->db->insertItem('comments',$data);
 }
 
 /**********************************
@@ -158,20 +167,22 @@ public function getCat($catid, $options = array()) {
  return $this->db->getItem('mt_category',$catid,$options);
 }
 
-
 /**********************************
    Authentication Methods
 **********************************/
 
-public function login($user,$pass) {
- $id = $this->checkPass($user,$pass);
+public function login($options = array()) {
+ $setup['options'] = $options;
+ extract($setup_result = $this->api_call_setup($setup));
+
+ $id = $this->checkPass($options['user'],$options['pass']);
  if (!$id) return FALSE;
  $data = array(
   'user'=>$id,
   'guid'=>$this->guid
  );
  $this->db->insertItem('sessions',$data);
- $this->user = $this->getUser($user,array('token'=>$this->token));
+ $this->user = $this->getUser($options['user'],array('token'=>$this->token));
  return $this->guid;
 }
 
