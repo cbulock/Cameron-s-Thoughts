@@ -1,6 +1,6 @@
 <html>
 {if $title_append == ''}
-<title>{$settings.site.title}<title>
+<title>{$settings.site.title}</title>
 {else}
 <title>{$settings.site.title} - {$title_append}<title>
 {/if}
