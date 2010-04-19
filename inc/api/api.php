@@ -208,6 +208,17 @@ private function methodAuth($token=NULL) {
  return array('class'=>'user');
 }
 
+public function getAuthUser($options = array()) {
+ $setup['options'] = $options;
+ extract($setup_result = $this->api_call_setup($setup));
+ $user = $this->user;
+ if ($auth['class']!='internal') {
+  unset($user['pass']);
+  unset($user['email']);
+ }
+ return $user;
+}
+
 /**********************************
    Misc Methods
 **********************************/
@@ -219,6 +230,7 @@ public function getUser($value, $options = array()) {
  );
  extract($setup_result = $this->api_call_setup($setup)); 
  $user = $this->db->getItem('users',$value,array('field'=>$options['callby']));
+ if (!$user) return FALSE;
  $user['email_hash'] = md5($user['email']);
  if ($auth['class']!='internal') {
   unset($user['pass']);
@@ -278,7 +290,7 @@ public function getDirectQueryCount() {
 **********************************/
 
 private function api_call_setup($setup) {
- $result['options'] = $this->setOptions($setup['options'],$setup['defaults']);
+ if ($setup['defaults']) $result['options'] = $this->setOptions($setup['options'],$setup['defaults']);
  $result['auth'] = $this->methodAuth($setup['options']['token']);
  return $result;
 }
