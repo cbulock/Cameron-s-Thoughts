@@ -171,18 +171,18 @@ public function getCat($catid, $options = array()) {
    Authentication Methods
 **********************************/
 
-public function login($options = array()) {
+public function login($user, $options = array()) {
  $setup['options'] = $options;
  extract($setup_result = $this->api_call_setup($setup));
 
- $id = $this->checkPass($options['user'],$options['pass']);
+ $id = $this->checkPass($user,$options['pass']);
  if (!$id) return FALSE;
  $data = array(
   'user'=>$id,
   'guid'=>$this->guid
  );
  $this->db->insertItem('sessions',$data);
- $this->user = $this->getUser($options['user'],array('token'=>$this->token));
+ $this->user = $this->getUser($user,array('token'=>$this->token));
  return $this->guid;
 }
 
