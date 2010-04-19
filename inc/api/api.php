@@ -133,6 +133,7 @@ public function postComment($postid, $options = array()) {
   'blogid' => '2'
  );
  extract($setup_result = $this->api_call_setup($setup));
+// if (!$options[''])
 
 }
 
@@ -216,7 +217,8 @@ public function getAuthUser($options = array()) {
   unset($user['pass']);
   unset($user['email']);
  }
- return $user;
+ if ($user) return $user;
+ return FALSE;
 }
 
 /**********************************
@@ -249,7 +251,7 @@ private function setCookie($name, $value, $expire=1893456000) {
 
 private function writeLog($text) {
  $timestamp = date('c');
- $log = $timestamp.' '.$text."\n";
+ $log = $timestamp.' '.$_SERVER['REMOTE_ADDR'].' '.$text."\n";
  return fwrite($this->log,$log);
 }
 
@@ -292,6 +294,7 @@ public function getDirectQueryCount() {
 private function api_call_setup($setup) {
  if ($setup['defaults']) $result['options'] = $this->setOptions($setup['options'],$setup['defaults']);
  $result['auth'] = $this->methodAuth($setup['options']['token']);
+ $result['remote_ip'] = $_SERVER['REMOTE_ADDR'];
  return $result;
 }
 
