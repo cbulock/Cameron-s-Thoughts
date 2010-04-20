@@ -64,15 +64,12 @@ padding:1em;
  margin:0 0 0 1em;
 }
 
-/* this isn't currently being used
-
-#login
-{
-padding: 5px 5px 2px 2px;
-margin: 0;
-position:absolute;
-top: 0;
-left: -15em;
-background-color:#FFF;
-font-size:0.85em;
-}*/
+#welcome {
+ padding: 5px 5px 2px 2px;
+ margin: 0;
+ position:absolute;
+ top: 0;
+ left: 0;
+ background-color:#FFF;
+ font-size:0.85em;
+}
