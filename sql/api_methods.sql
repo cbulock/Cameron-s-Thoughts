@@ -2,7 +2,7 @@ CREATE TABLE `api_methods` (
    `id` int(6) not null auto_increment,
    `value` varchar(64),
    UNIQUE KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=19;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=20;
 
 INSERT INTO `api_methods` (`id`, `value`) VALUES ('1', 'getEntry');
 INSERT INTO `api_methods` (`id`, `value`) VALUES ('2', 'prevEntry');
@@ -22,3 +22,4 @@ INSERT INTO `api_methods` (`id`, `value`) VALUES ('15', 'getUser');
 INSERT INTO `api_methods` (`id`, `value`) VALUES ('16', 'login');
 INSERT INTO `api_methods` (`id`, `value`) VALUES ('17', 'getAuthUser');
 INSERT INTO `api_methods` (`id`, `value`) VALUES ('18', 'postComment');
+INSERT INTO `api_methods` (`id`, `value`) VALUES ('19', 'logout');

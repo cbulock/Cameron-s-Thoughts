@@ -179,25 +179,25 @@ public function login($user, $options = array()) {
  if (!$id) return FALSE;
  $data = array(
   'user'=>$id,
-  'guid'=>$this->guid
+  'guid'=>$this->getUserToken()
  );
  $this->db->insertItem('sessions',$data);
- $this->user = $this->getUser($user,array('token'=>$this->token));
- return $this->guid;
+ $this->user = $this->getUser($user,array('token'=>$this->getAPIToken()));
+ return $this->getUserToken();
 }
 
 private function tokenLogin($token) {
- $this->guid = $token;
+ $this->setUserToken($token);
  $session = $this->db->getItem('sessions',$token,array('field'=>'guid'));
  if ($session) {
-  $this->user = $this->getUser($session['user'],array('token'=>$this->token,'callby'=>'id'));
+  $this->user = $this->getUser($session['user'],array('token'=>$this->getAPIToken(),'callby'=>'id'));
   return $token;
  }
  return FALSE;
 }
 
 private function checkPass($user,$pass) {
- $acct = $this->getUser($user,array('token'=>$this->token));
+ $acct = $this->getUser($user,array('token'=>$this->getAPIToken()));
  if ($acct['pass'] == md5($pass)) return $acct['id'];
  return FALSE;
 }
@@ -232,6 +232,10 @@ public function getAuthUser($options = array()) {
  return FALSE;
 }
 
+public function logout() {
+ return $this->db->deleteItem('sessions',$this->getUserToken(),array('field'=>'guid'));
+}
+
 /**********************************
    Misc Methods
 **********************************/
@@ -252,10 +256,6 @@ public function getUser($value, $options = array()) {
  return $user;
 }
 
-private function createGUID() {
- return md5(uniqid(rand(), true));
-}
-
 private function setCookie($name, $value, $expire=1893456000) {
  return setcookie($name, $value, $expire, "/");
 }
@@ -264,6 +264,30 @@ private function writeLog($text) {
  $timestamp = date('c');
  $log = $timestamp.' '.$_SERVER['REMOTE_ADDR'].' '.$text."\n";
  return fwrite($this->log,$log);
+}
+
+/**********************************
+   Token Methods
+**********************************/
+
+private function createGUID() {
+ return md5(uniqid(rand(), true));
+}
+
+private function getUserToken() {
+ return $this->guid;
+}
+
+private function setUserToken($guid) {
+ $this->guid = $guid;
+}
+
+private function getAPIToken() {
+ return $this->token;
+}
+
+private function setAPIToken($token) {
+ $this->token = $token;
 }
 
 /**********************************
@@ -326,7 +350,7 @@ public function __construct($settings) {
  $logfile = LOG_DIR.'api.log';
  $this->log = fopen($logfile,'a');
  //create internal token
- $this->token = $this->createGUID();
+ $this->setAPIToken($this->createGUID());
  //connect to database
  $this->db = new DB($settings['db']['host'],$settings['db']['user'],$settings['db']['pass'],DB_PREFIX);
  //setup user token/login
@@ -334,7 +358,7 @@ public function __construct($settings) {
   $this->tokenLogin($_COOKIE['guid']);
  }
  else {
-  $this->guid = $this->createGUID();
+  $this->setUserToken($this->createGUID());
   $this->setCookie('guid',$guid);
  }
 }

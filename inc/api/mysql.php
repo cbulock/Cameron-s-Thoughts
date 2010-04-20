@@ -71,14 +71,14 @@ public function updateItem($table, $value, $data, $options = array()) {
  return $this->sqlQuery($sql); //investigate if more should be returned
 }
 
-public function deleteItem($table, $value,  $options = array()) { 
+public function deleteItem($table, $value, $options = array()) { 
  $defaults = array(
   'field' => 'id'
  );
- $options = setOptions($options,$defaults);
+ $options = $this->setOptions($options,$defaults);
  $this->selectDatabase($table, $options['database']);
- $sql = 'DELETE FROM `'.$table.'` WHERE `'.sqlClean($options['field']).'` = \''.sqlclean($value) . '\'';
- return sqlQuery($sql); //investigate if more should be returned
+ $sql = 'DELETE FROM `'.$table.'` WHERE `'.$this->sqlClean($options['field']).'` = \''.$this->sqlclean($value) . '\'';
+ return $this->sqlQuery($sql); //investigate if more should be returned
 }
 
 private function sqlQuery($sql) {
