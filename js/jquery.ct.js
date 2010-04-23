@@ -10,13 +10,13 @@
     url = url+'/'+req[i];
    }
    url = url+'.json';
-   return $.ajax({
+   return $.parseJSON($.ajax({
     type: type,
     async: false,
     url: url,
     data: opt,
     dataType: 'json'
-   }).responseText;
+   }).responseText);
   },
 
   //Entries
