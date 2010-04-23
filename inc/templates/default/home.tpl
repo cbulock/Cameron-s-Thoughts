@@ -12,6 +12,6 @@ No comments yet
 {else}
 {$comment_counts[$entry.entry_id]} comments
 {/if}
-</div>
+</a></div>
 {/foreach}
 {include file='footer.tpl'}
