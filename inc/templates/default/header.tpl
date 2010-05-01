@@ -1,8 +1,8 @@
 <div id='welcome'>
 {if isset($authUser)}
-Welcome, {$authUser.name}
+Welcome, {$authUser.name} | <a href='' id='logout'>Logout</a>
 {else}
-Login
+<a href='' id='login'>Login</a>
 {/if}
 </div>
 <h1><a href='/'>{$settings.site.title}</a></h1>

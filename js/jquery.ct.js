@@ -6,8 +6,10 @@
     type = 'POST';
    }
    url = '/api/' + method;
-   for (i=0;i<=req.length-1;i++) {
-    url = url+'/'+req[i];
+   if (req) {
+    for (i=0;i<=req.length-1;i++) {
+     url = url+'/'+req[i];
+    }
    }
    url = url+'.json';
    return $.parseJSON($.ajax({
