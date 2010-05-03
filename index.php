@@ -18,6 +18,10 @@ switch($_GET['type']) {
   $basename = $_GET['basename'];
   include(INCLUDE_DIR.'pages/cat.php');
  break;
+ case 'snip':
+  $snip = $_GET['snip'];
+  include(INCLUDE_DIR.'pages/snip.php');
+ break;
  case 'api':
   $request = $_GET['request'];
   include(API_DIR.'public.php');
