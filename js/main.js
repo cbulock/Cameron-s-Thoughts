@@ -1,6 +1,6 @@
 $(document).ready(function() {
  initListeners();
- snippetPreload(['login']);
+ snippetPreload(['login_box']);
 });
 
 function initListeners() {
@@ -11,8 +11,9 @@ function initListeners() {
 function loginListener() {
  $('#login').click(function(event) {
   event.preventDefault();
-  $("html").prepend($.ct.snip.login);
+  $("html").prepend($.ct.snip.login_box);
   $("#login_box").slideDown();
+  loginboxListener();
  });
 }
 
@@ -20,6 +21,15 @@ function logoutListener() {
  $('#logout').click(function(event) {
   event.preventDefault();
   $.ct.logout();
+  location.reload();
+ });
+}
+
+function loginboxListener() {
+ $('#login_submit').click(function(event) {
+  event.preventDefault();
+  opt = {pass: $('#password').attr('value')};
+  $.ct.login($('#username').val(),opt);
   location.reload();
  });
 }

@@ -5,6 +5,6 @@
 <input id='username' />
 <label for='password'>Password:</label>
 <input type='password' id='password' />
-<input type='submit' value='Login'>
+<input type='submit' id='login_submit' value='Login'>
 </form>
 </div>

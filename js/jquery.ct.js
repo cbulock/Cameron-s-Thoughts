@@ -32,7 +32,7 @@
    return this.apiClient('nextEntry',[id],opt);
   },
   lastEntry : function(opt) {
-   return this.apiClient('lastEntry',NULL,opt);
+   return this.apiClient('lastEntry',null,opt);
   },
 
   //Comments
@@ -58,8 +58,8 @@
   getUser : function(value, opt) {
    return this.apiClient('getUser',[value],opt);
   },
-  login : function(opt) {
-   return this.apiClient('getCat',NULL,opt);
+  login : function(username, opt) {
+   return this.apiClient('login',[username],opt);
   },
   logout : function() {
    return this.apiClient('logout');
