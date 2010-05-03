@@ -64,6 +64,18 @@ padding:1em;
  margin:0 0 0 1em;
 }
 
+#login_box {
+ display: none;
+ font-family: "Trebuchet MS", Trebuchet, Verdana, Tahoma, Arial, Sans-Serif;
+ font-size: 0.8em;
+ background-color: #FFF;
+ padding: 8px;
+}
+
+#login_box h1 {
+ font-size: 1.2em;
+}
+
 #welcome {
  padding: 2px 5px 2px 15px;
  margin: 0;

@@ -4,22 +4,20 @@ $(document).ready(function() {
 });
 
 function initListeners() {
- login();
- logout();
+ loginListener();
+ logoutListener();
 }
 
-function login() {
+function loginListener() {
  $('#login').click(function(event) {
-  console.log('login');
   event.preventDefault();
-  //login code goes here
-  location.reload();
+  $("html").prepend($.ct.snip.login);
+  $("#login_box").slideDown();
  });
 }
 
-function logout() {
+function logoutListener() {
  $('#logout').click(function(event) {
-  console.log('logout');
   event.preventDefault();
   $.ct.logout();
   location.reload();
