@@ -11,9 +11,11 @@ function initListeners() {
 function loginListener() {
  $('#login').click(function(event) {
   event.preventDefault();
-  $("html").prepend($.ct.snip.login_box);
-  $("#login_box").slideDown();
-  loginboxListener();
+  if ($('#login_box').length==0) {
+   $('html').prepend($.ct.snip.login_box);
+   $('#login_box').slideDown();
+   loginboxListener();
+  }
  });
 }
 
@@ -26,11 +28,15 @@ function logoutListener() {
 }
 
 function loginboxListener() {
- $('#login_submit').click(function(event) {
+ $('#login_form').submit(function(event) {
   event.preventDefault();
   opt = {pass: $('#password').attr('value')};
-  $.ct.login($('#username').val(),opt);
-  location.reload();
+  if($.ct.login($('#username').val(),opt)) {
+   location.reload();
+  }
+  else {
+   $('#login_alert').html('Login failed');
+  }
  });
 }
 

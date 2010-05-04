@@ -1,8 +1,41 @@
+@font-face {
+ font-family: 'CandelaBook';
+ src: url('/fonts/Candela/CandelaBook-webfont.eot');
+ src: local('CandelaBook'), url('/fonts/Candela/CandelaBook-webfont.woff') format('woff'), url('/fonts/Candela/CandelaBook-webfont.ttf') format('truetype'), url('/fonts/Candela/CandelaBook-webfont.svg#webfont') format('svg');
+ font-weight: normal;
+ font-style: normal;
+}
+
+@font-face {
+ font-family: 'CandelaBookItalic';
+ src: url('/fonts/Candela/CandelaItalic-webfont.eot');
+ src: local('CandelaBookItalic'), url('/fonts/Candela/CandelaItalic-webfont.woff') format('woff'), url('/fonts/Candela/CandelaItalic-webfont.ttf') format('truetype'), url('/fonts/Candela/CandelaItalic-webfont.svg#webfont') format('svg');
+ font-weight: normal;
+ font-style: italic;
+}
+
+@font-face {
+ font-family: 'CandelaBold';
+ src: url('/fonts/Candela/CandelaBold-webfont.eot');
+ src: local('CandelaBold'), url('/fonts/Candela/CandelaBold-webfont.woff') format('woff'), url('/fonts/Candela/CandelaBold-webfont.ttf') format('truetype'), url('/fonts/Candela/CandelaBold-webfont.svg#webfont') format('svg');
+ font-weight: bold;
+ font-style: normal;
+}
+
+@font-face {
+ font-family: 'CandelaBoldItalic';
+ src: url('/fonts/Candela/CandelaBoldItalic-webfont.eot');
+ src: local('CandelaBoldItalic'), url('/fonts/Candela/CandelaBoldItalic-webfont.woff') format('woff'), url('/fonts/Candela/CandelaBoldItalic-webfont.ttf') format('truetype'), url('/fonts/Candela/CandelaBoldItalic-webfont.svg#webfont') format('svg');
+ font-weight: bold;
+ font-style: italic;
+}
+
 body
 {
  font-family: "Trebuchet MS", Trebuchet, Verdana, Tahoma, Arial, Sans-Serif;
  font-size: 0.8em;
- background-color: #FFF;
+ background-color: #999;
+ color: #FFF;
  margin: 0;
  padding: 1em;
 }
@@ -12,6 +45,14 @@ html
  margin:0 auto;
  width:780px;
  background-image: url('/css/img/black_tile.jpg');
+}
+
+a {
+ text-decoration: none;
+}
+
+a:hover {
+ text-decoration: underline;
 }
 
 code, pre {
@@ -32,6 +73,20 @@ fieldset
  width: 10em;
 }
 
+h1, h2, h3, h4, h5 {
+ font-family: CandelaBook, Arial, sans-serif;
+}
+
+h1 a, h2 a, h3 a, h4 a, h5 a {
+ text-decoration: none;
+ color: #FFF;
+ text-shadow: #000 2px 2px 4px;
+}
+
+h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover {
+ text-decoration: underline;
+}
+
 img
 {
  border:none;
@@ -49,9 +104,45 @@ input, textarea, select
  padding: 1px;
 }
 
-#entry {
-font-size: 120%;
-padding:1em;
+.alert_text {
+ color: red;
+ font-weight: bold;
+}
+
+#login_box {
+ display: none;
+ font-family: "Trebuchet MS", Trebuchet, Verdana, Tahoma, Arial, Sans-Serif;
+ font-size: 0.8em;
+ background-color: #999;
+ color: #FFF;
+ padding: 8px;
+}
+
+#login_box h1 {
+ font-size: 1.2em;
+}
+
+#welcome {
+ padding: 2px 8px 2px 12px;
+ margin: 0;
+ position:absolute;
+ top: 0;
+ left: 0;
+ background-color:#FFF;
+ font-size:0.85em;
+}
+
+#heading {
+ text-align: center;
+}
+
+#title {
+ font-size: 5em;
+ margin: 0;
+}
+
+#title a:hover {
+ text-decoration: none;
 }
 
 #prev_entry {
@@ -64,24 +155,12 @@ padding:1em;
  margin:0 0 0 1em;
 }
 
-#login_box {
- display: none;
- font-family: "Trebuchet MS", Trebuchet, Verdana, Tahoma, Arial, Sans-Serif;
- font-size: 0.8em;
- background-color: #FFF;
- padding: 8px;
+#entry {
+ font-size: 120%;
 }
 
-#login_box h1 {
- font-size: 1.2em;
-}
-
-#welcome {
- padding: 2px 5px 2px 15px;
- margin: 0;
- position:absolute;
- top: 0;
- left: 0;
- background-color:#FFF;
- font-size:0.85em;
+#entry p {
+ display: inline;
+ padding:;
+ margin:0;
 }
