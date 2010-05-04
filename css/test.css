@@ -128,7 +128,8 @@ input, textarea, select
  position:absolute;
  top: 0;
  left: 0;
- background-color:#FFF;
+ background-color:#999;
+ color: #FFF;
  font-size:0.85em;
 }
 
