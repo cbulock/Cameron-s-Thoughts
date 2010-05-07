@@ -53,6 +53,11 @@ a {
 
 a:hover {
  text-decoration: underline;
+ color: red;
+}
+
+a:visited {
+ color: #000080;
 }
 
 code, pre {
@@ -80,11 +85,16 @@ h1, h2, h3, h4, h5 {
 h1 a, h2 a, h3 a, h4 a, h5 a {
  text-decoration: none;
  color: #FFF;
- text-shadow: #000 2px 2px 4px;
+ text-shadow: #222 2px 2px 4px;
 }
 
 h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover {
  text-decoration: underline;
+ color: #FFF;
+}
+
+h1 a:visited, h2 a:visited, h3 a:visited, h4 a:visited, h5 a:visited {
+ color: #FFF;
 }
 
 img
@@ -139,7 +149,7 @@ input, textarea, select
 
 #title {
  font-size: 5em;
- margin: 0;
+ margin: 0 0 -0.3em 0;
 }
 
 #title a:hover {
@@ -158,10 +168,4 @@ input, textarea, select
 
 #entry {
  font-size: 120%;
-}
-
-#entry p {
- display: inline;
- padding:;
- margin:0;
 }
