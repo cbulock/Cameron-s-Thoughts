@@ -249,11 +249,18 @@ public function getUser($value, $options = array()) {
  $user = $this->db->getItem('users',$value,array('field'=>$options['callby']));
  if (!$user) return FALSE;
  $user['email_hash'] = md5($user['email']);
+ $user['avatar'] = $this->getAvatarPath($user);
  if ($auth['class']!='internal') {
   unset($user['pass']);
   unset($user['email']);
  }
  return $user;
+}
+
+private function getAvatarPath($user) {
+ if ($user['service'] == '0' || $user['service'] == '1') {
+  return 'http://www.gravatar.com/avatar.php?gravatar_id='.$user['email_hash'].'&r=r';
+ }
 }
 
 private function setCookie($name, $value, $expire=1893456000) {
