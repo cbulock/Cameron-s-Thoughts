@@ -8,6 +8,9 @@ No comments yet
 {/if}
 </h4>
 {foreach from=$comments item=comment}
-<p>{$comment.text}</p>
-<div>Comment by: <a href='{$comment.url}'>{$comment.author}</a> on {$comment.created|date_format:"F d, Y h:i A"}</div>
+<div id='c{$comment.id}' class='comment'>
+<img src='{$comment.avatar}' alt='Avatar for {$comment.author}' />
+<p class='comment_body'>{$comment.text}</p>
+<p class='comment_footer'>Comment by: <a href='{$comment.url}'>{$comment.author}</a> on {$comment.created|date_format:"F d, Y h:i A"}</p>
+</div>
 {/foreach}

@@ -169,3 +169,32 @@ input, textarea, select
 #entry {
  font-size: 120%;
 }
+
+.comment {
+ min-height: 100px;
+ position:relative;
+ padding:1em 0.5em 1.5em 0.5em;
+ margin:0 0.5em 0 0.5em;
+}
+
+.comment img {
+ float:left;
+}
+
+.comment_body {
+ padding: 5px;
+ color: #000;
+ background-color: #DCDCDC;
+ -moz-border-radius: 8px;
+ -webkit-border-radius: 8px;
+ border-radius: 8px;
+ margin-top: 0;
+ margin-left: 90px;
+ margin-bottom:1.2em;
+}
+
+.comment_footer {
+ position:absolute;
+ bottom:3px;
+ margin-top:5px;
+}
