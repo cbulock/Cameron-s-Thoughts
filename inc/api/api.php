@@ -31,7 +31,6 @@ public function getEntry($value, $options = array()) {
   'callby' => 'basename'
  );
  extract($setup_result = $this->api_call_setup($setup));
- $this->writeLog('getEntry called for '.$value);
  switch($options['callby']) {
   case 'basename':
    $sql = "SELECT * FROM `mt_entry` WHERE entry_blog_id='".$this->db->sqlClean($options['blogid'])."' AND entry_basename='".$this->db->sqlClean($value)."'";
@@ -116,7 +115,7 @@ public function getComments($postid, $options = array()) {
   foreach ($results as $key=>$result) {
    $results[$key]['service'] = 0;
    if ($result['user']) {
-    $user = $this->getUser($result['user'],array('callby'=>'id'));
+    $user = $this->getUser($result['user'],array('callby'=>'id','token'=>$this->token));
     $results[$key]['author'] = $user['name'];
     $results[$key]['url'] = $user['url'];
     $results[$key]['email'] = $user['email'];
