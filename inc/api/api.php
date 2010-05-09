@@ -114,14 +114,19 @@ public function getComments($postid, $options = array()) {
  $results = $this->db->getTable('comments', $tableoptions);
  if ($results) {
   foreach ($results as $key=>$result) {
+   $results[$key]['service'] = 0;
    if ($result['user']) {
     $user = $this->getUser($result['user'],array('callby'=>'id'));
     $results[$key]['author'] = $user['name'];
     $results[$key]['url'] = $user['url'];
+    $results[$key]['email'] = $user['email'];
+    $results[$key]['service'] = $user['service'];
    }
-   else {
-    $results[$key]['email_hash'] = md5($results[$key]['email']);//need to filter out email address for non-authed comments
+   $results[$key]['email_hash'] = md5($results[$key]['email']);
+   if ($auth['class']!='internal') {
+    unset($results[$key]['email']);
    }
+   $results[$key]['avatar'] = $this->getAvatarPath($results[$key]['email_hash'],$results[$key]['service']);
   }
  }
  return $results;
@@ -249,7 +254,7 @@ public function getUser($value, $options = array()) {
  $user = $this->db->getItem('users',$value,array('field'=>$options['callby']));
  if (!$user) return FALSE;
  $user['email_hash'] = md5($user['email']);
- $user['avatar'] = $this->getAvatarPath($user);
+ $user['avatar'] = $this->getAvatarPath($user['email_hash'],$user['service']);
  if ($auth['class']!='internal') {
   unset($user['pass']);
   unset($user['email']);
@@ -257,9 +262,9 @@ public function getUser($value, $options = array()) {
  return $user;
 }
 
-private function getAvatarPath($user) {
- if ($user['service'] == '0' || $user['service'] == '1') {
-  return 'http://www.gravatar.com/avatar.php?gravatar_id='.$user['email_hash'].'&r=r';
+private function getAvatarPath($hash, $service) {
+ if ($service == '0' || $service == '1') {
+  return 'http://www.gravatar.com/avatar.php?gravatar_id='.$hash.'&r=r';
  }
 }
 
