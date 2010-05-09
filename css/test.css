@@ -35,6 +35,7 @@ body
  font-family: "Trebuchet MS", Trebuchet, Verdana, Tahoma, Arial, Sans-Serif;
  font-size: 0.8em;
  background-color: #999;
+ /*text-shadow: #222 1px 1px 2px; //Looks like ass in webkit */
  color: #FFF;
  margin: 0;
  padding: 1em;
@@ -64,11 +65,14 @@ code, pre {
  display: block;
  overflow: auto;
  font-family: 'Lucida Console', 'Bitstream Vera Sans Mono', 'Courier New', Monaco, Courier, monospace;
- color: #000;
- background-color: #DCDCDC;
+ color: #FFF;
+ background-color: #222;
+ border-radius: 8px;
  -moz-border-radius: 8px;
  -webkit-border-radius: 8px;
- border-radius: 8px;
+ box-shadow: 10px 10px 10px #333;
+ -moz-box-shadow: 10px 10px 10px #333;
+ -webkit-box-shadow: 10px 10px 10px #333;
  padding: 0.3em;
  margin: 0.3em 0.1em 0.3em 0.1em;
 }
@@ -141,6 +145,9 @@ input, textarea, select
  background-color:#999;
  color: #FFF;
  font-size:0.85em;
+ -moz-border-radius: 0 0 5px 0;
+ -webkit-border-radius: 0 0 5px 0;
+ border-radius: 0 0 5px 0;
 }
 
 #heading {
@@ -175,6 +182,9 @@ input, textarea, select
  position:relative;
  padding:1em 0.5em 1.5em 0.5em;
  margin:0 0.5em 0 0.5em;
+ background-image: url(/css/img/arrow.png);
+ background-repeat:no-repeat;
+ background-position: 95px 21px;
 }
 
 .comment img {
@@ -182,19 +192,24 @@ input, textarea, select
 }
 
 .comment_body {
+ min-height: 25px;
  padding: 5px;
  color: #000;
+ /*text-shadow: 1px 1px 1px #AAA; //Looks like ass in webkit */
  background-color: #DCDCDC;
  -moz-border-radius: 8px;
  -webkit-border-radius: 8px;
  border-radius: 8px;
+ box-shadow: 7px 7px 10px #333;
+ -moz-box-shadow: 7px 7px 10px #333;
+ -webkit-box-shadow: 7px 7px 10px #333;
  margin-top: 0;
- margin-left: 90px;
+ margin-left: 97px;
  margin-bottom:1.2em;
 }
 
 .comment_footer {
  position:absolute;
- bottom:3px;
+ bottom:0;
  margin-top:5px;
 }
