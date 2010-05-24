@@ -41,6 +41,12 @@ public function getEntry($value, $options = array()) {
  }
  $result = $this->db->directProcessQuery($sql,'cbulock_mt2');
  if ($result) {
+  $result['entry_raw'] = $result['entry_text'];
+  //process entry
+  $result['entry_text'] = html_entity_decode($result['entry_text']);
+  if ($result['entry_convert_breaks']) {
+   $result['entry_text'] = nl2br($result['entry_text']);
+  }
   $year = date('Y',strtotime($result['entry_created_on']));
   $month = date('m',strtotime($result['entry_created_on']));
   $result['entry_link'] = "/".$year."/".$month."/".$result['entry_basename'].".html";
