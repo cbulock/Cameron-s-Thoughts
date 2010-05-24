@@ -1,0 +1,184 @@
+@import url('fonts.css');
+
+body
+{
+ font-family: "Trebuchet MS", Trebuchet, Verdana, Tahoma, Arial, Sans-Serif;
+ font-size: 0.8em;
+ background-color: #999;
+ /*text-shadow: #222 1px 1px 2px; //Looks like ass in webkit */
+ color: #FFF;
+ margin: 0;
+ padding: 1em;
+}
+
+html
+{
+ margin:0 auto;
+ width:780px;
+ background-image: url('/css/img/black_tile.jpg');
+}
+
+a {
+ text-decoration: none;
+}
+
+a:hover {
+ text-decoration: underline;
+ color: red;
+}
+
+a:visited {
+ color: #000080;
+}
+
+code, pre {
+ display: block;
+ overflow: auto;
+ font-family: 'Lucida Console', 'Bitstream Vera Sans Mono', 'Courier New', Monaco, Courier, monospace;
+ color: #FFF;
+ background-color: #222;
+ border-radius: 8px;
+ -moz-border-radius: 8px;
+ -webkit-border-radius: 8px;
+ box-shadow: 10px 10px 10px #333;
+ -moz-box-shadow: 10px 10px 10px #333;
+ -webkit-box-shadow: 10px 10px 10px #333;
+ padding: 0.3em;
+ margin: 0.3em 0.1em 0.3em 0.1em;
+}
+
+fieldset
+{
+ width: 10em;
+}
+
+h1, h2, h3, h4, h5 {
+ font-family: CandelaBook, Arial, sans-serif;
+}
+
+h1 a, h2 a, h3 a, h4 a, h5 a {
+ text-decoration: none;
+ color: #FFF;
+ text-shadow: #222 2px 2px 4px;
+}
+
+h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover {
+ text-decoration: underline;
+ color: #FFF;
+}
+
+h1 a:visited, h2 a:visited, h3 a:visited, h4 a:visited, h5 a:visited {
+ color: #FFF;
+}
+
+img
+{
+ border:none;
+}
+
+input:focus, textarea:focus 
+{
+ border: 1px solid #000;
+ padding: 1px;
+}
+
+input, textarea, select
+{
+ border: 1px solid #CCC;
+ padding: 1px;
+}
+
+.alert_text {
+ color: red;
+ font-weight: bold;
+}
+
+#login_box {
+ display: none;
+ font-family: "Trebuchet MS", Trebuchet, Verdana, Tahoma, Arial, Sans-Serif;
+ font-size: 0.8em;
+ background-color: #999;
+ color: #FFF;
+ padding: 8px;
+}
+
+#login_box h1 {
+ font-size: 1.2em;
+}
+
+#welcome {
+ padding: 2px 8px 2px 12px;
+ margin: 0;
+ position:absolute;
+ top: 0;
+ left: 0;
+ background-color:#999;
+ color: #FFF;
+ font-size:0.85em;
+ -moz-border-radius: 0 0 5px 0;
+ -webkit-border-radius: 0 0 5px 0;
+ border-radius: 0 0 5px 0;
+}
+
+#heading {
+ text-align: center;
+}
+
+#title {
+ font-size: 5em;
+ margin: 0 0 -0.3em 0;
+}
+
+#title a:hover {
+ text-decoration: none;
+}
+
+#prev_entry {
+ display:inline;
+ margin:0 1em 0 0;
+}
+
+#next_entry {
+ display:inline;
+ margin:0 0 0 1em;
+}
+
+#entry {
+ font-size: 120%;
+}
+
+.comment {
+ min-height: 100px;
+ position:relative;
+ padding:1em 0.5em 1.5em 0.5em;
+ margin:0 0.5em 0 0.5em;
+ background-image: url(/css/img/arrow.png);
+ background-repeat:no-repeat;
+ background-position: 95px 21px;
+}
+
+.comment img {
+ float:left;
+}
+
+.comment_body {
+ padding: 10px;
+ color: #000;
+ /*text-shadow: 1px 1px 1px #AAA; //Looks like ass in webkit */
+ background-color: #DCDCDC;
+ -moz-border-radius: 8px;
+ -webkit-border-radius: 8px;
+ border-radius: 8px;
+ box-shadow: 7px 7px 10px #333;
+ -moz-box-shadow: 7px 7px 10px #333;
+ -webkit-box-shadow: 7px 7px 10px #333;
+ margin-top: 0;
+ margin-left: 97px;
+ margin-bottom:1.2em;
+}
+
+.comment_footer {
+ position:absolute;
+ bottom:0;
+ margin-top:5px;
+}

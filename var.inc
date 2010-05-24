@@ -16,7 +16,7 @@ $settings['site'] = array(
 );
 
 $settings['db'] = array(
- 'host' => 'localhost',
+ 'host' => 'cbulock.com',
  'user' => 'cbulock_cbulock',
  'pass' => DB_PASS
 );
