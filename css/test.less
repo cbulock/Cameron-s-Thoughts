@@ -1,11 +1,23 @@
 @import url('fonts.css');
 
+.border_radius (@size: 8px) {
+ border-radius: @size;
+ -moz-border-radius: @size;
+ -webkit-border-radius: @size;
+}
+
+.box_shadow (@hoffset: 10px, @voffset: 10px, @blur: 10px,  @color: #333) {
+ box-shadow: @hoffset @voffset @blur @color;
+ -moz-box-shadow: @hoffset @voffset @blur @color;
+ -webkit-box-shadow: @hoffset @voffset @blur @color;
+}
+
 body
 {
  font-family: "Trebuchet MS", Trebuchet, Verdana, Tahoma, Arial, Sans-Serif;
  font-size: 0.8em;
  background-color: #999;
- /*text-shadow: #222 1px 1px 2px; //Looks like ass in webkit */
+ text-shadow: #222 1px 1px 3px; 
  color: #FFF;
  margin: 0;
  padding: 1em;
@@ -20,15 +32,14 @@ html
 
 a {
  text-decoration: none;
-}
-
-a:hover {
- text-decoration: underline;
- color: red;
-}
-
-a:visited {
- color: #000080;
+ text-shadow: #666 1px 1px 3px;
+ :hover {
+  text-decoration: underline;
+  color: red;
+ }
+ :visited {
+  color: #000080;
+ }
 }
 
 code, pre {
@@ -37,12 +48,8 @@ code, pre {
  font-family: 'Lucida Console', 'Bitstream Vera Sans Mono', 'Courier New', Monaco, Courier, monospace;
  color: #FFF;
  background-color: #222;
- border-radius: 8px;
- -moz-border-radius: 8px;
- -webkit-border-radius: 8px;
- box-shadow: 10px 10px 10px #333;
- -moz-box-shadow: 10px 10px 10px #333;
- -webkit-box-shadow: 10px 10px 10px #333;
+ .border_radius;
+ .box_shadow;
  padding: 0.3em;
  margin: 0.3em 0.1em 0.3em 0.1em;
 }
@@ -54,21 +61,18 @@ fieldset
 
 h1, h2, h3, h4, h5 {
  font-family: CandelaBook, Arial, sans-serif;
-}
-
-h1 a, h2 a, h3 a, h4 a, h5 a {
- text-decoration: none;
- color: #FFF;
- text-shadow: #222 2px 2px 4px;
-}
-
-h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover {
- text-decoration: underline;
- color: #FFF;
-}
-
-h1 a:visited, h2 a:visited, h3 a:visited, h4 a:visited, h5 a:visited {
- color: #FFF;
+ a {
+  text-decoration: none;
+  color: #FFF;
+  text-shadow: #222 2px 2px 4px;
+  :hover {
+   text-decoration: underline;
+   color: #FFF;
+  }
+  :visited {
+   color: #FFF;
+  }
+ }
 }
 
 img
@@ -100,10 +104,9 @@ input, textarea, select
  background-color: #999;
  color: #FFF;
  padding: 8px;
-}
-
-#login_box h1 {
- font-size: 1.2em;
+ h1 {
+  font-size: 1.2em;
+ }
 }
 
 #welcome {
@@ -115,9 +118,7 @@ input, textarea, select
  background-color:#999;
  color: #FFF;
  font-size:0.85em;
- -moz-border-radius: 0 0 5px 0;
- -webkit-border-radius: 0 0 5px 0;
- border-radius: 0 0 5px 0;
+ .border_radius(0 0 5px 0);
 }
 
 #heading {
@@ -166,12 +167,8 @@ input, textarea, select
  color: #000;
  /*text-shadow: 1px 1px 1px #AAA; //Looks like ass in webkit */
  background-color: #DCDCDC;
- -moz-border-radius: 8px;
- -webkit-border-radius: 8px;
- border-radius: 8px;
- box-shadow: 7px 7px 10px #333;
- -moz-box-shadow: 7px 7px 10px #333;
- -webkit-box-shadow: 7px 7px 10px #333;
+ .border_radius;
+ .box_shadow(7px, 7px, 10px, #333);
  margin-top: 0;
  margin-left: 97px;
  margin-bottom:1.2em;
