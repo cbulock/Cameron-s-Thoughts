@@ -31,7 +31,7 @@ public function getEntry($value, $options = array()) {
   'callby' => 'basename'
  );
  extract($setup_result = $this->api_call_setup($setup));
- switch($options['callby']) {
+ switch($options['callby']) {//seems like these sql calls could use getTable for the time being
   case 'basename':
    $sql = "SELECT * FROM `mt_entry` WHERE entry_blog_id='".$this->db->sqlClean($options['blogid'])."' AND entry_basename='".$this->db->sqlClean($value)."'";
   break;
@@ -42,7 +42,6 @@ public function getEntry($value, $options = array()) {
  $result = $this->db->directProcessQuery($sql,'cbulock_mt2');
  if ($result) {
   $result['entry_raw'] = $result['entry_text'];
-  //process entry
   $result['entry_text'] = html_entity_decode($result['entry_text']);
   if ($result['entry_convert_breaks']) {
    $result['entry_text'] = nl2br($result['entry_text']);
@@ -175,6 +174,17 @@ public function getCat($catid, $options = array()) {
   'field' => 'category_id'
  );
  return $this->db->getItem('mt_category',$catid,$options);
+}
+
+public function getCatEntries($catid, $options = array()) {
+ $setup['options'] = $options;
+ $setup['defaults'] = array(
+  'offset' => '0',//offset and count are not implemented in the sql query yet
+  'count' => '10'
+ );
+ extract($setup_result = $this->api_call_setup($setup));
+ $sql = 'SELECT * FROM mt_placement join mt_entry on mt_placement.placement_entry_id = mt_entry.entry_id where  mt_placement.placement_category_id = '.$catid;
+ return $this->db->directProcessMultiQuery($sql,'cbulock_mt2',array('sortkey'=>'entry_id'));
 }
 
 /**********************************
@@ -381,6 +391,8 @@ public function __construct($settings) {
 }
 
 public function __destruct() {
+ //for debugging
+ $this->writeLog(print_r($this->getQueryLog(),1));
  //close database
  unset($this->db);
  //close logfile

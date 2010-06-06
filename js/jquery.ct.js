@@ -53,6 +53,9 @@
   getCat : function(catid, opt) {
    return this.apiClient('getCat',[catid],opt);
   },
+  getCatEntries : function(catid, opt) {
+   return this.apiClient('getCatEntries',[catid],opt);
+  },
 
   //Authentication
   getUser : function(value, opt) {
