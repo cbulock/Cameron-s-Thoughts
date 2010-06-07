@@ -192,7 +192,7 @@ public function getCatEntries($catid, $options = array()) {
  extract($setup_result = $this->api_call_setup($setup));
  $dboptions = array(
   'where' => 'placement_category_id = '.$this->db->sqlClean($catid),
-  'orderBy' => 'placement_entry_id',
+  'orderBy' => 'placement_entry_id DESC',
   'key' => 'placement_entry_id'
  );
  $entry_list = $this->db->getTable('mt_placement',$dboptions);

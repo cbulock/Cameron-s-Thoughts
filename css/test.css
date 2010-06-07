@@ -30,6 +30,7 @@ body {
   font-family: "Trebuchet MS", Trebuchet, Verdana, Tahoma, Arial, Sans-Serif;
   font-size: 0.8em;
   background-color: #999999;
+  text-shadow: #222222 1px 1px 3px;
   color: #ffffff;
   margin: 0;
   padding: 1em;
@@ -39,7 +40,10 @@ html {
   width: 780px;
   background-image: url('/css/img/black_tile.jpg');
 }
-a { text-decoration: none; }
+a {
+  text-decoration: none;
+  text-shadow: #666666 1px 1px 3px;
+}
 a:hover {
   text-decoration: underline;
   color: red;
@@ -57,32 +61,12 @@ code, pre {
   box-shadow: 10px 10px 10px #333333;
   -moz-box-shadow: 10px 10px 10px #333333;
   -webkit-box-shadow: 10px 10px 10px #333333;
-  padding: 0.3em;
+  padding: 0.8em;
   margin: 0.3em 0.1em 0.3em 0.1em;
 }
 fieldset { width: 10em; }
-h1, h2, h3, h4, h5 { font-family: CandelaBook, Arial, sans-serif; }
+h1 { font-family: CandelaBook, Arial, sans-serif; }
 h1 a {
-  text-decoration: none;
-  color: #ffffff;
-  text-shadow: #222222 2px 2px 4px;
-}
-h2 a {
-  text-decoration: none;
-  color: #ffffff;
-  text-shadow: #222222 2px 2px 4px;
-}
-h3 a {
-  text-decoration: none;
-  color: #ffffff;
-  text-shadow: #222222 2px 2px 4px;
-}
-h4 a {
-  text-decoration: none;
-  color: #ffffff;
-  text-shadow: #222222 2px 2px 4px;
-}
-h5 a {
   text-decoration: none;
   color: #ffffff;
   text-shadow: #222222 2px 2px 4px;
@@ -91,26 +75,50 @@ h1 a:hover {
   text-decoration: underline;
   color: #ffffff;
 }
+h1 a:visited { color: #ffffff; }
+h2 { font-family: CandelaBook, Arial, sans-serif; }
+h2 a {
+  text-decoration: none;
+  color: #ffffff;
+  text-shadow: #222222 2px 2px 4px;
+}
 h2 a:hover {
   text-decoration: underline;
   color: #ffffff;
+}
+h2 a:visited { color: #ffffff; }
+h3 { font-family: CandelaBook, Arial, sans-serif; }
+h3 a {
+  text-decoration: none;
+  color: #ffffff;
+  text-shadow: #222222 2px 2px 4px;
 }
 h3 a:hover {
   text-decoration: underline;
   color: #ffffff;
 }
+h3 a:visited { color: #ffffff; }
+h4 { font-family: CandelaBook, Arial, sans-serif; }
+h4 a {
+  text-decoration: none;
+  color: #ffffff;
+  text-shadow: #222222 2px 2px 4px;
+}
 h4 a:hover {
   text-decoration: underline;
   color: #ffffff;
+}
+h4 a:visited { color: #ffffff; }
+h5 { font-family: CandelaBook, Arial, sans-serif; }
+h5 a {
+  text-decoration: none;
+  color: #ffffff;
+  text-shadow: #222222 2px 2px 4px;
 }
 h5 a:hover {
   text-decoration: underline;
   color: #ffffff;
 }
-h1 a:visited { color: #ffffff; }
-h2 a:visited { color: #ffffff; }
-h3 a:visited { color: #ffffff; }
-h4 a:visited { color: #ffffff; }
 h5 a:visited { color: #ffffff; }
 img { border: none; }
 input:focus {
@@ -147,9 +155,9 @@ input, textarea, select {
   background-color: #999999;
   color: #ffffff;
   font-size: 0.85em;
+  border-radius: 0 0 5px 0;
   -moz-border-radius: 0 0 5px 0;
   -webkit-border-radius: 0 0 5px 0;
-  border-radius: 0 0 5px 0;
 }
 #heading { text-align: center; }
 #title {
@@ -179,10 +187,11 @@ input, textarea, select {
 .comment_body {
   padding: 10px;
   color: #000000;
+  text-shadow: 1px 1px 1px #aaaaaa;
   background-color: #dcdcdc;
+  border-radius: 8px;
   -moz-border-radius: 8px;
   -webkit-border-radius: 8px;
-  border-radius: 8px;
   box-shadow: 7px 7px 10px #333333;
   -moz-box-shadow: 7px 7px 10px #333333;
   -webkit-box-shadow: 7px 7px 10px #333333;
