@@ -46,9 +46,12 @@ public function getEntry($value, $options = array()) {
   if ($result['entry_convert_breaks']) {
    $result['entry_text'] = nl2br($result['entry_text']);
   }
-  $year = date('Y',strtotime($result['entry_created_on']));
-  $month = date('m',strtotime($result['entry_created_on']));
-  $result['entry_link'] = "/".$year."/".$month."/".$result['entry_basename'].".html";
+  if ($options['blogid'] == '2') {
+   $year = date('Y',strtotime($result['entry_created_on']));
+   $month = date('m',strtotime($result['entry_created_on']));
+   $result['entry_link'] = "/".$year."/".$month."/".$result['entry_basename'].".html";
+  }
+  $result['comment_count'] = $this->commentCount($result['entry_id'],array('blogid'=>$options['blogid']));
   return $result;
  }
  return FALSE;
@@ -170,10 +173,14 @@ public function getCatID($entryid, $options = array()) {
 
 public function getCat($catid, $options = array()) {
  $setup['options'] = $options;
- $options = array(
+ $setup['defaults'] = array(
   'field' => 'category_id'
  );
- return $this->db->getItem('mt_category',$catid,$options);
+ extract($setup_result = $this->api_call_setup($setup));
+ $dboptions = array(
+  'field' => $options['field']
+ );
+ return $this->db->getItem('mt_category',$catid,$dboptions);
 }
 
 public function getCatEntries($catid, $options = array()) {
@@ -183,8 +190,16 @@ public function getCatEntries($catid, $options = array()) {
   'count' => '10'
  );
  extract($setup_result = $this->api_call_setup($setup));
- $sql = 'SELECT * FROM mt_placement join mt_entry on mt_placement.placement_entry_id = mt_entry.entry_id where  mt_placement.placement_category_id = '.$catid;
- return $this->db->directProcessMultiQuery($sql,'cbulock_mt2',array('sortkey'=>'entry_id'));
+ $dboptions = array(
+  'where' => 'placement_category_id = '.$this->db->sqlClean($catid),
+  'orderBy' => 'placement_entry_id',
+  'key' => 'placement_entry_id'
+ );
+ $entry_list = $this->db->getTable('mt_placement',$dboptions);
+ foreach ($entry_list as $entry) {
+  $entries[$entry['placement_entry_id']] = $this->getEntry($entry['placement_entry_id'],array('callby'=>'id'));
+ }
+ return $entries;
 }
 
 /**********************************
