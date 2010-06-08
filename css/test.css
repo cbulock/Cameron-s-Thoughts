@@ -199,6 +199,16 @@ input, textarea, select {
   margin-left: 97px;
   margin-bottom: 1.2em;
 }
+.comment_body textarea {
+  font-family: "Trebuchet MS", Trebuchet, Verdana, Tahoma, Arial, Sans-Serif;
+  text-shadow: 1px 1px 1px #aaaaaa;
+  width: 600px;
+  border: 0;
+  background-color: #dcdcdc;
+  font-size: 100%;
+  margin: 0;
+  padding: 0;
+}
 .comment_footer {
   position: absolute;
   bottom: 0;

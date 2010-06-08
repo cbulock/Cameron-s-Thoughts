@@ -1,11 +1,13 @@
 $(document).ready(function() {
  initListeners();
  snippetPreload(['login_box']);
+ autoResize();
 });
 
 function initListeners() {
  loginListener();
  logoutListener();
+ commentLoginListener();
 }
 
 function loginListener() {
@@ -16,6 +18,14 @@ function loginListener() {
    $('#login_box').slideDown();
    loginboxListener();
   }
+ });
+}
+
+function commentLoginListener() {
+ $('#comment_login').click(function(event) {
+  event.preventDefault();
+  $('#login').trigger('click');
+  window.location.hash = '#login_box';
  });
 }
 
@@ -54,5 +64,11 @@ function snippetLoad(snip) {
   success: function(data) {
    $.ct.snip[snip] = data;
   }
+ });
+}
+
+function autoResize() {
+ $('.comment_body textarea').autoResize({
+  extraSpace : 0
  });
 }
