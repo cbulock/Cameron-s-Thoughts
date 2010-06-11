@@ -7,5 +7,4 @@
 <input type='password' id='password' />
 <input type='submit' id='login_submit' value='Login'>
 </form>
-<div class='alert_text' id='login_alert'></div>
 </div>

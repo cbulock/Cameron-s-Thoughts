@@ -92,9 +92,18 @@ input, textarea, select
  padding: 1px;
 }
 
-.alert_text {
- color: red;
- font-weight: bold;
+#comment_submit {
+ font-size: 80%;
+ text-shadow: 1px 1px 1px #AAA;
+ margin-left:110px;
+ margin-top:-10px;
+ background-color: #dcdcdc;
+ color:#000;
+ .border_radius(4px);
+ :hover {
+  text-shadow: 1px 1px 4px #000;
+  background-color: #fff;
+ }
 }
 
 #login_box {
@@ -175,6 +184,7 @@ input, textarea, select
  textarea {
   font-family: "Trebuchet MS", Trebuchet, Verdana, Tahoma, Arial, Sans-Serif;
   text-shadow: 1px 1px 1px #AAA;
+  color: #000;
   width: 600px;
   border: 0;
   background-color: #dcdcdc;

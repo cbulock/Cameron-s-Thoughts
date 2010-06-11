@@ -137,6 +137,21 @@ input, textarea, select {
   color: red;
   font-weight: bold;
 }
+#comment_submit {
+  font-size: 80%;
+  text-shadow: 1px 1px 1px #aaaaaa;
+  margin-left: 110px;
+  margin-top: -10px;
+  background-color: #dcdcdc;
+  color: #000000;
+  border-radius: 4px;
+  -moz-border-radius: 4px;
+  -webkit-border-radius: 4px;
+}
+#comment_submit:hover {
+  text-shadow: 1px 1px 4px #000000;
+  background-color: #ffffff;
+}
 #login_box {
   display: none;
   font-family: "Trebuchet MS", Trebuchet, Verdana, Tahoma, Arial, Sans-Serif;
@@ -202,6 +217,7 @@ input, textarea, select {
 .comment_body textarea {
   font-family: "Trebuchet MS", Trebuchet, Verdana, Tahoma, Arial, Sans-Serif;
   text-shadow: 1px 1px 1px #aaaaaa;
+  color: #000000;
   width: 600px;
   border: 0;
   background-color: #dcdcdc;

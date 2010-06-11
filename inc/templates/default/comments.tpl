@@ -15,9 +15,14 @@ No comments yet
 </div>
 {/foreach}
 {if isset($authUser)}
+<h4 id='leave_comment'>Leave a Comment</h4>
 <div id='new_comment' class='comment'>
 <img src='{$authUser.avatar}' alt='Avatar for {$authUser.name}' />
-<p class='comment_body'><textarea></textarea></p>
+<form id='comment_form'>
+<input type='hidden' name='postid' id='postid' value='{$entry.entry_id}'>
+<p class='comment_body'><textarea id='comment_text' name='comment_text'></textarea></p>
+<input type='submit' id='comment_submit' value='Save Comment' />
+</form>
 {else}
 <p>You will need to be <a href='#' id='comment_login'>logged in</a> to add any comments.</p>
 {/if}

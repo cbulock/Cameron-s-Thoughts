@@ -8,6 +8,7 @@ function initListeners() {
  loginListener();
  logoutListener();
  commentLoginListener();
+ postCommentListener();
 }
 
 function loginListener() {
@@ -41,11 +42,36 @@ function loginboxListener() {
  $('#login_form').submit(function(event) {
   event.preventDefault();
   opt = {pass: $('#password').attr('value')};
-  if($.ct.login($('#username').val(),opt)) {
-   location.reload();
+  try {
+   if($.ct.login($('#username').val(),opt)) {
+    location.reload();
+   }
+   else {
+    throw {name:'Authentication failure', message:'Login failed.'};
+   }
   }
-  else {
-   $('#login_alert').html('Login failed');
+  catch(e) {
+   exception_handler(e);
+  } 
+ });
+}
+
+function postCommentListener() {
+ $('#comment_form').submit(function(event) {
+  event.preventDefault();
+  $('#comment_submit').attr('disabled','disabled');
+  opt = {text: $('#comment_text').val()}
+  try {
+   if($.ct.postComment($('#postid').val(),opt)) {
+    $('#comment_submit').fadeOut();
+    $('#leave_comment').slideUp();
+   }
+   else {
+    throw {name:'System error', message:'Comment failed to save.'};
+   }
+  }
+  catch(e) {
+   exception_handler(e);
   }
  });
 }
@@ -71,4 +97,8 @@ function autoResize() {
  $('.comment_body textarea').autoResize({
   extraSpace : 0
  });
+}
+
+function exception_handler(e) {
+ alert(e.message);
 }
