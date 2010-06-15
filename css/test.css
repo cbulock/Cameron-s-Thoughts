@@ -28,7 +28,7 @@
 }
 body {
   font-family: "Trebuchet MS", Trebuchet, Verdana, Tahoma, Arial, Sans-Serif;
-  font-size: 0.8em;
+  font-size: 0.9em;
   background-color: #999999;
   text-shadow: #222222 1px 1px 3px;
   color: #ffffff;
@@ -133,10 +133,6 @@ input, textarea, select {
   border: 1px solid #cccccc;
   padding: 1px;
 }
-.alert_text {
-  color: red;
-  font-weight: bold;
-}
 #comment_submit {
   font-size: 80%;
   text-shadow: 1px 1px 1px #aaaaaa;
@@ -176,7 +172,7 @@ input, textarea, select {
 }
 #heading { text-align: center; }
 #title {
-  font-size: 5em;
+  font-size: 4.7em;
   margin: 0 0 -0.3em 0;
 }
 #title a:hover { text-decoration: none; }
