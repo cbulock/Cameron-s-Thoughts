@@ -1,6 +1,6 @@
 <?php
 
-class API {
+class BaseAPI {
 
 private $db;	//database connection
 private $guid;	//user token
@@ -417,6 +417,6 @@ public function __destruct() {
  fclose($this->log);
 }
 
-// End API
+// End BaseAPI
 }
 ?>
