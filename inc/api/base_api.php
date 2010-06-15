@@ -2,11 +2,11 @@
 
 class BaseAPI {
 
-private $db;	//database connection
-private $guid;	//user token
-private $token;	//internal token
-private $log;	//log file
-private $user;	//authenticated user
+protected $db;		//database connection
+protected $guid;	//user token
+protected $token;	//internal token
+protected $log;		//log file
+protected $user;	//authenticated user
 
 /*API Method Template
 public function nameName($options = array()) {
@@ -186,25 +186,6 @@ public function getCat($catid, $options = array()) {
  return $this->db->getItem('mt_category',$catid,$dboptions);
 }
 
-public function getCatEntries($catid, $options = array()) {
- $setup['options'] = $options;
- $setup['defaults'] = array(
-  'offset' => '0',//offset and count are not implemented in the sql query yet
-  'count' => '10'
- );
- extract($setup_result = $this->api_call_setup($setup));
- $dboptions = array(
-  'where' => 'placement_category_id = '.$this->db->sqlClean($catid),
-  'orderBy' => 'placement_entry_id DESC',
-  'key' => 'placement_entry_id'
- );
- $entry_list = $this->db->getTable('mt_placement',$dboptions);
- foreach ($entry_list as $entry) {
-  $entries[$entry['placement_entry_id']] = $this->getEntry($entry['placement_entry_id'],array('callby'=>'id'));
- }
- return $entries;
-}
-
 /**********************************
    Authentication Methods
 **********************************/
@@ -224,7 +205,7 @@ public function login($user, $options = array()) {
  return $this->getUserToken();
 }
 
-private function tokenLogin($token) {
+protected function tokenLogin($token) {
  $this->setUserToken($token);
  $session = $this->db->getItem('sessions',$token,array('field'=>'guid'));
  if ($session) {
@@ -234,13 +215,13 @@ private function tokenLogin($token) {
  return FALSE;
 }
 
-private function checkPass($user,$pass) {
+protected function checkPass($user,$pass) {
  $acct = $this->getUser($user,array('token'=>$this->getAPIToken()));
  if ($acct['pass'] == md5($pass)) return $acct['id'];
  return FALSE;
 }
 
-private function methodAuth($token=NULL) {
+protected function methodAuth($token=NULL) {
  if ($token) {
   switch($token) {
    case $this->token:
@@ -295,17 +276,17 @@ public function getUser($value, $options = array()) {
  return $user;
 }
 
-private function getAvatarPath($hash, $service) {
+protected function getAvatarPath($hash, $service) {
  if ($service == '0' || $service == '1') {
   return 'http://www.gravatar.com/avatar.php?gravatar_id='.$hash.'&r=r';
  }
 }
 
-private function setCookie($name, $value, $expire=1893456000) {
+protected function setCookie($name, $value, $expire=1893456000) {
  return setcookie($name, $value, $expire, "/");
 }
 
-private function writeLog($text) {
+protected function writeLog($text) {
  $timestamp = date('c');
  $log = $timestamp.' '.$_SERVER['REMOTE_ADDR'].' '.$text."\n";
  return fwrite($this->log,$log);
@@ -315,23 +296,23 @@ private function writeLog($text) {
    Token Methods
 **********************************/
 
-private function createGUID() {
+protected function createGUID() {
  return md5(uniqid(rand(), true));
 }
 
-private function getUserToken() {
+protected function getUserToken() {
  return $this->guid;
 }
 
-private function setUserToken($guid) {
+protected function setUserToken($guid) {
  $this->guid = $guid;
 }
 
-private function getAPIToken() {
+protected function getAPIToken() {
  return $this->token;
 }
 
-private function setAPIToken($token) {
+protected function setAPIToken($token) {
  $this->token = $token;
 }
 
@@ -371,14 +352,14 @@ public function getDirectQueryCount() {
    Helper Methods
 **********************************/
 
-private function api_call_setup($setup) {
+protected function api_call_setup($setup) {
  if ($setup['defaults']) $result['options'] = $this->setOptions($setup['options'],$setup['defaults']);
  $result['auth'] = $this->methodAuth($setup['options']['token']);
  $result['remote_ip'] = $_SERVER['REMOTE_ADDR'];
  return $result;
 }
 
-private function setOptions($options, $defaults) {
+protected function setOptions($options, $defaults) {
  foreach($defaults as $option => $value)
  {
   if (!$options[$option]) $options[$option] = $value;
