@@ -6,8 +6,9 @@
 
 //Initialize APIs
 require_once(API_DIR.'mysql.php');
-require_once(API_DIR.'api.php');
-$ct = new API($settings);
+require_once(API_DIR.'base_api.php');
+require_once(API_DIR.'extended_api.php');
+$ct = new ExtendedAPI($settings);
 
 //Select page type
 require_once(INCLUDE_DIR.'/backend/pagetype.php');

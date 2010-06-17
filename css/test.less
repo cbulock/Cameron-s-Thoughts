@@ -12,9 +12,13 @@
  -webkit-box-shadow: @hoffset @voffset @blur @color;
 }
 
+.font {
+ font-family: "CandelaBook", "Trebuchet MS", Trebuchet, Verdana, Tahoma, Arial, Sans-Serif;
+}
+
 body
 {
- font-family: "Trebuchet MS", Trebuchet, Verdana, Tahoma, Arial, Sans-Serif;
+ .font;
  font-size: 0.9em;
  background-color: #999;
  text-shadow: #222 1px 1px 3px; 
@@ -108,8 +112,8 @@ input, textarea, select
 
 #login_box {
  display: none;
- font-family: "Trebuchet MS", Trebuchet, Verdana, Tahoma, Arial, Sans-Serif;
- font-size: 0.8em;
+ .font;
+ font-size: 0.9em;
  background-color: #999;
  color: #FFF;
  padding: 8px;
@@ -146,11 +150,17 @@ input, textarea, select
 #prev_entry {
  display:inline;
  margin:0 1em 0 0;
+ :before {
+  content: '« ';
+ }
 }
 
 #next_entry {
  display:inline;
  margin:0 0 0 1em;
+ :after {
+  content: " »";
+ }
 }
 
 #entry {
@@ -179,14 +189,17 @@ input, textarea, select
  .border_radius;
  .box_shadow(7px, 7px, 10px, #333);
  margin-top: 0;
- margin-left: 97px;
+ margin-left: 95px;
  margin-bottom:1.2em;
  textarea {
-  font-family: "Trebuchet MS", Trebuchet, Verdana, Tahoma, Arial, Sans-Serif;
+  .font;
   text-shadow: 1px 1px 1px #AAA;
   color: #000;
   width: 600px;
   border: 0;
+  border-color: #dcdcdc;
+  outline: 0;
+  outline-color: #dcdcdc;
   background-color: #dcdcdc;
   font-size: 100%;
   margin: 0;

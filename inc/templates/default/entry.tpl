@@ -2,12 +2,14 @@
 
 {include file='header.tpl'}
 
+<ul>
 {if isset($prev_entry)}
-<div id='prev_entry'>&laquo; <a href='{$prev_entry['entry_link']}'>{$prev_entry['entry_title']}</a></div>
+<li id='prev_entry'><a href='{$prev_entry['entry_link']}'>{$prev_entry['entry_title']}</a></li>
 {/if}
 {if isset($next_entry)}
-<div id='next_entry'><a href='{$next_entry['entry_link']}'>{$next_entry['entry_title']}</a> &raquo;</div>
+<li id='next_entry'><a href='{$next_entry['entry_link']}'>{$next_entry['entry_title']}</a></li>
 {/if}
+</ul>
 
 {include file='entry_body.tpl'}
 {include file='entry_foot.tpl'}

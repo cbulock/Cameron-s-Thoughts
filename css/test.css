@@ -26,8 +26,9 @@
   font-weight: bold;
   font-style: italic;
 }
+.font { font-family: "CandelaBook", "Trebuchet MS", Trebuchet, Verdana, Tahoma, Arial, Sans-Serif; }
 body {
-  font-family: "Trebuchet MS", Trebuchet, Verdana, Tahoma, Arial, Sans-Serif;
+  font-family: "CandelaBook", "Trebuchet MS", Trebuchet, Verdana, Tahoma, Arial, Sans-Serif;
   font-size: 0.9em;
   background-color: #999999;
   text-shadow: #222222 1px 1px 3px;
@@ -150,8 +151,8 @@ input, textarea, select {
 }
 #login_box {
   display: none;
-  font-family: "Trebuchet MS", Trebuchet, Verdana, Tahoma, Arial, Sans-Serif;
-  font-size: 0.8em;
+  font-family: "CandelaBook", "Trebuchet MS", Trebuchet, Verdana, Tahoma, Arial, Sans-Serif;
+  font-size: 0.9em;
   background-color: #999999;
   color: #ffffff;
   padding: 8px;
@@ -180,10 +181,12 @@ input, textarea, select {
   display: inline;
   margin: 0 1em 0 0;
 }
+#prev_entry:before { content: '« '; }
 #next_entry {
   display: inline;
   margin: 0 0 0 1em;
 }
+#next_entry:after { content: " »"; }
 #entry { font-size: 120%; }
 .comment {
   min-height: 100px;
@@ -207,15 +210,18 @@ input, textarea, select {
   -moz-box-shadow: 7px 7px 10px #333333;
   -webkit-box-shadow: 7px 7px 10px #333333;
   margin-top: 0;
-  margin-left: 97px;
+  margin-left: 95px;
   margin-bottom: 1.2em;
 }
 .comment_body textarea {
-  font-family: "Trebuchet MS", Trebuchet, Verdana, Tahoma, Arial, Sans-Serif;
+  font-family: "CandelaBook", "Trebuchet MS", Trebuchet, Verdana, Tahoma, Arial, Sans-Serif;
   text-shadow: 1px 1px 1px #aaaaaa;
   color: #000000;
   width: 600px;
   border: 0;
+  border-color: #dcdcdc;
+  outline: 0;
+  outline-color: #dcdcdc;
   background-color: #dcdcdc;
   font-size: 100%;
   margin: 0;
