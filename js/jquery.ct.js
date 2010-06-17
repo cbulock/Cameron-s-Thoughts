@@ -34,6 +34,9 @@
   lastEntry : function(opt) {
    return this.apiClient('lastEntry',null,opt);
   },
+  getNewEntries : function(opt) {
+   return this.apiClient('getNewEntries',null,opt);
+  },
 
   //Comments
   commentCount : function(postid, opt) {

@@ -24,3 +24,4 @@ INSERT INTO `api_methods` (`id`, `value`) VALUES ('17', 'getAuthUser');
 INSERT INTO `api_methods` (`id`, `value`) VALUES ('18', 'postComment');
 INSERT INTO `api_methods` (`id`, `value`) VALUES ('19', 'logout');
 INSERT INTO `api_methods` (`id`, `value`) VALUES ('20', 'getCatEntries');
+INSERT INTO `api_methods` (`id`, `value`) VALUES ('21', 'getNewEntries');
