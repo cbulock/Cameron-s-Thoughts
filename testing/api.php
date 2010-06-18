@@ -15,7 +15,7 @@ Method:
 <div id='param_boxes'></div>
 <input type='button' value='Send' id='submit' /><br/>
 Response:<br/>
-<textarea rows='20' cols='120' name='response_box' id='response_box'></textarea>
+<textarea rows='50' cols='140' name='response_box' id='response_box'></textarea>
 </form>
 </html>
 

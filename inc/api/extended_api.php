@@ -20,7 +20,6 @@ public function getNewEntries($options = array()) {
  return $entries;
 }
 
-
 public function getCatEntries($catid, $options = array()) {
  $setup['options'] = $options;
  $setup['defaults'] = array(
@@ -40,8 +39,25 @@ public function getCatEntries($catid, $options = array()) {
  return $entries;
 }
 
-
-
+public function getMonthlyEntries($month, $year, $options = array()) {
+ $setup['options'] = $options;
+ $setup['defaults'] = array(
+  'offset' => '0',//offset and count are not implemented in the sql query yet
+  'count' => '10'
+ );
+ extract($setup_result = $this->api_call_setup($setup));
+// $sql = "SELECT entry_id FROM `mt_entry` WHERE MONTH(entry_created_on) = ".$month." AND YEAR(entry_created_on) = ".$year;
+ $dboptions = array(
+  'where' => "MONTH(entry_created_on) = ".$month." AND YEAR(entry_created_on) = ".$year,
+  'orderBy' => 'entry_id DESC',
+  'key' => 'entry_id'
+ );
+ $entry_list = $this->db->getTable('mt_entry',$dboptions);
+ foreach ($entry_list as $entry) {
+  $entries[$entry['entry_id']] = $this->getEntry($entry['entry_id'],array('callby'=>'id'));
+ }
+ return $entries;
+}
 
 
 }

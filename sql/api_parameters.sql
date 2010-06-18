@@ -35,3 +35,7 @@ INSERT INTO `api_parameters` (`id`, `value`, `method`, `required`) VALUES ('26',
 INSERT INTO `api_parameters` (`id`, `value`, `method`, `required`) VALUES ('27', 'offset', '20', '0');
 INSERT INTO `api_parameters` (`id`, `value`, `method`, `required`) VALUES ('28', 'count', '20', '0');
 INSERT INTO `api_parameters` (`id`, `value`, `method`, `required`) VALUES ('29', 'count', '21', '0');
+INSERT INTO `api_parameters` (`id`, `value`, `method`, `required`) VALUES ('30', 'month', '22', '1');
+INSERT INTO `api_parameters` (`id`, `value`, `method`, `required`) VALUES ('31', 'year', '22', '1');
+INSERT INTO `api_parameters` (`id`, `value`, `method`, `required`) VALUES ('32', 'offset', '22', '0');
+INSERT INTO `api_parameters` (`id`, `value`, `method`, `required`) VALUES ('33', 'count', '22', '0');

@@ -37,6 +37,9 @@
   getNewEntries : function(opt) {
    return this.apiClient('getNewEntries',null,opt);
   },
+  getMonthlyEntries : function(opt) {
+   return this.apiClient('getNewEntries',[month],[year],opt);
+  },
 
   //Comments
   commentCount : function(postid, opt) {
