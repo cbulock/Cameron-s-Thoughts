@@ -11,7 +11,7 @@ RewriteEngine On
 Options +FollowSymlinks
 ##################
 #Monthly archives
-RewriteRule ^20*(.*)/(.*)/index.html?$ index.php?type=month&year=$1&month=$2 [L]
+RewriteRule ^20*(.*)/(.*)/$ index.php?type=month&year=$1&month=$2 [L]
 
 #Indivdual archives
 RewriteRule ^20*(.*)/(.*)/(.*).html?$ index.php?type=entry&basename=$3 [L]
