@@ -24,6 +24,43 @@ public function nameName($options = array()) {
    Entry Methods
 **********************************/
 
+public function postEntry($options = array()) {
+ $setup['options'] = $options;
+ $setup['defaults'] = array(
+  'blogid' => '2',
+  'convert_breaks' => '__default__',
+  'excerpt' => '',
+  'keywords' => ''
+ );
+ //authentication??
+ extract($setup_result = $this->api_call_setup($setup));
+//verify title
+//verify text
+//generate basename
+//generate atomid
+
+//category stuff
+
+ $entryoptions = array(
+  'entry_blog_id' => $options['blogid'],
+  'entry_status' => '2',
+  'entry_author_id' => '2',
+  'entry_allow_comments' => '1',
+  'entry_allow_pings' => '0',
+  'entry_convert_breaks' => $options['convert_breaks'],
+  'entry_title' => $options['title'],
+  'entry_excerpt' => $options['excerpt'],
+  'entry_text' => $options['text'],
+  'entry_keywords' => $options['keywords'],
+//'entry_created_on' => NOW,
+//'entry_modified_on => NOW,
+  'entry_basename' => $basename,
+  'entry_atom_id' => $atomid,
+//  'entry_week_number' => 201020, 
+ );
+ return $this->db->insertItem('mt_entry',$entryoptions);
+}
+
 public function getEntry($value, $options = array()) {
  $setup['options'] = $options;
  $setup['defaults'] = array(
