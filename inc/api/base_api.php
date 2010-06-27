@@ -32,12 +32,16 @@ public function postEntry($options = array()) {
   'excerpt' => '',
   'keywords' => ''
  );
- //authentication??
  extract($setup_result = $this->api_call_setup($setup));
-//verify title
-//verify text
-//generate basename
-//generate atomid
+ $user = $this->getAuthUser();
+ if ($user['type'] != 'admin') return FALSE;
+ if (!$options['title']) return FALSE;
+ if (!$options['text']) return FALSE;
+ $basename = strtolower(trim($options['text']));
+ $basename = ereg_replace("[^ A-Za-z0-9_]", "", $basename);
+ $basename = str_replace(" ", "_", $basename);
+ if ($this->getEntry($basename),array('blogid'=>$options['blogid'])) return FALSE; //need to figure out how to better handle basename conflicts
+ $atomid = 'tag:www.cbulock.com,'.date('Y').'://'.$options['blogid'].'.'.$this->lastEntry()+1;
 
 //category stuff
 
@@ -52,11 +56,11 @@ public function postEntry($options = array()) {
   'entry_excerpt' => $options['excerpt'],
   'entry_text' => $options['text'],
   'entry_keywords' => $options['keywords'],
-//'entry_created_on' => NOW,
-//'entry_modified_on => NOW,
+  'entry_created_on' => date('Y-m-d H:i:s');,
+//'entry_modified_on => ,
   'entry_basename' => $basename,
   'entry_atom_id' => $atomid,
-//  'entry_week_number' => 201020, 
+  'entry_week_number' => date('YW'), 
  );
  return $this->db->insertItem('mt_entry',$entryoptions);
 }

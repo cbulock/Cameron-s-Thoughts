@@ -14,6 +14,7 @@ Method:
 <div id='req_param_boxes'></div>
 <div id='param_boxes'></div>
 <input type='button' value='Send' id='submit' /><br/>
+<input type='checkbox' id='format' /> Format results<br/>
 Response:<br/>
 <textarea rows='50' cols='140' name='response_box' id='response_box'></textarea>
 </form>

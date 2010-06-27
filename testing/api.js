@@ -56,7 +56,12 @@ function sendAPI() {
     dataType: 'text',
     success: function(data) {
      try {
-      $('#response_box').text(FormatJSON(JSON.parse(data)));
+      if ($('#format').is(':checked')) {
+       $('#response_box').text(FormatJSON(JSON.parse(data)));
+      }
+      else {
+       $('#response_box').text(data);
+      }
      }
      catch(sError) {
       $('#response_box').text('An error occurred:\n'+data);

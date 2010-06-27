@@ -4,7 +4,7 @@ CREATE TABLE `api_parameters` (
    `method` int(6),
    `required` tinyint(1) not null default '0',
    UNIQUE KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=26;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=40;
 
 INSERT INTO `api_parameters` (`id`, `value`, `method`, `required`) VALUES ('1', 'value', '1', '1');
 INSERT INTO `api_parameters` (`id`, `value`, `method`, `required`) VALUES ('2', 'blogid', '1', '0');
@@ -39,3 +39,9 @@ INSERT INTO `api_parameters` (`id`, `value`, `method`, `required`) VALUES ('30',
 INSERT INTO `api_parameters` (`id`, `value`, `method`, `required`) VALUES ('31', 'year', '22', '1');
 INSERT INTO `api_parameters` (`id`, `value`, `method`, `required`) VALUES ('32', 'offset', '22', '0');
 INSERT INTO `api_parameters` (`id`, `value`, `method`, `required`) VALUES ('33', 'count', '22', '0');
+INSERT INTO `api_parameters` (`id`, `value`, `method`, `required`) VALUES ('34', 'title', '23', '1');
+INSERT INTO `api_parameters` (`id`, `value`, `method`, `required`) VALUES ('35', 'text', '23', '1');
+INSERT INTO `api_parameters` (`id`, `value`, `method`, `required`) VALUES ('36', 'blogid', '23', '0');
+INSERT INTO `api_parameters` (`id`, `value`, `method`, `required`) VALUES ('37', 'convert_breaks', '23', '0');
+INSERT INTO `api_parameters` (`id`, `value`, `method`, `required`) VALUES ('38', 'excerpt', '23', '0');
+INSERT INTO `api_parameters` (`id`, `value`, `method`, `required`) VALUES ('39', 'keywords', '23', '0');
