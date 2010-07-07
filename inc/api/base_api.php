@@ -337,6 +337,10 @@ protected function setCookie($name, $value, $expire=1893456000) {
 }
 
 protected function writeLog($text) {
+ if (!isset($this->log)) {
+  $logfile = LOG_DIR.'api.log';
+  $this->log = fopen($logfile,'a');
+ }
  $timestamp = date('c');
  $log = $timestamp.' '.$_SERVER['REMOTE_ADDR'].' '.$text."\n";
  return fwrite($this->log,$log);
@@ -422,9 +426,6 @@ protected function setOptions($options, $defaults) {
 **********************************/
 
 public function __construct($settings) {
- //open logfile
- $logfile = LOG_DIR.'api.log';
- $this->log = fopen($logfile,'a');
  //create internal token
  $this->setAPIToken($this->createGUID());
  //connect to database
@@ -435,7 +436,7 @@ public function __construct($settings) {
  }
  else {
   $this->setUserToken($this->createGUID());
-  $this->setCookie('guid',$guid);
+  $this->setCookie('guid',getUserToken());
  }
 }
 
@@ -445,7 +446,9 @@ public function __destruct() {
  //close database
  unset($this->db);
  //close logfile
- fclose($this->log);
+ if (isset($this->log)) {
+  fclose($this->log);
+ }
 }
 
 // End BaseAPI
