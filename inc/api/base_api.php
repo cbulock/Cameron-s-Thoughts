@@ -41,7 +41,10 @@ public function postEntry($options = array()) {
  $basename = ereg_replace("[^ A-Za-z0-9_]", "", $basename);
  $basename = str_replace(" ", "_", $basename);
  if ($this->getEntry($basename,array('blogid'=>$options['blogid']))) return FALSE; //need to figure out how to better handle basename conflicts
- $thisentry = $this->lastEntry()+1;//this isn't flawless, breaks when entries are deleted
+ 
+ $thisentry = $this->db->insertItem('mt_entry',array());
+ if (!$thisentry) return FALSE;
+ 
  $atomid = 'tag:www.cbulock.com,'.date('Y').'://'.$options['blogid'].'.'.$thisentry;
  if ($options['category']) {//I think this still posts when not existing
   $catoptions = array(
@@ -52,7 +55,7 @@ public function postEntry($options = array()) {
   );
   $this->db->insertItem('mt_placement',$catoptions);
  };
- $entryoptions = array(
+ $entrydata = array(
   'entry_blog_id' => $options['blogid'],
   'entry_status' => '2',
   'entry_author_id' => '2',
@@ -64,12 +67,11 @@ public function postEntry($options = array()) {
   'entry_text' => $options['text'],
   'entry_keywords' => $options['keywords'],
   'entry_created_on' => date('Y-m-d H:i:s'),
-//'entry_modified_on => ,
   'entry_basename' => $basename,
   'entry_atom_id' => $atomid,
   'entry_week_number' => date('YW'), 
  );
- return $this->db->insertItem('mt_entry',$entryoptions);
+ return $this->db->updateItem('mt_entry',$thisentry,$entrydata,array('field'=>'entry_id'));
 }
 
 public function getEntry($value, $options = array()) {
