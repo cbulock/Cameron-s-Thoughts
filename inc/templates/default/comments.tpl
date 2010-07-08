@@ -9,7 +9,7 @@ No comments yet
 </h4>
 {foreach from=$comments item=comment}
 <div id='c{$comment.id}' class='comment'>
-<img src='{$comment.avatar}' alt='Avatar for {$comment.author}' />
+<img src='{$comment.avatar}' alt='Avatar for {$comment.author}' class='avatar' />
 <p class='comment_body'>{$comment.text}</p>
 <p class='comment_footer'>Comment by: <a href='{$comment.url}'>{$comment.author}</a> on {$comment.created|date_format:"F d, Y h:i A"}</p>
 </div>
@@ -17,7 +17,7 @@ No comments yet
 {if isset($authUser)}
 <h4 id='leave_comment'>Leave a Comment</h4>
 <div id='new_comment' class='comment'>
-<img src='{$authUser.avatar}' alt='Avatar for {$authUser.name}' />
+<img src='{$authUser.avatar}' alt='Avatar for {$authUser.name}' class='avatar' />
 <form id='comment_form'>
 <input type='hidden' name='postid' id='postid' value='{$entry.entry_id}'>
 <p class='comment_body'><textarea id='comment_text' name='comment_text'></textarea></p>

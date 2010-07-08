@@ -197,7 +197,12 @@ input, textarea, select {
   background-repeat: no-repeat;
   background-position: 95px 21px;
 }
-.comment img { float: left; }
+.comment .avatar {
+  float: left;
+  border-radius: 8px;
+  -moz-border-radius: 8px;
+  -webkit-border-radius: 8px;
+}
 .comment_body {
   padding: 10px;
   color: #000000;
