@@ -16,12 +16,16 @@
  font-family: "CandelaBook", "Trebuchet MS", Trebuchet, Verdana, Tahoma, Arial, Sans-Serif;
 }
 
+.text_shadow (@color: #111, @hoffset: 1px, @voffset: 1px, @blur: 3px) {
+ text-shadow: @color @hoffset @voffset @blur;
+}
+
 body
 {
  .font;
  font-size: 0.9em;
- background-color: #999;
- text-shadow: #222 1px 1px 3px; 
+ background-color: #777;
+ .text_shadow;
  color: #FFF;
  margin: 0;
  padding: 1em;
@@ -36,13 +40,16 @@ html
 
 a {
  text-decoration: none;
- text-shadow: #666 1px 1px 3px;
+ .text_shadow(#333, 1px, 1px, 3px);
  :hover {
   text-decoration: underline;
   color: red;
  }
  :visited {
   color: #000080;
+  :hover {
+   color: red;
+  }
  }
 }
 
@@ -68,7 +75,7 @@ h1, h2, h3, h4, h5 {
  a {
   text-decoration: none;
   color: #FFF;
-  text-shadow: #222 2px 2px 4px;
+  .text_shadow(#111, 2px, 2px, 4px);
   :hover {
    text-decoration: underline;
    color: #FFF;
@@ -98,14 +105,14 @@ input, textarea, select
 
 #comment_submit {
  font-size: 80%;
- text-shadow: 1px 1px 1px #AAA;
+ .text_shadow(#AAA, 1px, 1px, 1px);
  margin-left:110px;
  margin-top:-10px;
  background-color: #dcdcdc;
  color:#000;
  .border_radius(4px);
  :hover {
-  text-shadow: 1px 1px 4px #000;
+  .text_shadow(#000, 1px, 1px, 4px);
   background-color: #fff;
  }
 }
@@ -185,8 +192,8 @@ input, textarea, select
 .comment_body {
  padding: 10px;
  color: #000;
- text-shadow: 1px 1px 1px #AAA;
  background-color: #DCDCDC;
+ .text_shadow(#AAA, 1px, 1px, 1px);
  .border_radius;
  .box_shadow(7px, 7px, 10px, #333);
  margin-top: 0;
@@ -194,7 +201,7 @@ input, textarea, select
  margin-bottom:1.2em;
  textarea {
   .font;
-  text-shadow: 1px 1px 1px #AAA;
+  .text_shadow(#AAA, 1px, 1px, 1px);
   color: #000;
   width: 600px;
   border: 0;

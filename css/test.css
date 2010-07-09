@@ -30,8 +30,8 @@
 body {
   font-family: "CandelaBook", "Trebuchet MS", Trebuchet, Verdana, Tahoma, Arial, Sans-Serif;
   font-size: 0.9em;
-  background-color: #999999;
-  text-shadow: #222222 1px 1px 3px;
+  background-color: #777777;
+  text-shadow: #111111 1px 1px 3px;
   color: #ffffff;
   margin: 0;
   padding: 1em;
@@ -43,13 +43,14 @@ html {
 }
 a {
   text-decoration: none;
-  text-shadow: #666666 1px 1px 3px;
+  text-shadow: #333333 1px 1px 3px;
 }
 a:hover {
   text-decoration: underline;
   color: red;
 }
 a:visited { color: #000080; }
+a:visited:hover { color: red; }
 code, pre {
   display: block;
   overflow: auto;
@@ -70,7 +71,7 @@ h1 { font-family: CandelaBook, Arial, sans-serif; }
 h1 a {
   text-decoration: none;
   color: #ffffff;
-  text-shadow: #222222 2px 2px 4px;
+  text-shadow: #111111 2px 2px 4px;
 }
 h1 a:hover {
   text-decoration: underline;
@@ -81,7 +82,7 @@ h2 { font-family: CandelaBook, Arial, sans-serif; }
 h2 a {
   text-decoration: none;
   color: #ffffff;
-  text-shadow: #222222 2px 2px 4px;
+  text-shadow: #111111 2px 2px 4px;
 }
 h2 a:hover {
   text-decoration: underline;
@@ -92,7 +93,7 @@ h3 { font-family: CandelaBook, Arial, sans-serif; }
 h3 a {
   text-decoration: none;
   color: #ffffff;
-  text-shadow: #222222 2px 2px 4px;
+  text-shadow: #111111 2px 2px 4px;
 }
 h3 a:hover {
   text-decoration: underline;
@@ -103,7 +104,7 @@ h4 { font-family: CandelaBook, Arial, sans-serif; }
 h4 a {
   text-decoration: none;
   color: #ffffff;
-  text-shadow: #222222 2px 2px 4px;
+  text-shadow: #111111 2px 2px 4px;
 }
 h4 a:hover {
   text-decoration: underline;
@@ -114,7 +115,7 @@ h5 { font-family: CandelaBook, Arial, sans-serif; }
 h5 a {
   text-decoration: none;
   color: #ffffff;
-  text-shadow: #222222 2px 2px 4px;
+  text-shadow: #111111 2px 2px 4px;
 }
 h5 a:hover {
   text-decoration: underline;
@@ -136,7 +137,7 @@ input, textarea, select {
 }
 #comment_submit {
   font-size: 80%;
-  text-shadow: 1px 1px 1px #aaaaaa;
+  text-shadow: #aaaaaa 1px 1px 1px;
   margin-left: 110px;
   margin-top: -10px;
   background-color: #dcdcdc;
@@ -146,7 +147,7 @@ input, textarea, select {
   -webkit-border-radius: 4px;
 }
 #comment_submit:hover {
-  text-shadow: 1px 1px 4px #000000;
+  text-shadow: #000000 1px 1px 4px;
   background-color: #ffffff;
 }
 #login_box {
@@ -206,8 +207,8 @@ input, textarea, select {
 .comment_body {
   padding: 10px;
   color: #000000;
-  text-shadow: 1px 1px 1px #aaaaaa;
   background-color: #dcdcdc;
+  text-shadow: #aaaaaa 1px 1px 1px;
   border-radius: 8px;
   -moz-border-radius: 8px;
   -webkit-border-radius: 8px;
@@ -220,7 +221,7 @@ input, textarea, select {
 }
 .comment_body textarea {
   font-family: "CandelaBook", "Trebuchet MS", Trebuchet, Verdana, Tahoma, Arial, Sans-Serif;
-  text-shadow: 1px 1px 1px #aaaaaa;
+  text-shadow: #aaaaaa 1px 1px 1px;
   color: #000000;
   width: 600px;
   border: 0;
