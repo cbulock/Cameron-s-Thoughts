@@ -2,6 +2,7 @@ $(document).ready(function() {
  initListeners();
  snippetPreload(['login_box']);
  autoResize();
+ pageStyling()
 });
 
 function initListeners() {
@@ -9,6 +10,10 @@ function initListeners() {
  logoutListener();
  commentLoginListener();
  postCommentListener();
+}
+
+function pageStyling() {
+ roundedAvatars();
 }
 
 function loginListener() {
@@ -96,6 +101,15 @@ function snippetLoad(snip) {
 function autoResize() {
  $('.comment_body textarea').autoResize({
   extraSpace : 0
+ });
+}
+
+function roundedAvatars() {
+ $(".avatar").load(function() {
+  $(this).wrap(function(){
+   return '<span class="' + $(this).attr('class') + '" style="background:url(' + $(this).attr('src') + ') no-repeat center center; width: ' + $(this).width() + 'px; height: ' + $(this).height() + 'px;" />';
+  });
+  $(this).css("opacity","0");
  });
 }
 
