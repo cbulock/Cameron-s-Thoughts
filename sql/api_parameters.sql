@@ -46,3 +46,4 @@ INSERT INTO `api_parameters` (`id`, `value`, `method`, `required`) VALUES ('37',
 INSERT INTO `api_parameters` (`id`, `value`, `method`, `required`) VALUES ('38', 'convert_breaks', '23', '0');
 INSERT INTO `api_parameters` (`id`, `value`, `method`, `required`) VALUES ('39', 'excerpt', '23', '0');
 INSERT INTO `api_parameters` (`id`, `value`, `method`, `required`) VALUES ('40', 'keywords', '23', '0');
+INSERT INTO `api_parameters` (`id`, `value`, `method`, `required`) VALUES ('41', 'count', '24', '1');

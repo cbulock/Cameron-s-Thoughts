@@ -59,6 +59,20 @@ public function getMonthlyEntries($month, $year, $options = array()) {
  return $entries;
 }
 
+public function commentCountText($count) {
+ switch($count) {
+  case '0':
+   return 'No comments yet';
+  break;
+  case '1':
+   return '1 comment';
+  break;
+  default:
+   return $count.' comments';
+  break;
+ }
+}
+
 
 }
 //End ExtendedAPI

@@ -1,11 +1,5 @@
 <h4 id='comments'>
-{if $entry.comment_count == 0}
-No comments yet
-{elseif $entry.comment_count == 1}
-1 comment
-{else}
-{$entry.comment_count} comments
-{/if}
+{$comment_count_text}
 </h4>
 {foreach from=$comments item=comment}
 <div id='c{$comment.id}' class='comment'>
