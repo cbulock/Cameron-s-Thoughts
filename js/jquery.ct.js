@@ -25,6 +25,9 @@
   getEntry : function(id, opt) {
    return this.apiClient('getEntry',[id],opt);
   },
+  postEntry : function(opt) {
+   return this.apiClient('postEntry',null,opt);
+  },
   prevEntry : function(id, opt) {
    return this.apiClient('prevEntry',[id],opt);
   },
@@ -37,13 +40,16 @@
   getNewEntries : function(opt) {
    return this.apiClient('getNewEntries',null,opt);
   },
-  getMonthlyEntries : function(opt) {
-   return this.apiClient('getNewEntries',[month],[year],opt);
+  getMonthlyEntries : function(month,year,opt) {
+   return this.apiClient('getMonthlyEntries',[month],[year],opt);
   },
 
   //Comments
   commentCount : function(postid, opt) {
    return this.apiClient('commentCount',[postid],opt);
+  },
+  commentCountText : function(count, opt) {
+   return this.apiClient('commentCountText',[count],opt);
   },
   getComments : function(postid, opt) {
    return this.apiClient('getComments',[postid],opt);
@@ -76,6 +82,11 @@
   getAuthUser : function() {
    return this.apiClient('getAuthUser');
   },
+
+  //Status
+  getLatestStatus : function() {
+   return this.apiClient('getLatestStatus');
+  }
 
  };
 })(jQuery);

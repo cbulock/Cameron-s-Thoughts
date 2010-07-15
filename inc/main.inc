@@ -6,6 +6,7 @@
 
 //Initialize APIs
 require_once(API_DIR.'mysql.php');
+require_once(API_DIR.'twitter.php');
 require_once(API_DIR.'base_api.php');
 require_once(API_DIR.'extended_api.php');
 $ct = new ExtendedAPI($settings);
@@ -15,9 +16,6 @@ require_once(INCLUDE_DIR.'/backend/pagetype.php');
 
 //Settings stored in database
 //require(INCLUDE_DIR.'/backend/read_settings.php');
-
-//Authentication system
-//require(INCLUDE_DIR.'/backend/auth.php');
 
 //Statistics / GUID
 //include(INCLUDE_DIR.'/backend/stat.php');

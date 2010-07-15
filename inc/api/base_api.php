@@ -7,6 +7,7 @@ protected $guid;	//user token
 protected $token;	//internal token
 protected $log;		//log file
 protected $user;	//authenticated user
+protected $status;      //external status object
 
 /*API Method Template
 public function nameName($options = array()) {
@@ -334,6 +335,17 @@ protected function getAvatarPath($hash, $service) {
 
 protected function setCookie($name, $value, $expire=1893456000) {
  return setcookie($name, $value, $expire, "/");
+}
+
+protected function useStatus() {
+ if (!isset($this->status)) {
+  $this->status = new Status;
+ }
+}
+
+public function getLatestStatus() {
+ $this->useStatus();
+ return $this->status->getStatus(array('count'=>'1'));
 }
 
 protected function writeLog($text) {
