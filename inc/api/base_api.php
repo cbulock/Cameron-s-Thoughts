@@ -1,5 +1,6 @@
 <?php
 
+
 class BaseAPI {
 
 protected $db;		//database connection
@@ -307,6 +308,22 @@ public function logout() {
 }
 
 /**********************************
+   Status Methods
+**********************************/
+
+protected function useStatus() {
+ if (!isset($this->status)) {
+  require_once('status.php');
+  $this->status = new Status;
+ }
+}
+
+public function getLatestStatus() {
+ $this->useStatus();
+ return $this->status->getStatus(array('count'=>'1'));
+}
+
+/**********************************
    Misc Methods
 **********************************/
 
@@ -335,17 +352,6 @@ protected function getAvatarPath($hash, $service) {
 
 protected function setCookie($name, $value, $expire=1893456000) {
  return setcookie($name, $value, $expire, "/");
-}
-
-protected function useStatus() {
- if (!isset($this->status)) {
-  $this->status = new Status;
- }
-}
-
-public function getLatestStatus() {
- $this->useStatus();
- return $this->status->getStatus(array('count'=>'1'));
 }
 
 protected function writeLog($text) {
@@ -441,6 +447,7 @@ public function __construct($settings) {
  //create internal token
  $this->setAPIToken($this->createGUID());
  //connect to database
+ require_once('db.php');
  $this->db = new DB($settings['db']['host'],$settings['db']['user'],$settings['db']['pass'],DB_PREFIX);
  //setup user token/login
  if ($_COOKIE['guid']) {

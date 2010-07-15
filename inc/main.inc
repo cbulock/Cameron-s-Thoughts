@@ -5,8 +5,6 @@
 //header("Content-type: text/html; charset='UTF-8'");
 
 //Initialize APIs
-require_once(API_DIR.'mysql.php');
-require_once(API_DIR.'twitter.php');
 require_once(API_DIR.'base_api.php');
 require_once(API_DIR.'extended_api.php');
 $ct = new ExtendedAPI($settings);
