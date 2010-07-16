@@ -57,6 +57,17 @@ public function postEntry($options = array()) {
   );
   $this->db->insertItem('mt_placement',$catoptions);
  };
+ //Create Status Posting
+ $url = 'http://ct3.cbulock.com/'.date('Y').'/'.date('m').'/'.$basename.'.html';
+ $shorturl = $this->getShortURL($url);
+ if (strlen($options['title']) > 100) {
+  $statustitle = substr($options['title'],0,100).'…';
+ }
+ else {
+  $statustitle = $options['title'];
+ }
+ $this->postStatus('New Blog Post: '.$statustitle.' '.$shorturl);
+
  $entrydata = array(
   'entry_blog_id' => $options['blogid'],
   'entry_status' => '2',
@@ -323,6 +334,17 @@ public function getLatestStatus() {
  return $this->status->getStatus(array('count'=>'1'));
 }
 
+protected function postStatus($message) {
+ $this->useStatus();
+ return $this->status->postStatus($message);
+}
+
+protected function getShortURL($url) {
+ $apiurl = 'http://api.bit.ly/v3/shorten?login=cbulock&apiKey='.BITLY_API_KEY.'&longUrl='.urlencode($url);
+ $result = json_decode($this->call($apiurl));
+ return $result->data->url;
+}
+
 /**********************************
    Misc Methods
 **********************************/
@@ -362,6 +384,20 @@ protected function writeLog($text) {
  $timestamp = date('c');
  $log = $timestamp.' '.$_SERVER['REMOTE_ADDR'].' '.$text."\n";
  return fwrite($this->log,$log);
+}
+
+protected function call($url,$post=NULL) {
+ $ch = curl_init();
+ curl_setopt($ch, CURLOPT_URL, $url);
+ curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+ curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+ curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+ curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Cameron\'s Thoughts API Caller)');
+ curl_setopt($ch, CURLOPT_MAXREDIRS, 5);
+ curl_setopt($ch, CURLOPT_TIMEOUT, 20);
+ $response = curl_exec($ch);
+ curl_close($ch);
+ return $response;
 }
 
 /**********************************
@@ -463,7 +499,9 @@ public function __destruct() {
  //for debugging
  $this->writeLog(print_r($this->getQueryLog(),1));
  //close database
- unset($this->db);
+ if (isset($this->db)) {
+  unset($this->db);
+ }
  //close logfile
  if (isset($this->log)) {
   fclose($this->log);

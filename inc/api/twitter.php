@@ -1,33 +1,23 @@
 <?php
 
+require_once(INCLUDE_DIR.'/twitter/twitteroauth/twitteroauth.php');
+
 class Status {
 
-protected function postStatus($message) {
- 
+ protected $twitter;
+
+public function postStatus($message) {
+ return $this->twitter->post('statuses/update',array('status'=>$message));
 }
 
 public function getStatus($options) {
  if (!$options['count']) $options['count'] = 1;
- $url = 'statuses/user_timeline.json?user_id='.TWITTER_UID.'&count='.$options['count'];
- return $this->call($url);
+ return $this->twitter->get('statuses/user_timeline',array('user_id'=>TWITTER_UID,'count'=>$options['count']));
 }
 
-private function call($url,$post=NULL) {
- $ch = curl_init();
- curl_setopt($ch, CURLOPT_URL, 'https://api.twitter.com/1/'.$url);
- //curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
- //curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
- curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
- curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Cameron\'s Thoughts Twitter API Caller)');
- curl_setopt($ch, CURLOPT_MAXREDIRS, 5);
- curl_setopt($ch, CURLOPT_TIMEOUT, 20);
-
- $json = curl_exec($ch);
- curl_close($ch);
-
- return json_decode($json);
+public function __construct() {
+ $this->twitter = new TwitterOAuth(TWITTER_CONSUMER_KEY,TWITTER_CONSUMER_SECRET,TWITTER_OAUTH_TOKEN,TWITTER_OAUTH_SECRET);
 }
-
 
 // End Status
 }
