@@ -3,7 +3,7 @@
 /**
  * Project:     Smarty: the PHP compiling template engine
  * File:        Smarty.class.php
- * SVN:         $Id: Smarty.class.php 3508 2010-02-26 12:58:36Z Uwe.Tews $
+ * SVN:         $Id: Smarty.class.php 3624 2010-07-07 22:08:10Z Uwe.Tews $
  * 
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -108,7 +108,7 @@ if (SMARTY_SPL_AUTOLOAD && set_include_path(get_include_path() . PATH_SEPARATOR 
  */
 class Smarty extends Smarty_Internal_Data {
     // smarty version
-    const SMARTY_VERSION = 'Smarty3-b8'; 
+    const SMARTY_VERSION = 'Smarty3-RC3'; 
     // auto literal on delimiters with whitspace
     public $auto_literal = true; 
     // display error on not assigned variables
@@ -129,6 +129,8 @@ class Smarty extends Smarty_Internal_Data {
     public $force_compile = false; 
     // check template for modifications?
     public $compile_check = true; 
+    // locking concurrent compiles
+    public $compile_locking = true; 
     // use sub dirs for compiled/cached files?
     public $use_sub_dirs = false; 
     // compile_error?
@@ -157,9 +159,10 @@ class Smarty extends Smarty_Internal_Data {
     public $security_policy = null;
     public $security_handler = null;
     public $direct_access_security = true; 
+    public $trusted_dir = array();
     // debug mode
     public $debugging = false;
-    public $debugging_ctrl = 'URL';
+    public $debugging_ctrl = 'NONE';
     public $smarty_debug_id = 'SMARTY_DEBUG';
     public $debug_tpl = null; 
     // When set, smarty does uses this value as error_reporting-level.
@@ -167,7 +170,7 @@ class Smarty extends Smarty_Internal_Data {
     // config var settings
     public $config_overwrite = true; //Controls whether variables with the same name overwrite each other.
     public $config_booleanize = true; //Controls whether config values of on/true/yes and off/false/no get converted to boolean
-    public $config_read_hidden = true; //Controls whether hidden config sections/vars are read from the file.                                                     
+    public $config_read_hidden = true; //Controls whether hidden config sections/vars are read from the file.                                                      
     // config vars
     public $config_vars = array(); 
     // assigned tpl vars
@@ -202,6 +205,8 @@ class Smarty extends Smarty_Internal_Data {
     public $plugin_search_order = array('function', 'block', 'compiler', 'class'); 
     // registered objects
     public $registered_objects = array(); 
+    // registered classes
+    public $registered_classes = array(); 
     // registered filters
     public $registered_filters = array(); 
     // autoload filter
@@ -221,7 +226,8 @@ class Smarty extends Smarty_Internal_Data {
     // smarty object reference
     public $smarty = null; 
     // block data at template inheritance
-    public $block_data = array(); 
+    public $block_data = array();
+    public $block_data_stack = array(); 
     // block tag hierarchy
     public $_tag_stack = array(); 
     // plugins
@@ -240,7 +246,7 @@ class Smarty extends Smarty_Internal_Data {
         if (is_callable('mb_internal_encoding')) {
             mb_internal_encoding(SMARTY_RESOURCE_CHAR_SET);
         } 
-        $this->start_time = $this->_get_time(); 
+        $this->start_time = microtime(true); 
         // set exception handler
         if (!empty($this->exception_handler))
             set_exception_handler($this->exception_handler); 
@@ -310,6 +316,8 @@ class Smarty extends Smarty_Internal_Data {
             // get default Smarty data object
             $parent = $this;
         } 
+        array_push($this->block_data_stack, $this->block_data);
+        $this->block_data = array(); 
         // create template object if necessary
         ($template instanceof $this->template_class)? $_template = $template :
         $_template = $this->createTemplate ($template, $cache_id, $compile_id, $parent);
@@ -326,7 +334,7 @@ class Smarty extends Smarty_Internal_Data {
         } 
         // return redered template
         if (isset($this->autoload_filters['output']) || isset($this->registered_filters['output'])) {
-            $_output = Smarty_Internal_Filter_Handler::runFilter('output', $_template->getRenderedTemplate(), $this);
+            $_output = Smarty_Internal_Filter_Handler::runFilter('output', $_template->getRenderedTemplate(), $this, $_template);
         } else {
             $_output = $_template->getRenderedTemplate();
         } 
@@ -352,9 +360,11 @@ class Smarty extends Smarty_Internal_Data {
             if ($this->debugging) {
                 Smarty_Internal_Debug::display_debug($this);
             } 
+            $this->block_data = array_pop($this->block_data_stack);
             return;
         } else {
-	   // return fetched content
+            // return fetched content
+            $this->block_data = array_pop($this->block_data_stack);
             return $_output;
         } 
     } 
@@ -466,7 +476,7 @@ class Smarty extends Smarty_Internal_Data {
      */
     public function disableSecurity()
     {
-        $this->security = true;
+        $this->security = false;
     } 
 
     /**
@@ -707,7 +717,7 @@ class Smarty extends Smarty_Internal_Data {
             // Smarty 2 BC
             $this->_version = self::SMARTY_VERSION;
             return $this->_version;
-        }   	
+        } 
         return null;
     } 
 
@@ -751,21 +761,6 @@ class Smarty extends Smarty_Internal_Data {
             $this->wrapper = new Smarty_Internal_Wrapper($this);
         } 
         return $this->wrapper->convert($name, $args);
-
-        /*
-        $name = strtolower($name);
-        if ($name == 'smarty') {
-            throw new Exception('Please use parent::__construct() to call parent constuctor');
-        } 
-        $function_name = 'smarty_method_' . $name;
-        if (!is_callable($function_name)) {
-            if (!file_exists(SMARTY_SYSPLUGINS_DIR . $function_name . '.php')) {
-                throw new Exception('Undefined Smarty method "' . $name . '"');
-            } 
-            require_once(SMARTY_SYSPLUGINS_DIR . $function_name . '.php');
-        } 
-        return call_user_func_array($function_name, array_merge(array($this), $args));
-        */
     } 
 } 
 
