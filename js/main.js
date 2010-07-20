@@ -70,6 +70,7 @@ function postCommentListener() {
    if($.ct.postComment($('#postid').val(),opt)) {
     $('#comment_submit').fadeOut();
     $('#leave_comment').slideUp();
+     $('#comments').html($.ct.commentCountText($.ct.commentCount($('#postid').val())));
    }
    else {
     throw {name:'System error', message:'Comment failed to save.'};
