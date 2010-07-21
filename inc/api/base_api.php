@@ -491,7 +491,7 @@ public function __construct($settings) {
  }
  else {
   $this->setUserToken($this->createGUID());
-  $this->setCookie('guid',getUserToken());
+  $this->setCookie('guid',$this->getUserToken());
  }
 }
 
