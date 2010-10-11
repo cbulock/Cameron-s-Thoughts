@@ -467,7 +467,7 @@ protected function api_call_setup($setup) {
  return $result;
 }
 
-protected function setOptions($options, $defaults) {
+protected function setOptions($options, $defaults) { 
  foreach($defaults as $option => $value)
  {
   if (!$options[$option]) $options[$option] = $value;
