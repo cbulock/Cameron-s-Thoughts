@@ -116,4 +116,10 @@ function roundedAvatars() {
 
 function exception_handler(e) {
  alert(e.message);
+ if ($('#error_box').length==0) {
+console.log('test');
+  $('html').prepend($.ct.snip.error_box);
+  $('#error_box').slideDown();
+ }
+
 }
