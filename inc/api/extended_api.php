@@ -17,7 +17,7 @@ public function getNewEntries($options = array()) {
    $current_entry = $this->prevEntry($current_entry);
   }
  }
- return $entries;
+ return $this->api_call_finish($entries);
 }
 
 public function getCatEntries($catid, $options = array()) {
@@ -36,7 +36,7 @@ public function getCatEntries($catid, $options = array()) {
  foreach ($entry_list as $entry) {
   $entries[$entry['placement_entry_id']] = $this->getEntry($entry['placement_entry_id'],array('callby'=>'id'));
  }
- return $entries;
+ return $this->api_call_finish($entries);
 }
 
 public function getMonthlyEntries($month, $year, $options = array()) {
@@ -56,19 +56,19 @@ public function getMonthlyEntries($month, $year, $options = array()) {
  foreach ($entry_list as $entry) {
   $entries[$entry['entry_id']] = $this->getEntry($entry['entry_id'],array('callby'=>'id'));
  }
- return $entries;
+ return $this->api_call_finish($entries);
 }
 
 public function commentCountText($count) {
  switch($count) {
   case '0':
-   return 'No comments yet';
+   return $this->api_call_finish('No comments yet');
   break;
   case '1':
-   return '1 comment';
+   return $this->api_call_finish('1 comment');
   break;
   default:
-   return $count.' comments';
+   return $this->api_call_finish($count.' comments');
   break;
  }
 }

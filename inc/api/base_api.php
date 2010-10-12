@@ -18,7 +18,7 @@ public function nameName($options = array()) {
  );
  extract($setup_result = $this->api_call_setup($setup));
  <code goes here>
- return $result;
+ return $this->api_call_finish($result);
 }
 */
 
@@ -84,7 +84,7 @@ public function postEntry($options = array()) {
   'entry_atom_id' => $atomid,
   'entry_week_number' => date('YW'), 
  );
- return $this->db->updateItem('mt_entry',$thisentry,$entrydata,array('field'=>'entry_id'));
+ return $this->api_call_finish($this->db->updateItem('mt_entry',$thisentry,$entrydata,array('field'=>'entry_id')));
 }
 
 public function getEntry($value, $options = array()) {
@@ -118,9 +118,9 @@ public function getEntry($value, $options = array()) {
    $result['entry_link'] = "/".$year."/".$month."/".$result['entry_basename'].".html";
   }
   $result['comment_count'] = $this->commentCount($result['entry_id'],array('blogid'=>$options['blogid']));
-  return $result;
+  return $this->api_call_finish($result);
  }
- return FALSE;
+ return $this->api_call_finish(FALSE);
 }
 
 public function prevEntry($id, $options = array()) {//where is very open
@@ -132,7 +132,7 @@ public function prevEntry($id, $options = array()) {//where is very open
  extract($setup_result = $this->api_call_setup($setup));
  $sql = "select max(entry_id) FROM `mt_entry` WHERE (entry_id < ".$this->db->sqlClean($id)." AND entry_blog_id =".$this->db->sqlClean($options['blogid'])." AND ".$options['where'].")";
  $result = $this->db->directProcessQuery($sql,'cbulock_mt2',array('return'=>'single'));
- return $result;
+ return $this->api_call_finish($result);
 }
 
 public function nextEntry($id, $options = array()) {//where is very open
@@ -144,7 +144,7 @@ public function nextEntry($id, $options = array()) {//where is very open
  extract($setup_result = $this->api_call_setup($setup));
  $sql = "select min(entry_id) FROM `mt_entry` WHERE (entry_id > ".$this->db->sqlClean($id)." AND entry_blog_id = ".$this->db->sqlClean($options['blogid'])." AND ".$options['where'].")";
  $result = $this->db->directProcessQuery($sql,'cbulock_mt2',array('return'=>'single'));
- return $result;
+ return $this->api_call_finish($result);
 }
 
 public function lastEntry($options = array()) {//where is very open
@@ -156,7 +156,7 @@ public function lastEntry($options = array()) {//where is very open
  extract($setup_result = $this->api_call_setup($setup));
  $sql = "select max(entry_id) FROM `mt_entry` WHERE (entry_blog_id = ".$this->db->sqlClean($options['blogid'])." AND ".$options['where'].")";
  $result = $this->db->directProcessQuery($sql,'cbulock_mt2',array('return'=>'single'));
- return $result;
+ return $this->api_call_finish($result);
 }
 
 /**********************************
@@ -171,7 +171,7 @@ function commentCount($postid, $options = array()) {
  extract($setup_result = $this->api_call_setup($setup));
  $sql = "SELECT COUNT(*) FROM `comments` WHERE blogid = '".$this->db->sqlClean($options['blogid'])."' AND postid = '".$this->db->sqlClean($postid)."'";
  $result = $this->db->directProcessQuery($sql,'cbulock_cbulock',array('return'=>'single'));
- return $result;
+ return $this->api_call_finish($result);
 }
 
 public function getComments($postid, $options = array()) {
@@ -202,7 +202,7 @@ public function getComments($postid, $options = array()) {
    $results[$key]['avatar'] = $this->getAvatarPath($results[$key]['email_hash'],$results[$key]['service']);
   }
  }
- return $results;
+ return $this->api_call_finish($results);
 }
 
 public function postComment($postid, $options = array()) {
@@ -221,7 +221,7 @@ public function postComment($postid, $options = array()) {
   'ip' => $remote_ip,
   'text' => $options['text']
  );
- return $this->db->insertItem('comments',$data);
+ return $this->api_call_finish($this->db->insertItem('comments',$data));
 }
 
 /**********************************
@@ -234,7 +234,7 @@ public function getCatID($entryid, $options = array()) {
   'field' => 'placement_entry_id'
  ); 
  $item = $this->db->getItem('mt_placement',$entryid,$options);
- return $item['placement_category_id'];
+ return $this->api_call_finish($item['placement_category_id']);
 }
 
 public function getCat($catid, $options = array()) {
@@ -246,7 +246,7 @@ public function getCat($catid, $options = array()) {
  $dboptions = array(
   'field' => $options['field']
  );
- return $this->db->getItem('mt_category',$catid,$dboptions);
+ return $this->api_call_finish($this->db->getItem('mt_category',$catid,$dboptions));
 }
 
 /**********************************
@@ -265,7 +265,7 @@ public function login($user, $options = array()) {
  );
  $this->db->insertItem('sessions',$data);
  $this->user = $this->getUser($user,array('token'=>$this->getAPIToken()));
- return $this->getUserToken();
+ return $this->api_call_finish($this->getUserToken());
 }
 
 protected function tokenLogin($token) {
@@ -273,14 +273,14 @@ protected function tokenLogin($token) {
  $session = $this->db->getItem('sessions',$token,array('field'=>'guid'));
  if ($session) {
   $this->user = $this->getUser($session['user'],array('token'=>$this->getAPIToken(),'callby'=>'id'));
-  return $token;
+  return $this->api_call_finish($token);
  }
  return FALSE;
 }
 
 protected function checkPass($user,$pass) {
  $acct = $this->getUser($user,array('token'=>$this->getAPIToken()));
- if ($acct['pass'] == md5($pass)) return $acct['id'];
+ if ($acct['pass'] == md5($pass)) return $this->api_call_finish($acct['id']);
  return FALSE;
 }
 
@@ -311,11 +311,11 @@ public function getAuthUser($options = array()) {
   unset($user['email']);
  }
  if ($user) return $user;
- return FALSE;
+ return $this->api_call_finish(FALSE);
 }
 
 public function logout() {
- return $this->db->deleteItem('sessions',$this->getUserToken(),array('field'=>'guid'));
+ return $this->api_call_finish($this->db->deleteItem('sessions',$this->getUserToken(),array('field'=>'guid')));
 }
 
 /**********************************
@@ -331,7 +331,7 @@ protected function useStatus() {
 
 public function getLatestStatus() {
  $this->useStatus();
- return $this->status->getStatus(array('count'=>'1'));
+ return $this->api_call_finish($this->status->getStatus(array('count'=>'1')));
 }
 
 protected function postStatus($message) {
@@ -363,7 +363,7 @@ public function getUser($value, $options = array()) {
   unset($user['pass']);
   unset($user['email']);
  }
- return $user;
+ return $this->api_call_finish($user);
 }
 
 protected function getAvatarPath($hash, $service) {
@@ -429,30 +429,30 @@ protected function setAPIToken($token) {
 **********************************/
 
 public function getLastQuery($options = array()) {
- return $this->db->getLastQuery();
+ return $this->api_call_finish($this->db->getLastQuery());
 }
 
 public function getQueryLog($options = array()) {
- return $this->db->getQueryLog();
+ return $this->api_call_finish($this->db->getQueryLog());
 }
 
 public function getAPIMethods($options = array()) {
- return $this->db->getTable('api_methods');
+ return $this->api_call_finish($this->db->getTable('api_methods'));
 }
 
 public function getMethodParameters($methodid, $options = array()) {
  $options = array(
   'where' => 'method = '.$this->db->sqlClean($methodid)
  );
- return $this->db->getTable('api_parameters',$options);
+ return $this->api_call_finish($this->db->getTable('api_parameters',$options));
 }
 
 public function getQueryCount() {
- return $this->db->getQueryCount();
+ return $this->api_call_finish($this->db->getQueryCount());
 }
 
 public function getDirectQueryCount() {
- return $this->getDirectQueryCount;
+ return $this->api_call_finish($this->getDirectQueryCount);
 }
 
 
@@ -465,6 +465,11 @@ protected function api_call_setup($setup) {
  $result['auth'] = $this->methodAuth($setup['options']['token']);
  $result['remote_ip'] = $_SERVER['REMOTE_ADDR'];
  return $result;
+}
+
+protected function api_call_finish($data) {
+ if (!is_array($data)) return $data;
+ return $data;
 }
 
 protected function setOptions($options, $defaults) {
