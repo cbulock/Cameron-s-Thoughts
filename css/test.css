@@ -177,18 +177,8 @@ textarea:focus { padding: 1px; }
 input, textarea, select { padding: 1px; }
 #comment_submit {
   font-size: 80%;
-  text-shadow: #aaaaaa 1px 1px 1px;
   margin-left: 110px;
   margin-top: -10px;
-  background-color: #dcdcdc;
-  color: #000000;
-  border-radius: 4px;
-  -moz-border-radius: 4px;
-  -webkit-border-radius: 4px;
-}
-#comment_submit:hover {
-  text-shadow: #000000 1px 1px 4px;
-  background-color: #ffffff;
 }
 #login_box {
   display: none;
