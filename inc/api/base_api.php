@@ -258,7 +258,7 @@ public function login($user, $options = array()) {
  extract($setup_result = $this->api_call_setup($setup));
 
  $id = $this->checkPass($user,$options['pass']);
- if (!$id) return FALSE;
+ if (!$id) throw new Exception('Authentication Failure',401);
  $data = array(
   'user'=>$id,
   'guid'=>$this->getUserToken()
@@ -512,6 +512,13 @@ public function __destruct() {
   fclose($this->log);
  }
 }
+
+/*catch($e) {
+ return array(
+  'error' => $e->getMessage(),
+  'error_number' => $e->getCode()
+ );
+}*/
 
 // End BaseAPI
 }

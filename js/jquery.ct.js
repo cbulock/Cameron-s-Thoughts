@@ -12,13 +12,23 @@
     }
    }
    url = url+'.json';
-   return $.parseJSON($.ajax({
+   response = $.parseJSON($.ajax({
     type: type,
     async: false,
     url: url,
     data: opt,
     dataType: 'json'
    }).responseText);
+   if (response.error) {
+    throw {name:response.error_number, message:response.error};
+   }
+   return response;
+  },
+
+  call : function(method, req, opt) {
+   req = req || null;
+   opt = opt || null;
+   return this.apiClient(method, req, opt);
   },
 
   //Entries
@@ -41,7 +51,7 @@
    return this.apiClient('getNewEntries',null,opt);
   },
   getMonthlyEntries : function(month,year,opt) {
-   return this.apiClient('getMonthlyEntries',[month],[year],opt);
+   return this.apiClient('getMonthlyEntries',[month],[year],opt);//don't think this will work, the reqs should be one array
   },
 
   //Comments
