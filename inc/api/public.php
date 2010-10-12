@@ -11,7 +11,15 @@ $method = $method[0];
 
 $url_parameters[] = $_REQUEST;
 
-$result = call_user_func_array(array($ct,$method),$url_parameters);
+try {
+ $result = call_user_func_array(array($ct,$method),$url_parameters);
+}
+catch(Exception $e) {
+ $result = array(
+  'error' => $e->getMessage(),
+  'error_number' => $e->getCode()
+ );
+}
 
 header ('Content-type: application/json');
 echo json_encode($result);

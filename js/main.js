@@ -47,16 +47,8 @@ function loginboxListener() {
  $('#login_form').submit(function(event) {
   event.preventDefault();
   opt = {pass: $('#password').attr('value')};
-  try {
-   if($.ct.login($('#username').val(),opt)) {
+   if(call('login',[$('#username').val()],opt)) {
     location.reload();
-   }
-   else {
-    throw {name:'Authentication failure', message:'Login failed.'};
-   }
-  }
-  catch(e) {
-   exception_handler(e);
   } 
  });
 }
@@ -114,12 +106,23 @@ function roundedAvatars() {
  });
 }
 
+function call(method,req,opt) {
+ req = req || null;
+ opt = opt || null;
+ try {
+  return $.ct.call(method,req,opt);
+ }
+ catch(e) {
+  exception_handler(e);
+ }
+}
+
 function exception_handler(e) {
  alert(e.message);
- if ($('#error_box').length==0) {
-console.log('test');
-  $('html').prepend($.ct.snip.error_box);
-  $('#error_box').slideDown();
+// if ($('#error_box').length==0) {
+//console.log('test');
+ // $('html').prepend($.ct.snip.error_box);
+ // $('#error_box').slideDown();
  }
 
 }
