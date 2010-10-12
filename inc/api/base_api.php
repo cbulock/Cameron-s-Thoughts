@@ -472,7 +472,7 @@ protected function api_call_finish($data) {
  return $data;
 }
 
-protected function setOptions($options, $defaults) {
+protected function setOptions($options, $defaults) { 
  foreach($defaults as $option => $value)
  {
   if (!$options[$option]) $options[$option] = $value;
@@ -496,7 +496,7 @@ public function __construct($settings) {
  }
  else {
   $this->setUserToken($this->createGUID());
-  $this->setCookie('guid',getUserToken());
+  $this->setCookie('guid',$this->getUserToken());
  }
 }
 

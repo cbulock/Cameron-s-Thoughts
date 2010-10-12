@@ -26,9 +26,43 @@
   font-weight: bold;
   font-style: italic;
 }
-.font { font-family: "CandelaBook", "Trebuchet MS", Trebuchet, Verdana, Tahoma, Arial, Sans-Serif; }
+@font-face {
+  font-family: 'Ubuntu';
+  src: url('/fonts/Ubuntu/Ubuntu-R-webfont.eot');
+  src: local('Ubuntu'), url('/fonts/Ubuntu/Ubuntu-R-webfont.woff') format('woff'), url('/fonts/Ubuntu/Ubuntu-R-webfont.ttf') format('truetype'), url('/fonts/Ubuntu/Ubuntu-R-webfont.svg#webontcceGD1qN') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'UbuntuItalic';
+  src: url('/fonts/Ubuntu/Ubuntu-I-webfont.eot');
+  src: local('UbuntuItalic'), url('/fonts/Ubuntu/Ubuntu-I-webfont.woff') format('woff'), url('/fonts/Ubuntu/Ubuntu-I-webfont.ttf') format('truetype'), url('/fonts/Ubuntu/Ubuntu-I-webfont.svg#webontPxVORYT4') format('svg');
+  font-weight: normal;
+  font-style: italic;
+}
+@font-face {
+  font-family: 'UbuntuBold';
+  src: url('/fonts/Ubuntu/Ubuntu-B-webfont.eot');
+  src: local('UbuntuBold'), url('/fonts/Ubuntu/Ubuntu-B-webfont.woff') format('woff'), url('/fonts/Ubuntu/Ubuntu-B-webfont.ttf') format('truetype'), url('/fonts/Ubuntu/Ubuntu-B-webfont.svg#webontssbCkuz5') format('svg');
+  font-weight: bold;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'UbuntuBoldItalic';
+  src: url('/fonts/Ubuntu/Ubuntu-BI-webfont.eot');
+  src: local('UbuntuBoldItalic'), url('/fonts/Ubuntu/Ubuntu-BI-webfont.woff') format('woff'), url('/fonts/Ubuntu/Ubuntu-BI-webfont.ttf') format('truetype'), url('/fonts/Ubuntu/Ubuntu-BI-webfont.svg#ebfont3JT5vc7d') format('svg');
+  font-weight: bold;
+  font-style: italic;
+}
+@font-face {
+  font-family: 'AndaleMonoRegular';
+  src: url('/fonts/AndaleMono/AndaleMono-webfont.eot');
+  src: local('AndaleMonoRegular'), url('/fonts/AndaleMono/AndaleMono-webfont.woff') format('woff'), url('/fonts/AndaleMono/AndaleMono-webfont.ttf') format('truetype'), url('/fonts/AndaleMono/AndaleMono-webfont.svg#webfontOywlWiNd') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
 body {
-  font-family: "CandelaBook", "Trebuchet MS", Trebuchet, Verdana, Tahoma, Arial, Sans-Serif;
+  font-family: "Ubuntu", "Trebuchet MS", Trebuchet, Verdana, Tahoma, Arial, Sans-Serif;
   font-size: 0.9em;
   background-color: #777777;
   text-shadow: #111111 1px 1px 3px;
@@ -42,19 +76,19 @@ html {
   background-image: url('/css/img/black_tile.jpg');
 }
 a {
+  color: white;
   text-decoration: none;
-  text-shadow: #444444 1px 1px 3px;
 }
 a:hover {
   text-decoration: underline;
   color: red;
 }
-a:visited { color: #000080; }
+a:visited { color: white; }
 a:visited:hover { color: red; }
 code, pre {
   display: block;
   overflow: auto;
-  font-family: 'Lucida Console', 'Bitstream Vera Sans Mono', 'Courier New', Monaco, Courier, monospace;
+  font-family: AndaleMonoRegular, 'Lucida Console', 'Bitstream Vera Sans Mono', 'Courier New', Monaco, Courier, monospace;
   color: #ffffff;
   background-color: #222222;
   border-radius: 8px;
@@ -67,7 +101,10 @@ code, pre {
   margin: 0.3em 0.1em 0.3em 0.1em;
 }
 fieldset { width: 10em; }
-h1 { font-family: CandelaBook, Arial, sans-serif; }
+h1 {
+  font-family: UbuntuBold, Arial, sans-serif;
+  font-weight: bold;
+}
 h1 a {
   text-decoration: none;
   color: #ffffff;
@@ -78,7 +115,10 @@ h1 a:hover {
   color: #ffffff;
 }
 h1 a:visited { color: #ffffff; }
-h2 { font-family: CandelaBook, Arial, sans-serif; }
+h2 {
+  font-family: UbuntuBold, Arial, sans-serif;
+  font-weight: bold;
+}
 h2 a {
   text-decoration: none;
   color: #ffffff;
@@ -89,7 +129,10 @@ h2 a:hover {
   color: #ffffff;
 }
 h2 a:visited { color: #ffffff; }
-h3 { font-family: CandelaBook, Arial, sans-serif; }
+h3 {
+  font-family: UbuntuBold, Arial, sans-serif;
+  font-weight: bold;
+}
 h3 a {
   text-decoration: none;
   color: #ffffff;
@@ -100,7 +143,10 @@ h3 a:hover {
   color: #ffffff;
 }
 h3 a:visited { color: #ffffff; }
-h4 { font-family: CandelaBook, Arial, sans-serif; }
+h4 {
+  font-family: UbuntuBold, Arial, sans-serif;
+  font-weight: bold;
+}
 h4 a {
   text-decoration: none;
   color: #ffffff;
@@ -111,7 +157,10 @@ h4 a:hover {
   color: #ffffff;
 }
 h4 a:visited { color: #ffffff; }
-h5 { font-family: CandelaBook, Arial, sans-serif; }
+h5 {
+  font-family: UbuntuBold, Arial, sans-serif;
+  font-weight: bold;
+}
 h5 a {
   text-decoration: none;
   color: #ffffff;
@@ -123,18 +172,9 @@ h5 a:hover {
 }
 h5 a:visited { color: #ffffff; }
 img { border: none; }
-input:focus {
-  border: 1px solid #000000;
-  padding: 1px;
-}
-textarea:focus {
-  border: 1px solid #000000;
-  padding: 1px;
-}
-input, textarea, select {
-  border: 1px solid #cccccc;
-  padding: 1px;
-}
+input:focus { padding: 1px; }
+textarea:focus { padding: 1px; }
+input, textarea, select { padding: 1px; }
 #comment_submit {
   font-size: 80%;
   text-shadow: #aaaaaa 1px 1px 1px;
@@ -152,9 +192,9 @@ input, textarea, select {
 }
 #login_box {
   display: none;
-  font-family: "CandelaBook", "Trebuchet MS", Trebuchet, Verdana, Tahoma, Arial, Sans-Serif;
+  font-family: "Ubuntu", "Trebuchet MS", Trebuchet, Verdana, Tahoma, Arial, Sans-Serif;
   font-size: 0.9em;
-  background-color: #999999;
+  background-color: #777777;
   color: #ffffff;
   padding: 8px;
 }
@@ -165,7 +205,7 @@ input, textarea, select {
   position: absolute;
   top: 0;
   left: 0;
-  background-color: #999999;
+  background-color: #777777;
   color: #ffffff;
   font-size: 0.85em;
   border-radius: 0 0 5px 0;
@@ -177,7 +217,10 @@ input, textarea, select {
   font-size: 4.7em;
   margin: 0 0 -0.3em 0;
 }
-#title a:hover { text-decoration: none; }
+#title a:hover {
+  text-decoration: none;
+  color: white;
+}
 #prev_entry {
   display: inline;
   margin: 0 1em 0 0;
@@ -220,7 +263,7 @@ input, textarea, select {
   margin-bottom: 1.2em;
 }
 .comment_body textarea {
-  font-family: "CandelaBook", "Trebuchet MS", Trebuchet, Verdana, Tahoma, Arial, Sans-Serif;
+  font-family: "Ubuntu", "Trebuchet MS", Trebuchet, Verdana, Tahoma, Arial, Sans-Serif;
   text-shadow: #aaaaaa 1px 1px 1px;
   color: #000000;
   width: 600px;
