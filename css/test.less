@@ -34,6 +34,7 @@ body
 html
 {
  margin:0 auto;
+ padding:0;
  width:780px;
  background-image: url('/css/img/black_tile.jpg');
 }
@@ -108,12 +109,39 @@ input, textarea, select
  margin-top:-10px;
 }
 
+
+#error_box {
+ padding: 4px 0 4px 0;
+ margin: 0;
+ position: fixed;
+ top: 0px;
+ left: 0px;
+ width: 100%;
+ background-color: rgba(255,0,0,0.7);
+ h1 {
+  padding-left:25%;
+  padding-right:1em;
+  font-size: 1.1em;
+  display:inline;
+ }
+ p {
+  display:inline;
+ }
+ button {
+  font-size: 60%;
+  position: fixed;
+  top: 3px;
+  right:4px;
+  background-color:red;
+  border-color:red;
+ }
+ span {
+  background-color:red;
+ }
+}
+
 #login_box {
  display: none;
- .font;
- font-size: 0.9em;
- background-color: #777;
- color: #FFF;
  padding: 8px;
  h1 {
   font-size: 1.2em;

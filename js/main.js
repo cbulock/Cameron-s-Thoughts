@@ -1,8 +1,8 @@
 $(document).ready(function() {
  initListeners();
- snippetPreload(['login_box']);
+ snippetPreload(['login_box','error_box']);
  autoResize();
- pageStyling()
+ pageStyling();
 });
 
 function initListeners() {
@@ -20,7 +20,7 @@ function loginListener() {
  $('#login').click(function(event) {
   event.preventDefault();
   if ($('#login_box').length==0) {
-   $('html').prepend($.ct.snip.login_box);
+   $('body').prepend($.ct.snip.login_box);
    $('#login_box').slideDown();
    loginboxListener();
   }
@@ -118,11 +118,14 @@ function call(method,req,opt) {
 }
 
 function exception_handler(e) {
- alert(e.message);
-// if ($('#error_box').length==0) {
-//console.log('test');
- // $('html').prepend($.ct.snip.error_box);
- // $('#error_box').slideDown();
+ //alert(e.message);
+ if ($('#error_box').length==0) {
+  $('body').prepend($.ct.snip.error_box);
+  $('#error_box button').button({icons:{primary:'ui-icon-circle-close'},text:false});
+  $('#error_box p').html(e.message);
+  $('#error_box button').click(function(){
+   $('#error_box').remove();
+  });
+  $('#error_box').slideDown();
  }
-
 }

@@ -8,8 +8,9 @@
 {/if}
 <link rel='shortcut icon' type='image/png' href='/css/img/cameron_icon.png' />
 <link rel='stylesheet' type='text/css' href='/css/test.css' title='Test' />
+<link rel='stylesheet' type='text/css' href='/css/custom-theme/jquery-ui-1.8.5.custom.css' />
 <script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js'></script>
-<script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.5/jquery-ui.min.js'></script>
+<script type='text/javascript' src='/js/jquery-ui-1.8.5.custom.min.js'></script>
 <script type='text/javascript' src='/js/jquery.ct.js'></script>
 <script type='text/javascript' src='/js/autoresize.jquery.min.js'></script>
 <script type='text/javascript' src='/js/main.js'></script>
