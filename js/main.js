@@ -1,20 +1,25 @@
 $(document).ready(function() {
- initListeners();
- snippetPreload(['login_box','error_box']);
- autoResize();
- pageStyling();
-});
 
-function initListeners() {
+ /*Menu stuff*/
+ $('ul.sub_nav').hide();
+ $('ul.main_nav li').hover(function () {
+  $(this).find('> ul').stop(true, true).slideDown('slow');
+  }, function() {
+  $(this).find('> ul').stop(true, true).slideUp('slow'); 	
+ });
+
+ /*listeners*/
  loginListener();
  logoutListener();
  commentLoginListener();
  postCommentListener();
-}
 
-function pageStyling() {
+ snippetPreload(['login_box','error_box']);
+
+ /*pageStyling*/
+ autoResize();
  roundedAvatars();
-}
+});
 
 function loginListener() {
  $('#login').click(function(event) {

@@ -2,7 +2,7 @@
 
 {include file='header.tpl'}
 
-<ul>
+<ul id='entry_nav'>
 {if isset($prev_entry)}
 <li id='prev_entry'><a href='{$prev_entry['entry_link']}'>{$prev_entry['entry_title']}</a></li>
 {/if}

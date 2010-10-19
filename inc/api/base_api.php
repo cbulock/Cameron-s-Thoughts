@@ -36,9 +36,9 @@ public function postEntry($options = array()) {
  );
  extract($setup_result = $this->api_call_setup($setup));
  $user = $this->getAuthUser();
- if ($user['type'] != 'admin') return FALSE;
- if (!$options['title']) return FALSE;
- if (!$options['text']) return FALSE;
+ if ($user['type'] != 'admin') throw new Exception('Not Authorized',401);
+ if (!$options['title']) throw new Exception('Missing Title');
+ if (!$options['text']) throw new Exception('Missing Text');
  $basename = strtolower(trim($options['title']));
  $basename = ereg_replace("[^ A-Za-z0-9_]", "", $basename);
  $basename = str_replace(" ", "_", $basename);
@@ -258,7 +258,7 @@ public function login($user, $options = array()) {
  extract($setup_result = $this->api_call_setup($setup));
 
  $id = $this->checkPass($user,$options['pass']);
- if (!$id) throw new Exception('Authentication Failure',401);
+ if (!$id) throw new Exception('Authentication Failure');
  $data = array(
   'user'=>$id,
   'guid'=>$this->getUserToken()
@@ -512,13 +512,6 @@ public function __destruct() {
   fclose($this->log);
  }
 }
-
-/*catch($e) {
- return array(
-  'error' => $e->getMessage(),
-  'error_number' => $e->getCode()
- );
-}*/
 
 // End BaseAPI
 }

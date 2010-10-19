@@ -44,12 +44,12 @@ a {
  text-decoration: none;
  :hover {
   text-decoration: underline;
-  color: red;
+  color: #ff9900;
  }
  :visited {
   color: white;
   :hover {
-   color: red;
+   color: #ff9900;
   }
  }
 }
@@ -74,6 +74,7 @@ fieldset
 h1, h2, h3, h4, h5 {
  font-family: UbuntuBold, Arial, sans-serif;
  font-weight: bold;
+ clear:both;
  a {
   text-decoration: none;
   color: #FFF;
@@ -194,6 +195,10 @@ input, textarea, select
  font-size: 120%;
 }
 
+#entry_nav {
+ clear:left;
+}
+
 .comment {
  min-height: 100px;
  position:relative;
@@ -239,4 +244,86 @@ input, textarea, select
  position:absolute;
  bottom:0;
  margin-top:5px;
+}
+
+
+/*Menu Stuff*/
+
+ul,li {
+ margin: 0;
+ padding: 0;
+ list-style: none;
+}
+
+ul.main_nav {
+ margin: 0 auto;
+ width: 400px;
+}
+
+ul.main_nav p {
+ margin: 0;
+}
+
+ul.main_nav li {
+ background-color: #555;
+ border-right: 1px solid #BCBCBC;
+ float: left;
+ position: relative;
+ text-align: center;
+}
+
+ul.main_nav > li:first-child {
+ -moz-border-radius-topleft: 10px;
+ -webkit-border-top-left-radius: 10px;
+}
+
+ul.main_nav > li:last-child {
+ border: none;
+ -moz-border-radius-topright: 10px;
+ -webkit-border-top-right-radius: 10px;
+}
+
+ul.main_nav li a, ul.main_nav li p{
+ color: #FFFFFF;
+ width: 100px;
+ padding: 10px;
+ text-decoration: none;
+ display: block;
+}
+
+ul.main_nav li a:hover {
+ color: #424242;
+}
+
+ul.main_nav li ul.sub_nav {
+ position: absolute;
+ left: 0px;
+ top: 100%;
+ display: none;      /*initially hide sub menu */
+}
+
+ul.main_nav li:hover > ul {
+ display: block;     /*show on hover,javascript disabled */
+}
+
+ul.main_nav li ul.sub_nav li {
+ background-color: #424242;
+ border-right: none;
+ border-top: 1px solid #BCBCBC;
+ text-align: left;
+}
+
+ul.main_nav li ul.sub_nav li:first-child {
+ border: none;
+}
+
+ul.main_nav li ul.sub_nav li a:hover {
+ color: #FF9900;
+}
+
+ul.main_nav li ul.sub_nav li:last-child {
+ -moz-border-radius-bottomright: 10px;
+ -moz-border-radius-bottomleft :10px;
+ -webkit-border-bottom-right-radius: 10px;
+ -webkit-border-bottom-left-radius: 10px;
 }

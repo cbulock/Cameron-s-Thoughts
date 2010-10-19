@@ -9,3 +9,4 @@ Welcome, {$authUser.name} | <a href='' id='logout'>Logout</a>
 <h1 id='title'><a href='/'>{$settings.site.title}</a></h1>
 <p id='sitetag'>{$settings.site.tag}</p>
 </div>
+{include file='menu.tpl'}
