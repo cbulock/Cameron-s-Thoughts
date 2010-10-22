@@ -9,7 +9,8 @@ $tpl->setConfigDir(SMARTY_DIR.'../configs');
 
 $tpl->assign('settings',$settings);
 
-
+$cats = $ct->getCatList();
+$tpl->assign('cats',$cats);
 
 $authUser = $ct->getAuthUser();
 if ($authUser) {

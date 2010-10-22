@@ -2,8 +2,9 @@
  <li><p>Posts</p>
   <ul class='sub_nav'>
    <li><a href=''>Archives</a></li>
-   <li><a href=''>Cat 1</a></li>
-   <li><a href=''>Cat 2</a></li>
+{foreach from=$cats item=cat}
+   <li><a href='/cat/{$cat.category_basename}/'>{$cat.category_label}</a></li>
+{/foreach}
   </ul>
  </li>
  <li><p>About</p>
