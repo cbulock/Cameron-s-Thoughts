@@ -310,7 +310,7 @@ ul.main_nav {
 }
 ul.main_nav p { margin: 0; }
 ul.main_nav li {
-  background-color: #555555;
+  background-color: #586261;
   border-right: 1px solid #bcbcbc;
   float: left;
   position: relative;
@@ -348,7 +348,7 @@ ul.main_nav li ul.sub_nav {
 }
 ul.main_nav li:hover > ul { display: block; }
 ul.main_nav li ul.sub_nav li {
-  background-color: #424242;
+  background-color: #483d41;
   border-right: none;
   border-top: 1px solid #bcbcbc;
   text-align: left;
