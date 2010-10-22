@@ -123,7 +123,9 @@ function call(method,req,opt) {
 }
 
 function exception_handler(e) {
- //alert(e.message);
+ if(!e.message) {
+  e = {number:0, message:e};
+ }
  if ($('#error_box').length==0) {
   $('body').prepend($.ct.snip.error_box);
   $('#error_box button').button({icons:{primary:'ui-icon-circle-close'},text:false});
