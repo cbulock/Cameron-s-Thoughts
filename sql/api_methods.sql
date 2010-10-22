@@ -29,3 +29,4 @@ INSERT INTO `api_methods` (`id`, `value`) VALUES ('22', 'getMonthlyEntries');
 INSERT INTO `api_methods` (`id`, `value`) VALUES ('23', 'postEntry');
 INSERT INTO `api_methods` (`id`, `value`) VALUES ('24', 'commentCountText');
 INSERT INTO `api_methods` (`id`, `value`) VALUES ('25', 'getLatestStatus');
+INSERT INTO `api_methods` (`id`, `value`) VALUES ('26', 'getCatList');
