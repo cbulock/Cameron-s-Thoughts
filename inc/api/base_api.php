@@ -249,6 +249,16 @@ public function getCat($catid, $options = array()) {
  return $this->api_call_finish($this->db->getItem('mt_category',$catid,$dboptions));
 }
 
+public function getCatList($options = array()) {
+ $setup['options'] = $options;
+ extract($setup_result = $this->api_call_setup($setup));
+ $dboptions = array(
+  'key' => 'category_id',
+  'orderBy' => '`category_id`'
+ );
+ return $this->api_call_finish($this->db->getTable('mt_category',$dboptions));
+}
+
 /**********************************
    Authentication Methods
 **********************************/

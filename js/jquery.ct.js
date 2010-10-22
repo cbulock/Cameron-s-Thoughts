@@ -78,6 +78,9 @@
   getCatEntries : function(catid, opt) {
    return this.apiClient('getCatEntries',[catid],opt);
   },
+  getCatList : function() {
+   return this.apiClient('getCatList',null,opt);
+  },
 
   //Authentication
   getUser : function(value, opt) {
