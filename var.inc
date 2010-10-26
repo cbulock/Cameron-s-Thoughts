@@ -6,6 +6,7 @@ define('TPL_DIR',INCLUDE_DIR.'templates/');
 define('SMARTY_DIR',INCLUDE_DIR.'smarty/libs/');
 define('LOG_DIR',INCLUDE_DIR.'logs/');
 define('API_DIR',INCLUDE_DIR.'api/');
+define('CACHE_DIR',INCLUDE_DIR.'cache/');
 
 $settings['site'] = array(
  'title' => "Cameron's Thoughts",
@@ -22,4 +23,5 @@ $settings['db'] = array(
 );
 
 define('MAINPAGE_COUNT',20);
+define('DEFAULT_CACHE_EXPIRES',15);
 ?>

@@ -9,6 +9,7 @@ protected $token;	//internal token
 protected $log;		//log file
 protected $user;	//authenticated user
 protected $status;      //external status object
+protected $cache;	//cache
 
 /*API Method Template
 public function nameName($options = array()) {
@@ -103,6 +104,7 @@ public function getEntry($value, $options = array()) {
   break;
  }
  $result = $this->db->directProcessQuery($sql,'cbulock_mt2');
+ //$this->cache->add($sql,$result); //Only for testing
  if ($result) {
   $result['entry_raw'] = $result['entry_text'];
   $result['entry_text'] = html_entity_decode($result['entry_text']);
@@ -438,6 +440,10 @@ protected function setAPIToken($token) {
    Debugging
 **********************************/
 
+public function getCacheCount() {
+ return $this->api_call_finish($this->cache->count);
+}
+
 public function getLastQuery($options = array()) {
  return $this->api_call_finish($this->db->getLastQuery());
 }
@@ -462,7 +468,7 @@ public function getQueryCount() {
 }
 
 public function getDirectQueryCount() {
- return $this->api_call_finish($this->getDirectQueryCount);
+ return $this->api_call_finish($this->db->getDirectQueryCount);
 }
 
 
@@ -497,9 +503,12 @@ protected function setOptions($options, $defaults) {
 public function __construct($settings) {
  //create internal token
  $this->setAPIToken($this->createGUID());
+ //setup caching
+ require_once('cache.php');
+ $this->cache = new Cache;
  //connect to database
  require_once('db.php');
- $this->db = new DB($settings['db']['host'],$settings['db']['user'],$settings['db']['pass'],DB_PREFIX);
+ $this->db = new DB($settings['db']['host'],$settings['db']['user'],$settings['db']['pass'],array('prefix'=>DB_PREFIX,'cache'=>$this->cache));
  //setup user token/login
  if ($_COOKIE['guid']) {
   $this->tokenLogin($_COOKIE['guid']);
