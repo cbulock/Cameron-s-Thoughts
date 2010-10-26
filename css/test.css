@@ -248,7 +248,7 @@ input, textarea, select { padding: 1px; }
   margin: 0 0 0 1em;
 }
 #next_entry:after { content: " »"; }
-#entry { font-size: 120%; }
+.entry { font-size: 120%; }
 #entry_nav { clear: left; }
 .comment {
   min-height: 100px;
