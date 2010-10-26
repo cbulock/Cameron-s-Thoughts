@@ -7,6 +7,7 @@ private $directQueryCount;
 private $queryLog = array();
 private $link;
 private $dbprefix;
+private $cache;
 
 /**********************************
    Database Access
@@ -17,22 +18,26 @@ public function getTable($table, $options = array()) {
   'where' => '1',
   'orderBy' => '`id` ASC',
   'limit' => '5000',
-  'key' => 'id'
+  'key' => 'id',
+  'cache' => TRUE,
+  'expires' => DEFAULT_CACHE_EXPIRES 
  );
  $options = $this->setOptions($options,$defaults);
  $this->selectDatabase($table, $options['database']);
  $sql = 'SELECT * FROM `'.$table.'` WHERE '.$options['where'].' ORDER BY '.$options['orderBy'].' LIMIT '.$options['limit'];
- return $this->sqlProcessMulti($sql,array('sortkey'=>$options['key']));
+ return $this->sqlProcessMulti($sql,array('sortkey'=>$options['key'],'cache'=>$options['cache'],'expires'=>$options['expires']));
 }
 
 public function getItem($table, $value, $options = array()) {
  $defaults = array(
-  'field' => 'id'
+  'field' => 'id',
+  'cache' => TRUE,
+  'expires' => DEFAULT_CACHE_EXPIRES
  );
  $options = $this->setOptions($options,$defaults);
  $this->selectDatabase($table, $options['database']);
  $sql = 'SELECT * FROM `'.$table.'` WHERE `'.$this->sqlClean($options['field']).'` = \''.$this->sqlClean($value).'\'';
- return $this->sqlProcess($sql);
+ return $this->sqlProcess($sql,$options);
 }
 
 public function insertItem($table, $data, $options = array()) {
@@ -81,7 +86,7 @@ public function deleteItem($table, $value, $options = array()) {
  return $this->sqlQuery($sql); //investigate if more should be returned
 }
 
-private function sqlQuery($sql) {
+private function sqlQuery($sql, $options = array()) {
  $this->queryCount++;
  $this->queryLog[] = $sql;
  return mysql_query($sql);
@@ -111,44 +116,66 @@ private function determineDatabase($table, $db=NULL) { //$table can be overloade
 private function setOptions($options, $defaults) {
  foreach($defaults as $option => $value)
  {
-  if (!$options[$option]) $options[$option] = $value;
+  if (!isset($options[$option])) $options[$option] = $value;
  }
  return $options;
 }
 
 private function sqlProcess($sql,$options = array()) {//It may be more consistant to just use sqlProcessMulti for everything
  $defaults = array(
-  'return' => 'all'
+  'return' => 'all',
+  'cache' => TRUE,
+  'expires' => DEFAULT_CACHE_EXPIRES
  );
  $options = $this->setOptions($options, $defaults);
- $sqlReturn = $this->sqlQuery($sql);
- if (!$sqlReturn) return false;
- $row = mysql_fetch_array($sqlReturn,MYSQL_ASSOC);
- if ($row) {
-  if ($options['return'] == 'all') {
-   foreach($row as $key => $value) {
-    $result[$key] = $this->htmlParse(stripslashes($value));
+ if($this->cache->exists($sql,$options['expires'])) {
+  $result = $this->cache->read($sql);
+ }
+ else {
+  $sqlReturn = $this->sqlQuery($sql);
+  if (!$sqlReturn) return false;
+  $row = mysql_fetch_array($sqlReturn,MYSQL_ASSOC);
+  if ($row) {
+   if ($options['return'] == 'all') {
+    foreach($row as $key => $value) {
+     $result[$key] = $this->htmlParse(stripslashes($value));
+    }
    }
-   return $result;
+   else {
+    $result = $this->htmlParse(stripslashes(reset($row)));
+   }
   }
   else {
-   return $this->htmlParse(stripslashes(reset($row)));
+   $result = false;
+  }
+  if ($options['cache']) {
+   $this->cache->add($sql,$result);
   }
  }
- return false;
+ return $result;
 }
 
 private function sqlProcessMulti($sql,$options = array()) {
  $defaults = array(
-  'sortkey' => 'id'
+  'sortkey' => 'id',
+  'cache' => TRUE,
+  'expires' => DEFAULT_CACHE_EXPIRES
  );
  $options = $this->setOptions($options, $defaults);
- $sqlReturn = $this->sqlQuery($sql);
- if (!$sqlReturn) return false;
- while ($row = mysql_fetch_array($sqlReturn,MYSQL_ASSOC)) {
-  $id = $row[$options['sortkey']];
-  foreach($row as $key => $value) {
-   $result[$id][$key] = $this->htmlParse(stripslashes($value));
+ if($this->cache->exists($sql,$options['expires'])) {
+  $result = $this->cache->read($sql);
+ }
+ else {
+  $sqlReturn = $this->sqlQuery($sql);
+  if (!$sqlReturn) return false;
+  while ($row = mysql_fetch_array($sqlReturn,MYSQL_ASSOC)) {
+   $id = $row[$options['sortkey']];
+   foreach($row as $key => $value) {
+    $result[$id][$key] = $this->htmlParse(stripslashes($value));
+   }
+  }
+  if ($options['cache']) {
+   $this->cache->add($sql,$result);
   }
  }
  return $result;
@@ -174,9 +201,15 @@ public function sqlClean($str) {
    Core Functions
 **********************************/
 
-public function __construct($host,$user,$pass, $prefix='cbulock_') {
+public function __construct($host,$user,$pass,$options = array()) {
+ $defaults = array(
+  'prefix' => 'cbulock_',
+  'cache' => NULL
+ );
+ $options = $this->setOptions($options, $defaults);
+ if ($options['cache']) $this->cache = $options['cache'];
  $this->link = mysql_connect($host,$user,$pass);
- $this->dbprefix = $prefix;
+ $this->dbprefix = $options['prefix'];
 }
 
 public function __destruct() {
