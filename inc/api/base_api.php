@@ -104,7 +104,6 @@ public function getEntry($value, $options = array()) {
   break;
  }
  $result = $this->db->directProcessQuery($sql,'cbulock_mt2');
- //$this->cache->add($sql,$result); //Only for testing
  if ($result) {
   $result['entry_raw'] = $result['entry_text'];
   $result['entry_text'] = html_entity_decode($result['entry_text']);
@@ -282,9 +281,9 @@ public function login($user, $options = array()) {
 
 protected function tokenLogin($token) {
  $this->setUserToken($token);
- $session = $this->db->getItem('sessions',$token,array('field'=>'guid'));
+ $session = $this->db->getItem('sessions',$token,array('field'=>'guid','cache'=>FALSE));
  if ($session) {
-  $this->user = $this->getUser($session['user'],array('token'=>$this->getAPIToken(),'callby'=>'id'));
+  $this->user = $this->getUser($session['user'],array('token'=>$this->getAPIToken(),'callby'=>'id','cache'=>FALSE));
   return $this->api_call_finish($token);
  }
  return FALSE;

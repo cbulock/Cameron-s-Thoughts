@@ -19,7 +19,7 @@ public function getTable($table, $options = array()) {
   'orderBy' => '`id` ASC',
   'limit' => '5000',
   'key' => 'id',
-  'cache' => TRUE
+  'cache' => TRUE 
  );
  $options = $this->setOptions($options,$defaults);
  $this->selectDatabase($table, $options['database']);
@@ -35,7 +35,7 @@ public function getItem($table, $value, $options = array()) {
  $options = $this->setOptions($options,$defaults);
  $this->selectDatabase($table, $options['database']);
  $sql = 'SELECT * FROM `'.$table.'` WHERE `'.$this->sqlClean($options['field']).'` = \''.$this->sqlClean($value).'\'';
- return $this->sqlProcess($sql,array($options));
+ return $this->sqlProcess($sql,$options);
 }
 
 public function insertItem($table, $data, $options = array()) {
@@ -114,7 +114,7 @@ private function determineDatabase($table, $db=NULL) { //$table can be overloade
 private function setOptions($options, $defaults) {
  foreach($defaults as $option => $value)
  {
-  if (!$options[$option]) $options[$option] = $value;
+  if (!isset($options[$option])) $options[$option] = $value;
  }
  return $options;
 }
