@@ -106,7 +106,6 @@ public function getEntry($value, $options = array()) {
  if ($result) {
   $result['entry_raw'] = $result['entry_text'];
   $result['entry_text'] = html_entity_decode($result['entry_text']);
-//  $result['entry_text'] = 
   //this restores my <code> tags to a working state, but is really ugly
   $result['entry_text'] = preg_replace('/<code>/','<code><xmp>',$result['entry_text']);
   $result['entry_text'] = preg_replace('/<\/code>/','</xmp></code>',$result['entry_text']);
