@@ -18,22 +18,24 @@ public function getTable($table, $options = array()) {
   'where' => '1',
   'orderBy' => '`id` ASC',
   'limit' => '5000',
-  'key' => 'id'
+  'key' => 'id',
+  'cache' => TRUE
  );
  $options = $this->setOptions($options,$defaults);
  $this->selectDatabase($table, $options['database']);
  $sql = 'SELECT * FROM `'.$table.'` WHERE '.$options['where'].' ORDER BY '.$options['orderBy'].' LIMIT '.$options['limit'];
- return $this->sqlProcessMulti($sql,array('sortkey'=>$options['key']));
+ return $this->sqlProcessMulti($sql,array('sortkey'=>$options['key'],'cache'=>$options['cache']));
 }
 
 public function getItem($table, $value, $options = array()) {
  $defaults = array(
-  'field' => 'id'
+  'field' => 'id',
+  'cache' => TRUE
  );
  $options = $this->setOptions($options,$defaults);
  $this->selectDatabase($table, $options['database']);
  $sql = 'SELECT * FROM `'.$table.'` WHERE `'.$this->sqlClean($options['field']).'` = \''.$this->sqlClean($value).'\'';
- return $this->sqlProcess($sql);
+ return $this->sqlProcess($sql,array($options));
 }
 
 public function insertItem($table, $data, $options = array()) {
@@ -119,7 +121,8 @@ private function setOptions($options, $defaults) {
 
 private function sqlProcess($sql,$options = array()) {//It may be more consistant to just use sqlProcessMulti for everything
  $defaults = array(
-  'return' => 'all'
+  'return' => 'all',
+  'cache' => TRUE
  );
  $options = $this->setOptions($options, $defaults);
  if($this->cache->exists($sql)) {//need to add expires support here
@@ -134,25 +137,25 @@ private function sqlProcess($sql,$options = array()) {//It may be more consistan
     foreach($row as $key => $value) {
      $result[$key] = $this->htmlParse(stripslashes($value));
     }
-    //return $result;
    }
    else {
-    //return $this->htmlParse(stripslashes(reset($row)));
     $result = $this->htmlParse(stripslashes(reset($row)));
    }
   }
   else {
-  //return false;
    $result = false;
   }
-  $this->cache->add($sql,$result);
+  if ($options['cache']) {
+   $this->cache->add($sql,$result);
+  }
  }
  return $result;
 }
 
 private function sqlProcessMulti($sql,$options = array()) {
  $defaults = array(
-  'sortkey' => 'id'
+  'sortkey' => 'id',
+  'cache' => TRUE
  );
  $options = $this->setOptions($options, $defaults);
  if($this->cache->exists($sql)) {//need to add expires support here
@@ -167,7 +170,9 @@ private function sqlProcessMulti($sql,$options = array()) {
     $result[$id][$key] = $this->htmlParse(stripslashes($value));
    }
   }
-  $this->cache->add($sql,$result);
+  if ($options['cache']) {
+   $this->cache->add($sql,$result);
+  }
  }
  return $result;
 }
