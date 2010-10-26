@@ -19,18 +19,20 @@ public function getTable($table, $options = array()) {
   'orderBy' => '`id` ASC',
   'limit' => '5000',
   'key' => 'id',
-  'cache' => TRUE 
+  'cache' => TRUE,
+  'expires' => DEFAULT_CACHE_EXPIRES 
  );
  $options = $this->setOptions($options,$defaults);
  $this->selectDatabase($table, $options['database']);
  $sql = 'SELECT * FROM `'.$table.'` WHERE '.$options['where'].' ORDER BY '.$options['orderBy'].' LIMIT '.$options['limit'];
- return $this->sqlProcessMulti($sql,array('sortkey'=>$options['key'],'cache'=>$options['cache']));
+ return $this->sqlProcessMulti($sql,array('sortkey'=>$options['key'],'cache'=>$options['cache'],'expires'=>$options['expires']));
 }
 
 public function getItem($table, $value, $options = array()) {
  $defaults = array(
   'field' => 'id',
-  'cache' => TRUE
+  'cache' => TRUE,
+  'expires' => DEFAULT_CACHE_EXPIRES
  );
  $options = $this->setOptions($options,$defaults);
  $this->selectDatabase($table, $options['database']);
@@ -122,10 +124,11 @@ private function setOptions($options, $defaults) {
 private function sqlProcess($sql,$options = array()) {//It may be more consistant to just use sqlProcessMulti for everything
  $defaults = array(
   'return' => 'all',
-  'cache' => TRUE
+  'cache' => TRUE,
+  'expires' => DEFAULT_CACHE_EXPIRES
  );
  $options = $this->setOptions($options, $defaults);
- if($this->cache->exists($sql)) {//need to add expires support here
+ if($this->cache->exists($sql,$options['expires'])) {
   $result = $this->cache->read($sql);
  }
  else {
@@ -155,10 +158,11 @@ private function sqlProcess($sql,$options = array()) {//It may be more consistan
 private function sqlProcessMulti($sql,$options = array()) {
  $defaults = array(
   'sortkey' => 'id',
-  'cache' => TRUE
+  'cache' => TRUE,
+  'expires' => DEFAULT_CACHE_EXPIRES
  );
  $options = $this->setOptions($options, $defaults);
- if($this->cache->exists($sql)) {//need to add expires support here
+ if($this->cache->exists($sql,$options['expires'])) {
   $result = $this->cache->read($sql);
  }
  else {
