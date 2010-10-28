@@ -1,5 +1,4 @@
 $(document).ready(function() {
-
  /*Menu stuff*/
  $('ul.sub_nav').hide();
  $('ul.main_nav li').hover(function () {
@@ -11,33 +10,34 @@ $(document).ready(function() {
  /*listeners*/
  loginListener();
  logoutListener();
- commentLoginListener();
  postCommentListener();
-
- snippetPreload(['login_box','error_box']);
 
  /*pageStyling*/
  autoResize();
  roundedAvatars();
+
+ snippetPreload(['login_box','error_box']);
 });
 
 function loginListener() {
  $('#login').click(function(event) {
   event.preventDefault();
-  if ($('#login_box').length==0) {
-   $('body').prepend($.ct.snip.login_box);
-   $('#login_box').slideDown();
-   loginboxListener();
-  }
+  showLoginBox();
+ });
+ $('#comment_login').click(function(event) {
+  event.preventDefault();
+  showLoginBox();
  });
 }
 
-function commentLoginListener() {
- $('#comment_login').click(function(event) {
-  event.preventDefault();
-  $('#login').trigger('click');
+function showLoginBox() {
+ if ($('#login_box').length==0) {
+  $('body').prepend($.ct.snip.login_box);
+  $('#login_box').slideDown();
+  loginboxListener();
+  $('#username').focus();
   window.location.hash = '#login_box';
- });
+ }
 }
 
 function logoutListener() {
