@@ -124,7 +124,7 @@ function call(method,req,opt) {
 
 function exception_handler(e) {
  if(!e.message) {
-  e = {number:0, message:e};
+  e = {name:0, message:e};
  }
  if ($('#error_box').length==0) {
   $('body').prepend($.ct.snip.error_box);
@@ -134,5 +134,10 @@ function exception_handler(e) {
    $('#error_box').remove();
   });
   $('#error_box').slideDown();
+  switch(e.name) {
+   case 401: //authentication failure
+    showLoginBox();
+    break;
+  }
  }
 }

@@ -37,7 +37,7 @@ public function postEntry($options = array()) {
  );
  extract($setup_result = $this->api_call_setup($setup));
  $user = $this->getAuthUser();
- if ($user['type'] != 'admin') throw new Exception('Not Authorized',401);
+ if ($user['type'] != 'admin') throw new Exception('Must be Admin to do this',403);
  if (!$options['title']) throw new Exception('Missing Title');
  if (!$options['text']) throw new Exception('Missing Text');
  $basename = strtolower(trim($options['title']));
@@ -269,7 +269,7 @@ public function login($user, $options = array()) {
  extract($setup_result = $this->api_call_setup($setup));
 
  $id = $this->checkPass($user,$options['pass']);
- if (!$id) throw new Exception('Authentication Failure');
+ if (!$id) throw new Exception('Authentication Failure',401);
  $data = array(
   'user'=>$id,
   'guid'=>$this->getUserToken()
