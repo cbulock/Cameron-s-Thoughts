@@ -43,7 +43,8 @@ function showLoginBox() {
 function logoutListener() {
  $('#logout').click(function(event) {
   event.preventDefault();
-  $.ct.logout();
+  //$.ct.logout();
+  call('logout');
   location.reload();
  });
 }
@@ -63,18 +64,10 @@ function postCommentListener() {
   event.preventDefault();
   $('#comment_submit').attr('disabled','disabled');
   opt = {text: $('#comment_text').val()}
-  try {
-   if($.ct.postComment($('#postid').val(),opt)) {
-    $('#comment_submit').fadeOut();
-    $('#leave_comment').slideUp();
-     $('#comments').html($.ct.commentCountText($.ct.commentCount($('#postid').val())));
-   }
-   else {
-    throw {name:'System error', message:'Comment failed to save.'};
-   }
-  }
-  catch(e) {
-   exception_handler(e);
+  if(call('postComment',[$('#postid').val()],opt)) {
+   $('#comment_submit').fadeOut();
+   $('#leave_comment').slideUp();
+    $('#comments').html(call('commentCountText',call('commentCount',[$('#postid').val()])));
   }
  });
 }
@@ -134,10 +127,13 @@ function exception_handler(e) {
    $('#error_box').remove();
   });
   $('#error_box').slideDown();
-  switch(e.name) {
-   case 401: //authentication failure
-    showLoginBox();
-    break;
-  }
+ }
+ switch(e.name) {
+  case 401: //authentication failure
+   showLoginBox();
+   break;
+  case 1001: //blank comment
+   $('#comment_submit').attr('disabled','');
+   break;
  }
 }

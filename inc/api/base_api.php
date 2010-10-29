@@ -78,7 +78,7 @@ public function postEntry($options = array()) {
  if (!$this->db->updateItem('mt_entry',$thisentry,$entrydata,array('field'=>'entry_id'))) throw new Exception('Entry save did not complete, in bad state');
  
  //Create Status Posting
- $url = 'http://ct3.cbulock.com/'.date('Y').'/'.date('m').'/'.$basename.'.html';
+ $url = 'http://ct3.cbulock.com/'.date('Y').'/'.date('m').'/'.$basename.'.html';//the url needs to be dynamic
  $shorturl = $this->getShortURL($url);
  if (strlen($options['title']) > 100) {
   $statustitle = substr($options['title'],0,100).'…';
@@ -217,8 +217,8 @@ public function postComment($postid, $options = array()) {
  );
  extract($setup_result = $this->api_call_setup($setup));
  $user = $this->getAuthUser();
- if (!$user) return FALSE;
- if (!$options['text']) return FALSE;
+ if (!$user) throw new Exception('Must be logged in to post comment',401);
+ if (!$options['text']) throw new Exception('Must enter text into comment box',1001);
  $data = array(
   'blogid' => $options['blogid'],
   'postid' => $postid,//this needs to be sanitized better

@@ -23,5 +23,5 @@ $settings['db'] = array(
 );
 
 define('MAINPAGE_COUNT',20);
-define('DEFAULT_CACHE_EXPIRES',5);
+define('DEFAULT_CACHE_EXPIRES',2);
 ?>
