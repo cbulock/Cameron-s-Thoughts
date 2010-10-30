@@ -171,23 +171,26 @@ public function lastEntry($options = array()) {//where is very open
 function commentCount($postid, $options = array()) {
  $setup['options'] = $options;
  $setup['defaults'] = array(
- 'blogid' => '2'
+ 'blogid' => '2',
+ 'cache' => TRUE
  );
  extract($setup_result = $this->api_call_setup($setup));
  $sql = "SELECT COUNT(*) FROM `comments` WHERE blogid = '".$this->db->sqlClean($options['blogid'])."' AND postid = '".$this->db->sqlClean($postid)."'";
- $result = $this->db->directProcessQuery($sql,'cbulock_cbulock',array('return'=>'single'));
+ $result = $this->db->directProcessQuery($sql,'cbulock_cbulock',array('return'=>'single','cache'=>$options['cache']));
  return $this->api_call_finish($result);
 }
 
 public function getComments($postid, $options = array()) {
  $setup['options'] = $options;
  $setup['defaults'] = array(
-  'blogid' => '2'
+  'blogid' => '2',
+  'expires' => '0.2'
  );
  extract($setup_result = $this->api_call_setup($setup));
  $tableoptions = array(
   'where' => 'postid = "'.$this->db->sqlClean($postid).'" AND blogid= "'.$this->db->sqlClean($options['blogid']).'"',
-  'orderBy' => '`created`'
+  'orderBy' => '`created`',
+  'expires' => $options['expires']
  );
  $results = $this->db->getTable('comments', $tableoptions);
  if ($results) {
@@ -226,7 +229,13 @@ public function postComment($postid, $options = array()) {
   'ip' => $remote_ip,
   'text' => $options['text']
  );
- return $this->api_call_finish($this->db->insertItem('comments',$data));
+ $comment = $this->db->insertItem('comments',$data);
+ if (!$comment) throw new Exception('Error saving comment');
+ $result = array(
+  'id' => $comment,
+  'count' => $this->commentCount($postid,array('cache'=>FALSE))
+ ); 
+ return $this->api_call_finish($result);
 }
 
 /**********************************

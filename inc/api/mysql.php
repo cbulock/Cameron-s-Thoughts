@@ -128,7 +128,7 @@ private function sqlProcess($sql,$options = array()) {//It may be more consistan
   'expires' => DEFAULT_CACHE_EXPIRES
  );
  $options = $this->setOptions($options, $defaults);
- if($this->cache->exists($sql,$options['expires'])) {
+ if($this->cache->exists($sql,$options['expires']) && $options['cache']) {
   $result = $this->cache->read($sql);
  }
  else {

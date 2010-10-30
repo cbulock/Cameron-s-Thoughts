@@ -65,10 +65,11 @@ function postCommentListener() {
   event.preventDefault();
   $('#comment_submit').attr('disabled','disabled');
   opt = {text: $('#comment_text').val()}
-  if(call('postComment',[$('#postid').val()],opt)) {
+  comment = call('postComment',[$('#postid').val()],opt)
+  if(comment) {
    $('#comment_submit').fadeOut();
    $('#leave_comment').slideUp();
-    $('#comments').html(call('commentCountText',call('commentCount',[$('#postid').val()])));
+    $('#comments').html(call('commentCountText',comment.count));
   }
  });
 }
