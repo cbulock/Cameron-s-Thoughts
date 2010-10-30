@@ -160,7 +160,7 @@ public function lastEntry($options = array()) {//where is very open
  );
  extract($setup_result = $this->api_call_setup($setup));
  $sql = "select max(entry_id) FROM `mt_entry` WHERE (entry_blog_id = ".$this->db->sqlClean($options['blogid'])." AND ".$options['where'].")";
- $result = $this->db->directProcessQuery($sql,'cbulock_mt2',array('return'=>'single'));
+ $result = $this->db->directProcessQuery($sql,'cbulock_mt2',array('return'=>'single','cache'=>FALSE));//going to disable caching as I believe this can be off when new entries are created
  return $this->api_call_finish($result);
 }
 

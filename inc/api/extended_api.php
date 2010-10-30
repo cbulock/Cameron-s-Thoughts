@@ -46,7 +46,6 @@ public function getMonthlyEntries($month, $year, $options = array()) {
   'count' => '10'
  );
  extract($setup_result = $this->api_call_setup($setup));
-// $sql = "SELECT entry_id FROM `mt_entry` WHERE MONTH(entry_created_on) = ".$month." AND YEAR(entry_created_on) = ".$year;
  $dboptions = array(
   'where' => "MONTH(entry_created_on) = ".$month." AND YEAR(entry_created_on) = ".$year,
   'orderBy' => 'entry_id DESC',

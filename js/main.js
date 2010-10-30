@@ -54,6 +54,7 @@ function loginboxListener() {
   event.preventDefault();
   opt = {pass: $('#password').attr('value')};
    if(call('login',[$('#username').val()],opt)) {
+    window.location.hash = '';
     location.reload();
   } 
  });
