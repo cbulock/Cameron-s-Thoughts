@@ -172,11 +172,12 @@ function commentCount($postid, $options = array()) {
  $setup['options'] = $options;
  $setup['defaults'] = array(
  'blogid' => '2',
- 'cache' => TRUE
+ 'cache' => TRUE,
+ 'expires' => '0.2'
  );
  extract($setup_result = $this->api_call_setup($setup));
  $sql = "SELECT COUNT(*) FROM `comments` WHERE blogid = '".$this->db->sqlClean($options['blogid'])."' AND postid = '".$this->db->sqlClean($postid)."'";
- $result = $this->db->directProcessQuery($sql,'cbulock_cbulock',array('return'=>'single','cache'=>$options['cache']));
+ $result = $this->db->directProcessQuery($sql,'cbulock_cbulock',array('return'=>'single','cache'=>$options['cache'],'expires'=>$options['expires']));
  return $this->api_call_finish($result);
 }
 
