@@ -232,6 +232,14 @@ public function postComment($postid, $options = array()) {
  );
  $comment = $this->db->insertItem('comments',$data);
  if (!$comment) throw new Exception('Error saving comment');
+ 
+ $mailtext = "New comment posted:\n".$options['text'];
+ $mail = $this->useMail();
+ $mail->AddAddress(ADMIN_EMAIL,'Cameron');
+ $mail->Subject = "New Comment Posted on Cameron's Thoughts";
+ $mail->Body = $mailtext;
+ $mail->Send();
+
  $result = array(
   'id' => $comment,
   'count' => $this->commentCount($postid,array('cache'=>FALSE))
@@ -373,6 +381,13 @@ protected function getShortURL($url) {
 /**********************************
    Misc Methods
 **********************************/
+
+protected function useMail() {
+ require_once('email.php');
+ $mail = new PHPMailer;
+ $mail->SetFrom(SITE_EMAIL,"Cameron's Thoughts");
+ return $mail;
+}
 
 public function getUser($value, $options = array()) {
  $setup['options'] = $options;

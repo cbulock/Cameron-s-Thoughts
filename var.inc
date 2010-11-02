@@ -24,4 +24,6 @@ $settings['db'] = array(
 
 define('MAINPAGE_COUNT',20);
 define('DEFAULT_CACHE_EXPIRES',2);
+define('SITE_EMAIL','cbulock@cbulock.com');
+define('ADMIN_EMAIL','cameron@bulock.com');
 ?>
