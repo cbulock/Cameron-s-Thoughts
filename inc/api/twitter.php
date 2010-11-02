@@ -1,6 +1,6 @@
 <?php
 
-require_once(INCLUDE_DIR.'/twitter/twitteroauth/twitteroauth.php');
+require_once(INCLUDE_DIR.'/libs/twitter/twitteroauth/twitteroauth.php');
 
 class Status {
 
