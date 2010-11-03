@@ -194,6 +194,7 @@ input, textarea, select { padding: 1px; }
   left: 0px;
   width: 100%;
   background-color: rgba(255, 0, 0, 0.7);
+  z-index: 5;
 }
 #error_box h1 {
   padding-left: 25%;
@@ -352,6 +353,7 @@ ul.main_nav li ul.sub_nav li {
   border-right: none;
   border-top: 1px solid #bcbcbc;
   text-align: left;
+  z-index: 1;
 }
 ul.main_nav li ul.sub_nav li:first-child { border: none; }
 ul.main_nav li ul.sub_nav li a:hover { color: #ff9900; }
