@@ -233,13 +233,18 @@ public function postComment($postid, $options = array()) {
  $comment = $this->db->insertItem('comments',$data);
  if (!$comment) throw new Exception('Error saving comment');
  
- $mailtext = "New comment posted:\n".$options['text'];
+ //Admin Email
  $mail = $this->useMail();
  $mail->AddAddress(ADMIN_EMAIL,'Cameron');
  $mail->Subject = "New Comment Posted on Cameron's Thoughts";
- $mail->Body = $mailtext;
+ $data['username'] = $user['login'];
+ $data['fullname'] = $user['name'];
+ $mail->Body = $this->getMailTemplate('post_comment',$data);
  $mail->Send();
 
+ //User Emails
+ //Somehow email users of all previous comments here
+ 
  $result = array(
   'id' => $comment,
   'count' => $this->commentCount($postid,array('cache'=>FALSE))
@@ -379,7 +384,7 @@ protected function getShortURL($url) {
 }
 
 /**********************************
-   Misc Methods
+   Mail Methods
 **********************************/
 
 protected function useMail() {
@@ -388,6 +393,20 @@ protected function useMail() {
  $mail->SetFrom(SITE_EMAIL,"Cameron's Thoughts");
  return $mail;
 }
+
+protected function getMailTemplate($name,$data = array()) {
+ $filename = TPL_DIR.TYPE.'/email/'.$name.'.tpl';
+ $file = fopen($filename,'r'); 
+ $template = fread($file,filesize($filename));
+ foreach ($data as $v => $i) {
+  $template = preg_replace('/\$'.$v.'\$/',$i,$template);
+ }
+ return $template;
+}
+
+/**********************************
+   Misc Methods
+**********************************/
 
 public function getUser($value, $options = array()) {
  $setup['options'] = $options;
