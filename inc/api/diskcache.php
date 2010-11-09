@@ -2,12 +2,12 @@
 
 class Cache {
 
-protected $count;  //cache usage counter
+private $count;  //cache usage counter
 
 public function exists($name, $expires = DEFAULT_CACHE_EXPIRES) {//NULL expires causes expiration to be ignored
  $name = md5($name);
  if ($expires) {
-  $mtime = @filemtime(CACHE_DIR.$name);
+  $mtime = @filemtime(CACHE_DIR.$name.'.cache');
   if ((date('U') - $mtime) < $expires*60 && file_exists(CACHE_DIR.$name.'.cache')) return TRUE;
  }
  else {

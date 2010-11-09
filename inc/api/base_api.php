@@ -514,7 +514,7 @@ protected function setAPIToken($token) {
 **********************************/
 
 public function getCacheCount() {
- return $this->api_call_finish($this->cache->count);
+ return $this->api_call_finish($this->cache->count());
 }
 
 public function getLastQuery($options = array()) {

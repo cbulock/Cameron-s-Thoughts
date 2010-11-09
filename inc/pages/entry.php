@@ -14,6 +14,7 @@ $create['link'] = '/'.date('Y',$create_date).'/'.date('m',$create_date).'/';
 $cats = $ct->getCatList();
 
 $query_count = $ct->getQueryCount();
+$cache_count = $ct->getCacheCount();
 
 $tpl->assign('entry',$entry);
 if ($prev_entry) $tpl->assign('prev_entry',$prev_entry);
@@ -24,6 +25,7 @@ $tpl->assign('create',$create);
 $tpl->assign('comment_count_text',$comment_count_text);
 $tpl->assign('cats',$cats);
 $tpl->assign('query_count',$query_count);
+$tpl->assign('cache_count',$cache_count);
 
 $tpl->display('entry.tpl');
 ?>
