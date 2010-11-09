@@ -459,6 +459,32 @@ protected function call($url,$post=NULL) {
  return $response;
 }
 
+public function addStat($options = array()) {
+ $setup['options'] = $options;
+ $setup['defaults'] = array(
+  'type' => 'page'
+ );
+ extract($setup_result = $this->api_call_setup($setup));
+ $data = array(
+  'ip' => $options['ip'],
+  'host' => $options['host'],
+  'page' => $options['page'],
+  'file' => $options['file'],
+  'referer' => $options['referer'],
+  'agent' => $options['agent'],
+  'guid' => $this->getUserToken(),
+  'response' => $options['response'],
+  'lang' => $options['lang'],
+  'request' => $options['request'],
+  'type' => $options['type'],
+  'method' => $options['method']
+ );
+ $user = $this->getAuthUser();
+ if ($user) $data['user_id'] = $user['id'];
+ $result = $this->db->insertItem('referers',$data);
+ return $this->api_call_finish($result);
+}
+
 /**********************************
    Token Methods
 **********************************/
