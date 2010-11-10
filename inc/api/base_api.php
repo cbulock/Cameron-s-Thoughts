@@ -442,6 +442,12 @@ public function getAuthUser($options = array()) {
    Misc Methods
 **********************************/
 
+protected function getAvatarPath($hash, $service) {
+ if ($service == '0' || $service == '1') {
+  return 'http://www.gravatar.com/avatar.php?gravatar_id='.$hash.'&r=r';
+ }
+}
+
 protected function setCookie($name, $value, $expire=1893456000) {
  return setcookie($name, $value, $expire, "/");
 }

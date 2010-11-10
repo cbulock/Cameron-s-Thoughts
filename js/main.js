@@ -16,7 +16,6 @@ $(document).ready(function() {
  autoResize();
  roundedAvatars();
 
- snippetPreload(['login_box','error_box']);
 });
 
 function loginListener() {
@@ -32,18 +31,19 @@ function loginListener() {
 
 function showLoginBox() {
  if ($('#login_box').length==0) {
-  $('body').prepend($.ct.snip.login_box);
-  $('#login_box').slideDown();
-  loginboxListener();
-  $('#username').focus();
-  window.location.hash = '#login_box';
+  snippetLoad('login_box', function() {
+   $('body').prepend(arguments[0]);
+   $('#login_box').slideDown();
+   loginboxListener();
+   $('#username').focus();
+   window.location.hash = '#login_box';
+  });
  }
 }
 
 function logoutListener() {
  $('#logout').click(function(event) {
   event.preventDefault();
-  //$.ct.logout();
   call('logout');
   location.reload();
  });
@@ -74,19 +74,12 @@ function postCommentListener() {
  });
 }
 
-function snippetPreload(snips) {
- $.ct.snip = {};
- for (i in snips) {
-  snippetLoad(snips[i]);
- }
-}
-
-function snippetLoad(snip) {
+function snippetLoad(snip, callback) {
  $.ajax({
   url: '/snip/'+snip,
   dataType: 'html',
   success: function(data) {
-   $.ct.snip[snip] = data;
+   callback(data);
   }
  });
 }
@@ -122,13 +115,15 @@ function exception_handler(e) {
   e = {name:0, message:e};
  }
  if ($('#error_box').length==0) {
-  $('body').prepend($.ct.snip.error_box);
-  $('#error_box button').button({icons:{primary:'ui-icon-circle-close'},text:false});
-  $('#error_box p').html(e.message);
-  $('#error_box button').click(function(){
-   $('#error_box').remove();
+  snippetLoad('error_box', function() {
+   $('body').prepend(arguments[0]);
+   $('#error_box button').button({icons:{primary:'ui-icon-circle-close'},text:false});
+   $('#error_box p').html(e.message);
+   $('#error_box button').click(function(){
+    $('#error_box').remove();
+   });
+   $('#error_box').slideDown();
   });
-  $('#error_box').slideDown();
  }
  switch(e.name) {
   case 401: //authentication failure
