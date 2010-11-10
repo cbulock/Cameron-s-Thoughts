@@ -9,7 +9,7 @@ AddCharset UTF-8 .css
 #Rewrites
 RewriteEngine On
 Options +FollowSymlinks
-##################
+################## Main Redirects
 #Monthly archives
 RewriteRule ^20*(.*)/(.*)/$ index.php?type=month&year=$1&month=$2 [L]
 
@@ -19,12 +19,19 @@ RewriteRule ^20*(.*)/(.*)/(.*).html?$ index.php?type=entry&basename=$3 [L]
 #Category archives
 RewriteRule ^cat/(.*)/$ index.php?type=cat&basename=$1 [L]
 
+#General Static Pages
+RewriteRule ^page/(.*)/$ index.php?type=static&basename=$1 [L]
+
 #Page Snippets
 RewriteRule ^snip/(.*)$ index.php?type=snip&snip=$1 [L]
 
 #API Access
 RewriteRule ^api/(.*)$ index.php?type=api&request=$1 [L]
 
+################## Page Specific Redirects
+#About pages
+RewriteRule ^about_me.html$ index.php?type=static&basename=about_me [L]
+RewriteRule ^about/me/$ index.php?type=static&basename=about_me [L]
 
 <Files 403.shtml>
 order allow,deny
