@@ -340,18 +340,6 @@ protected function methodAuth($token=NULL) {
  return array('class'=>'user');
 }
 
-public function getAuthUser($options = array()) {
- $setup['options'] = $options;
- extract($setup_result = $this->api_call_setup($setup));
- $user = $this->user;
- if ($auth['class']!='internal') {
-  unset($user['pass']);
-  unset($user['email']);
- }
- if ($user) return $user;
- return $this->api_call_finish(FALSE);
-}
-
 public function logout() {
  return $this->api_call_finish($this->db->deleteItem('sessions',$this->getUserToken(),array('field'=>'guid')));
 }
@@ -405,15 +393,28 @@ protected function getMailTemplate($name,$data = array()) {
 }
 
 /**********************************
-   Misc Methods
+   User Methods
 **********************************/
+
+public function addUser($name, $options = array()) {
+ $setup['options'] = $options;
+ $setup['defaults'] = array(
+ );
+ extract($setup_result = $this->api_call_setup($setup));
+ return $this->api_call_finish();
+}
+
+public function nameFree($name, $options = array()) {
+ if ($this->getUser($name)) return $this->api_call_finish(TRUE);
+ return $this->api_call_finish(FALSE);
+}
 
 public function getUser($value, $options = array()) {
  $setup['options'] = $options;
  $setup['defaults'] = array(
   'callby' => 'login'
  );
- extract($setup_result = $this->api_call_setup($setup)); 
+ extract($setup_result = $this->api_call_setup($setup));
  $user = $this->db->getItem('users',$value,array('field'=>$options['callby']));
  if (!$user) return FALSE;
  $user['email_hash'] = md5($user['email']);
@@ -425,11 +426,21 @@ public function getUser($value, $options = array()) {
  return $this->api_call_finish($user);
 }
 
-protected function getAvatarPath($hash, $service) {
- if ($service == '0' || $service == '1') {
-  return 'http://www.gravatar.com/avatar.php?gravatar_id='.$hash.'&r=r';
+public function getAuthUser($options = array()) {
+ $setup['options'] = $options;
+ extract($setup_result = $this->api_call_setup($setup));
+ $user = $this->user;
+ if ($auth['class']!='internal') {
+  unset($user['pass']);
+  unset($user['email']);
  }
+ if ($user) return $user;
+ return $this->api_call_finish(FALSE);
 }
+
+/**********************************
+   Misc Methods
+**********************************/
 
 protected function setCookie($name, $value, $expire=1893456000) {
  return setcookie($name, $value, $expire, "/");
