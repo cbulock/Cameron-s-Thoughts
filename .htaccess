@@ -29,9 +29,13 @@ RewriteRule ^snip/(.*)$ index.php?type=snip&snip=$1 [L]
 RewriteRule ^api/(.*)$ index.php?type=api&request=$1 [L]
 
 ################## Page Specific Redirects
-#About pages
+#About me 
 RewriteRule ^about_me.html$ index.php?type=static&basename=about_me [L]
 RewriteRule ^about/me/$ index.php?type=static&basename=about_me [L]
+#About Cameron's Thoughts
+RewriteRule ^about_this_site.html$ index.php?type=static&basename=about_this_site [L]
+RewriteRule ^about/ct/$ index.php?type=static&basename=about_this_site [L]
+
 
 <Files 403.shtml>
 order allow,deny
