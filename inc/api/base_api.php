@@ -375,10 +375,17 @@ protected function getShortURL($url) {
    Mail Methods
 **********************************/
 
-protected function useMail() {
+protected function useMail($options = array()) {
+ $setup['options'] = $options;
+ $setup['defaults'] = array(
+  'from_email' => SITE_EMAIL,
+  'from_name' => "Cameron's Thoughts"
+ );
+ extract($setup_result = $this->api_call_setup($setup));
+
  require_once('email.php');
  $mail = new PHPMailer;
- $mail->SetFrom(SITE_EMAIL,"Cameron's Thoughts");
+ $mail->SetFrom($options['from_email'],$options['from_name']);
  return $mail;
 }
 
@@ -441,6 +448,25 @@ public function getAuthUser($options = array()) {
 /**********************************
    Misc Methods
 **********************************/
+
+public function sendMessage($options = array()) {
+ $setup['options'] = $options;
+ $setup['defaults'] = array(
+  'email' => 'no-email-given@example.com',
+  'name' => 'Contact Form User'
+ );
+ extract($setup_result = $this->api_call_setup($setup));
+ $mail = $this->useMail(array(
+  'from_email' => $options['email'],
+  'from_name' => $options['name']
+ ));
+ $mail->AddAddress(ADMIN_EMAIL,'Cameron');
+ $mail->Subject = "New Contact Form Message";
+ $data['message'] = $options['message'];
+ $mail->Body = $this->getMailTemplate('contact_form',$data);
+ if ($mail->Send()) return $this->api_call_finish(TRUE);
+ 
+}
 
 protected function getAvatarPath($hash, $service) {
  if ($service == '0' || $service == '1') {

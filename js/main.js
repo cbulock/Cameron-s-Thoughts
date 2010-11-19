@@ -11,6 +11,7 @@ $(document).ready(function() {
  loginListener();
  logoutListener();
  postCommentListener();
+ contactFormListener();
 
  /*pageStyling*/
  autoResize();
@@ -70,6 +71,39 @@ function postCommentListener() {
    $('#comment_submit').fadeOut();
    $('#leave_comment').slideUp();
     $('#comments').html(call('commentCountText',comment.count));
+  }
+ });
+}
+
+function contactFormListener() {
+ $('#contact').click(function(event) {
+  event.preventDefault();
+  showContactForm();
+ });
+}
+
+function showContactForm() {
+ if ($('#contact_form').length==0) {
+  snippetLoad('contact_form', function() {
+   $('body').prepend(arguments[0]);
+   $('#contact_form').slideDown();
+   contactFormBoxListener();
+   window.location.hash = '#contact_form';
+  });
+ }
+}
+
+function contactFormBoxListener() {
+ $('#contact').submit(function(event){
+   event.preventDefault();
+  opt = {
+   name : $('#contact_name').val(),
+   email : $('#contact_email').val(),
+   message : $('#contact_message').val()
+  };
+  if(call('sendMessage',null,opt)) {
+   $('#contact_form').slideUp();
+   window.location.hash = '';
   }
  });
 }

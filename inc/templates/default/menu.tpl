@@ -15,7 +15,7 @@
  </li>
  <li><p>Connect</p>
   <ul class='sub_nav'>
-   <li><a href=''>Contact Form</a></li>
+   <li><a href='' id='contact'>Contact Form</a></li>
    <li><a href='http://www.facebook.com/cbulock'>Facebook</a></li>
   </ul>
  </li>
