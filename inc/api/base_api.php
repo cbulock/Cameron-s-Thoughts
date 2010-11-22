@@ -234,13 +234,14 @@ public function postComment($postid, $options = array()) {
  if (!$comment) throw new Exception('Error saving comment');
  
  //Admin Email
- $mail = $this->useMail();
- $mail->AddAddress(ADMIN_EMAIL,'Cameron');
- $mail->Subject = "New Comment Posted on Cameron's Thoughts";
  $data['username'] = $user['login'];
  $data['fullname'] = $user['name'];
- $mail->Body = $this->getMailTemplate('post_comment',$data);
- $mail->Send();
+ $mailoptions = array(
+  'data' => $data,
+  'subject' => "New Comment Posted on Cameron's Thoughts",
+  'template' => 'post_comment'
+ );
+ $this->sendMail($mailoptions);
 
  //User Emails
  //Somehow email users of all previous comments here
@@ -375,20 +376,6 @@ protected function getShortURL($url) {
    Mail Methods
 **********************************/
 
-protected function useMail($options = array()) {
- $setup['options'] = $options;
- $setup['defaults'] = array(
-  'from_email' => SITE_EMAIL,
-  'from_name' => "Cameron's Thoughts"
- );
- extract($setup_result = $this->api_call_setup($setup));
-
- require_once('email.php');
- $mail = new PHPMailer;
- $mail->SetFrom($options['from_email'],$options['from_name']);
- return $mail;
-}
-
 protected function getMailTemplate($name,$data = array()) {
  $filename = TPL_DIR.TYPE.'/email/'.$name.'.tpl';
  $file = fopen($filename,'r'); 
@@ -397,6 +384,31 @@ protected function getMailTemplate($name,$data = array()) {
   $template = preg_replace('/\$'.$v.'\$/',$i,$template);
  }
  return $template;
+}
+
+protected function sendMail($options = array()) {
+ $setup['options'] = $options;
+ $setup['defaults'] = array(
+  'from_email' => SITE_EMAIL,
+  'from_name' => "Cameron's Thoughts",
+  'to_email' => ADMIN_EMAIL,
+  'to_name' => 'Cameron'
+ );
+ extract($setup_result = $this->api_call_setup($setup));
+ require_once('email.php');
+ $mail = new PHPMailer(TRUE);
+ $mail->SetFrom($options['from_email'],$options['from_name']);
+ $mail->AddAddress($options['to_email'],$options['to_name']);
+ if ($options['subject']) {
+  $mail->Subject = $options['subject'];
+ }
+ $mail->Body = $this->getMailTemplate($options['template'],$options['data']);
+ try {
+ $result = $mail->Send();
+ } catch (phpmailerException $e) {
+  throw new Exception($e);
+ }
+ return $result;
 }
 
 /**********************************
@@ -456,16 +468,16 @@ public function sendMessage($options = array()) {
   'name' => 'Contact Form User'
  );
  extract($setup_result = $this->api_call_setup($setup));
- $mail = $this->useMail(array(
-  'from_email' => $options['email'],
-  'from_name' => $options['name']
- ));
- $mail->AddAddress(ADMIN_EMAIL,'Cameron');
- $mail->Subject = "New Contact Form Message";
  $data['message'] = $options['message'];
- $mail->Body = $this->getMailTemplate('contact_form',$data);
- if ($mail->Send()) return $this->api_call_finish(TRUE);
- 
+ $mailoptions = array(
+  'data' => $data,
+  'from_email' => $options['email'],
+  'from_name' => $options['name'],
+  'subject' => 'New Contact Form Message',
+  'template' => 'contact_form'
+ );
+ if ($this->sendMail($mailoptions)) return $this->api_call_finish(TRUE);
+ throw new Exception('Message failed to send',1002); 
 }
 
 protected function getAvatarPath($hash, $service) {
