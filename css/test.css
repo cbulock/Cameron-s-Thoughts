@@ -181,6 +181,7 @@ img { border: none; }
 input:focus { padding: 1px; }
 textarea:focus { padding: 1px; }
 input, textarea, select { padding: 1px; }
+#contact_form, #login_box, #error_box { display: none; }
 #comment_submit {
   font-size: 80%;
   margin-left: 110px;
