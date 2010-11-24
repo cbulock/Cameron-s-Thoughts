@@ -1,4 +1,5 @@
-AddCharset UTF-8 .css
+AddCharset UTF-8 .css .less
+AddType text/css less 
 
 #Protect inc files from being read
 <FilesMatch "\.(inc)$">
