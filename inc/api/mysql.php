@@ -89,7 +89,9 @@ public function deleteItem($table, $value, $options = array()) {
 private function sqlQuery($sql, $options = array()) {
  $this->queryCount++;
  $this->queryLog[] = $sql;
- return mysql_query($sql);
+ $result = mysql_query($sql);
+ if ($result) return $result;
+ throw new Exception('MySQL Error occured: '. mysql_error());
 }
 
 /**********************************
