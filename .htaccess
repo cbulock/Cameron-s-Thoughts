@@ -30,11 +30,14 @@ RewriteRule ^api/(.*)$ index.php?type=api&request=$1 [L]
 
 ################## Page Specific Redirects
 #About me 
-RewriteRule ^about_me.html$ index.php?type=static&basename=about_me [L]
+Redirect 301 about_me.html http://www.cbulock.com/about/me
 RewriteRule ^about/me/$ index.php?type=static&basename=about_me [L]
 #About Cameron's Thoughts
-RewriteRule ^about_this_site.html$ index.php?type=static&basename=about_this_site [L]
+Redirect 301 about_this_site.html http://www.cbulock.com/about/ct
 RewriteRule ^about/ct/$ index.php?type=static&basename=about_this_site [L]
+#RSS
+Redirect 301 /xml/full.xml http://www.cbulock.com/rss
+RewriteRule ^rss index.php?pagetype=rss [L]
 
 
 <Files 403.shtml>
