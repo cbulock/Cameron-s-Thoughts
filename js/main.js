@@ -7,11 +7,16 @@ $(document).ready(function() {
   $(this).find('> ul').stop(true, true).slideUp('slow'); 	
  });
 
- /*listeners*/
- loginListener();
- logoutListener();
+ /*other listeners*/
  postCommentListener();
- contactFormListener();
+
+ /*click listeners*/
+ for (i in listeners) {
+  $('#'+i).click(function(event) {
+   event.preventDefault();
+   listeners[this.id]();
+  });
+ }
 
  /*pageStyling*/
  autoResize();
@@ -74,16 +79,23 @@ throbber = ({
  }
 });
 
-function loginListener() {
- $('#login').click(function(event) {
-  event.preventDefault();
+
+listeners = ({
+ login : function() {
   showLoginBox();
- });
- $('#comment_login').click(function(event) {
-  event.preventDefault();
+ },
+ comment_login : function() {
   showLoginBox();
- });
-}
+ },
+ logout : function() {
+  call('logout');
+  location.reload();
+ },
+ contact : function() {
+  showContactForm();
+ }
+});
+
 
 function showLoginBox() {
  if ($('#login_box').length==0) {
@@ -95,14 +107,6 @@ function showLoginBox() {
    window.location.hash = '#login_box';
   });
  }
-}
-
-function logoutListener() {
- $('#logout').click(function(event) {
-  event.preventDefault();
-  call('logout');
-  location.reload();
- });
 }
 
 function loginboxListener() {
@@ -127,13 +131,6 @@ function postCommentListener() {
    $('#leave_comment').slideUp();
     $('#comments').html(call('commentCountText',comment.count));
   }
- });
-}
-
-function contactFormListener() {
- $('#contact').click(function(event) {
-  event.preventDefault();
-  showContactForm();
  });
 }
 
