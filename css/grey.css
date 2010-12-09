@@ -77,14 +77,14 @@ html {
   background-image: url('/css/img/black_tile.jpg');
 }
 a {
-  color: white;
+  color: #ffffff;
   text-decoration: none;
 }
 a:hover {
   text-decoration: underline;
   color: #ff9900;
 }
-a:visited { color: white; }
+a:visited { color: #ffffff; }
 a:visited:hover { color: #ff9900; }
 code, pre {
   display: block;
@@ -253,7 +253,7 @@ input, textarea, select { padding: 1px; }
 }
 #title a:hover {
   text-decoration: none;
-  color: white;
+  color: #ffffff;
 }
 #prev_entry {
   display: inline;
@@ -356,7 +356,7 @@ ul.main_nav li p {
   text-decoration: none;
   display: block;
 }
-ul.main_nav li a:hover { color: #424242; }
+ul.main_nav li a:hover { color: #ffffff; }
 ul.main_nav li ul.sub_nav {
   position: absolute;
   left: 0px;
