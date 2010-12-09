@@ -64,7 +64,7 @@
 body {
   font-family: "Ubuntu", "Trebuchet MS", Trebuchet, Verdana, Tahoma, Arial, Sans-Serif;
   font-size: 0.9em;
-  background-color: #db5a51;
+  background-color: #cb3131;
   text-shadow: #111111 1px 1px 3px;
   color: #ffffff;
   margin: 0;
@@ -227,8 +227,8 @@ input, textarea, select { padding: 1px; }
 }
 #login_box h1 { font-size: 1.2em; }
 #throbber {
-  top: 5px;
-  right: 45px;
+  top: 10px;
+  right: 75px;
   width: 30px;
   position: fixed;
   z-index: 10;
@@ -239,7 +239,7 @@ input, textarea, select { padding: 1px; }
   position: absolute;
   top: 0;
   left: 0;
-  background-color: #db5a51;
+  background-color: #cb3131;
   color: #ffffff;
   font-size: 0.85em;
   border-radius: 0 0 5px 0;
