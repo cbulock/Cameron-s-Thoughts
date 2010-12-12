@@ -628,7 +628,7 @@ protected function setOptions($options, $defaults) {
    Core Methods
 **********************************/
 
-public function __construct($settings) {
+public function __construct() {
  //create internal token
  $this->setAPIToken($this->createGUID());
  //setup caching
@@ -636,7 +636,7 @@ public function __construct($settings) {
  $this->cache = new Cache;
  //connect to database
  require_once('db.php');
- $this->db = new DB($settings['db']['host'],$settings['db']['user'],$settings['db']['pass'],array('prefix'=>DB_PREFIX,'cache'=>$this->cache));
+ $this->db = new DB(DB_HOST,DB_USER,DB_PASS,array('prefix'=>DB_PREFIX,'cache'=>$this->cache));
  //setup user token/login
  if ($_COOKIE['guid']) {
   $this->tokenLogin($_COOKIE['guid']);

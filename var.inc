@@ -1,6 +1,5 @@
 <?php
-include('dbpass.inc');
-define('ROOT_DIR','/home/ct3/public_html/');
+include('settings.inc');
 define('INCLUDE_DIR',ROOT_DIR.'inc/');
 define('TPL_DIR',INCLUDE_DIR.'templates/');
 define('SMARTY_DIR',INCLUDE_DIR.'libs/smarty/libs/');
@@ -14,12 +13,6 @@ $settings['site'] = array(
  'ml'    => 'xhtml',
  'mlver' => '1.0',
  'lang'  => 'en'
-);
-
-$settings['db'] = array(
- 'host' => 'cbulock.com',
- 'user' => 'cbulock_cbulock',
- 'pass' => DB_PASS
 );
 
 define('MAINPAGE_COUNT',20);
