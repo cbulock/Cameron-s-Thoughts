@@ -238,7 +238,7 @@ public function postComment($postid, $options = array()) {
  $data['fullname'] = $user['name'];
  $mailoptions = array(
   'data' => $data,
-  'subject' => "New Comment Posted on Cameron's Thoughts",
+  'subject' => "New Comment Posted on ".$this->getSetting('site_name'),
   'template' => 'post_comment'
  );
  $this->sendMail($mailoptions);
@@ -388,10 +388,12 @@ protected function getMailTemplate($name,$data = array()) {
 
 protected function sendMail($options = array()) {
  $setup['options'] = $options;
+ $site_email = $this->getSetting('site_email');
+ $admin_email = $this->getSetting('admin_email');
  $setup['defaults'] = array(
-  'from_email' => SITE_EMAIL,
-  'from_name' => "Cameron's Thoughts",
-  'to_email' => ADMIN_EMAIL,
+  'from_email' => $site_email,
+  'from_name' => $this->getSetting('site_name'),
+  'to_email' => $admin_email,
   'to_name' => 'Cameron'
  );
  extract($setup_result = $this->api_call_setup($setup));
@@ -506,7 +508,7 @@ protected function call($url,$post=NULL) {
  curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
  curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
  curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
- curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Cameron\'s Thoughts API Caller)');
+ curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 ('.$this->getSetting('site_name').' API Caller)');
  curl_setopt($ch, CURLOPT_MAXREDIRS, 5);
  curl_setopt($ch, CURLOPT_TIMEOUT, 20);
  $response = curl_exec($ch);
@@ -538,6 +540,21 @@ public function addStat($options = array()) {
  if ($user) $data['user_id'] = $user['id'];
  $result = $this->db->insertItem('referers',$data);
  return $this->api_call_finish($result);
+}
+
+public function getSetting($setting, $options = array()) {
+ $setup['options'] = $options;
+ $setup['defaults'] = array(
+  'expires' => 360
+ );
+ extract($setup_result = $this->api_call_setup($setup));
+ $dboptions = array(
+  'field' => 'name',
+  'expires' => $options['expires']
+ );
+ $setting = $this->db->getItem('settings',$setting, $dboptions);
+ if ($setting) return $this->api_call_finish($setting);
+ throw new Exception('Setting not found') ;
 }
 
 /**********************************

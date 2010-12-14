@@ -10,7 +10,7 @@
  <li><p>About</p>
   <ul class='sub_nav'>
    <li><a href='/about/me/'>Me</a></li>
-   <li><a href='/about/ct/'>Cameron's Thoughts</a></li>
+   <li><a href='/about/ct/'>{$site_name}</a></li>
   </ul>
  </li>
  <li><p>Connect</p>

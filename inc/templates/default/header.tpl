@@ -6,7 +6,7 @@ Welcome, {$authUser.name} | <a href='' id='logout'>Logout</a>
 {/if}
 </div>
 <div id='heading'>
-<h1 id='title'><a href='/'>{$settings.site.title}</a></h1>
-<p id='sitetag'>{$settings.site.tag}</p>
+<h1 id='title'><a href='/'>{$site_name}</a></h1>
+<p id='sitetag'>{$site_tagline}</p>
 </div>
 {include file='menu.tpl'}

@@ -2,9 +2,9 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 {if $title_append == ''}
-<title>{$settings.site.title}</title>
+<title>{$site_name}</title>
 {else}
-<title>{$settings.site.title} - {$title_append}</title>
+<title>{$site_name} - {$title_append}</title>
 {/if}
 <link rel='shortcut icon' type='image/png' href='/css/img/cameron_icon.png' />
 <link rel='stylesheet' type='text/css' href='/css/christmas.css' title='Main' />
