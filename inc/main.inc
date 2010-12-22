@@ -20,5 +20,4 @@ require_once(INCLUDE_DIR.'/backend/pagetype.php');
 
 //Image System
 //include(INCLUDE_DIR.'images/func.php');
-
 ?>

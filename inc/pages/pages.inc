@@ -33,5 +33,4 @@ $authUser = $ct->getAuthUser();
 if ($authUser) {
  $tpl->assign('authUser',$authUser);
 }
-
 ?>

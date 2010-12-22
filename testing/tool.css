@@ -1,0 +1,36 @@
+html, body, div { 
+	margin:0;
+	padding:0;
+	height:95%;
+}
+
+body {
+	font-family: 'Trebuchet MS', Tahoma, Verdana, Arial, sans-serif;
+	width: 1050px;
+	margin: 0 auto;
+}
+
+body #tabs .ui-button, body #tabs li {
+	font-size: 70%;
+}
+
+h1 {
+	text-align: center;
+	font-size: 1.5em;
+	margin: 5px;
+}
+
+textarea#results {
+	width: 99%;
+	height: 300px;
+}
+
+iframe {
+	width: 1020px;
+	border:none;
+	height: 98%
+}
+
+#tab-2 {
+	padding: 10px;
+}

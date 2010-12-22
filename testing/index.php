@@ -1,33 +1,40 @@
-<?php
-require_once('../var.inc');
-require_once(INCLUDE_DIR.'main.inc');
-?>
+<!DOCTYPE html>
 <html>
-<script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js'></script>
-<script type='text/javascript' src='api.js'></script>
-<form>
-Method:
-<select name='method_menu' id='method_menu'>
-<option value=''></option>
-<?php echo displayMethods();?>
-</select><br/>
-<div id='req_param_boxes'></div>
-<div id='param_boxes'></div>
-<input type='button' value='Send' id='submit' /><br/>
-<input type='checkbox' id='format' /> Format results<br/>
-Response:<br/>
-<textarea rows='50' cols='140' name='response_box' id='response_box'></textarea>
-</form>
+	<head>
+		<title>API Tool</title>
+		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.4/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="../js/jquery.ct.js"></script>
+		<script type="text/javascript" src="tool.js"></script>
+		<link rel="stylesheet" type="text/css" href="tool.css" />
+		<link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.4/themes/ui-lightness/jquery-ui.css" />
+	</head>
+	<body>
+		<h1>API Tool</h1>
+		<div id="tabs">
+			<ul>
+				<li><a href="#tab-1">Query</a></li>
+				<li><a href="#tab-2">Docs</a></li>
+			</ul>
+			<div id="tab-1">
+				<form action="api.php" method="post" id='form'>
+					<fieldset>
+						<legend>Method</legend>
+						<select name='method' id='method'>
+							<option></option>
+						</select>
+					</fieldset>
+					<fieldset id='args'>
+						<legend>Arguments</legend>
+						<button id="add_args">Add</button>
+					</fieldset>
+					<button type="submit" id="send">Send</button>
+				</form>
+				<textarea id="results" rows="20" cols="75"></textarea>
+			</div>
+			<div id="tab-2">
+				<iframe src="http://cbulock.com/ct3/api"></iframe>
+			</div>
+		</div>
+	</body>
 </html>
-
-
-<?php
-function displayMethods() {
- global $ct;
- $output = NULL;
- $methods = $ct->getAPIMethods();
- foreach ($methods as $method) {
-  $output .= '<option value="'.$method['id'].'">'.$method['value'].'</option>';
- }
- return $output;
-}
