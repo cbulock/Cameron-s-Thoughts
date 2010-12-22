@@ -198,7 +198,7 @@ public function getComments($postid, $options = array()) {
   foreach ($results as $key=>$result) {
    $results[$key]['service'] = 0;
    if ($result['user']) {
-    $user = $this->getUser($result['user'],array('callby'=>'id','token'=>$this->token));
+    $user = $this->getUser($result['user'],array('callby'=>'id','token'=>$this->token));//should probably use $this->getAPIToken
     $results[$key]['author'] = $user['name'];
     $results[$key]['url'] = $user['url'];
     $results[$key]['email'] = $user['email'];
@@ -326,7 +326,7 @@ protected function checkPass($user,$pass) {
 protected function methodAuth($token=NULL) {
  if ($token) {
   switch($token) {
-   case $this->token:
+   case $this->token://probably should switch to using $this->getAPIToken()
     return array('class'=>'internal');
    break;
    default:
@@ -388,12 +388,12 @@ protected function getMailTemplate($name,$data = array()) {
 
 protected function sendMail($options = array()) {
  $setup['options'] = $options;
- $site_email = $this->getSetting('site_email');
- $admin_email = $this->getSetting('admin_email');
+ $site_email = $this->getSetting('site_email',array('token'=>$this->getAPIToken()));
+ $admin_email = $this->getSetting('admin_email',array('token'=>$this->getAPIToken()));
  $setup['defaults'] = array(
-  'from_email' => $site_email,
+  'from_email' => $site_email['value'],
   'from_name' => $this->getSetting('site_name'),
-  'to_email' => $admin_email,
+  'to_email' => $admin_email['value'],
   'to_name' => 'Cameron'
  );
  extract($setup_result = $this->api_call_setup($setup));
@@ -437,7 +437,7 @@ public function getUser($value, $options = array()) {
  );
  extract($setup_result = $this->api_call_setup($setup));
  $user = $this->db->getItem('users',$value,array('field'=>$options['callby']));
- if (!$user) return FALSE;
+ if (!$user) return FALSE;//throw an exception here?
  $user['email_hash'] = md5($user['email']);
  $user['avatar'] = $this->getAvatarPath($user['email_hash'],$user['service']);
  if ($auth['class']!='internal') {
@@ -476,7 +476,8 @@ public function sendMessage($options = array()) {
   'from_email' => $options['email'],
   'from_name' => $options['name'],
   'subject' => 'New Contact Form Message',
-  'template' => 'contact_form'
+  'template' => 'contact_form',
+  'token' => $this->getAPIToken()
  );
  if ($this->sendMail($mailoptions)) return $this->api_call_finish(TRUE);
  throw new Exception('Message failed to send',1002); 
@@ -553,8 +554,9 @@ public function getSetting($setting, $options = array()) {
   'expires' => $options['expires']
  );
  $setting = $this->db->getItem('settings',$setting, $dboptions);
- if ($setting) return $this->api_call_finish($setting);
- throw new Exception('Setting not found') ;
+ if (!$setting) throw new Exception('Setting not found');
+ if ($auth['class']!='internal' && !$setting['public']) throw new Exception('Unauthorized to access setting', 403);
+ return $this->api_call_finish($setting);
 }
 
 /**********************************
@@ -598,7 +600,7 @@ public function getQueryLog($options = array()) {
 }
 
 public function getAPIMethods($options = array()) {
- return $this->api_call_finish($this->db->getTable('api_methods'));
+ return $this->api_call_finish($this->db->getTable('api_methods',array('orderBy'=>'value','key'=>'value')));
 }
 
 public function getMethodParameters($methodid, $options = array()) {
