@@ -111,9 +111,11 @@ public function getEntry($value, $options = array()) {
  if ($result) {
   $result['entry_raw'] = $result['entry_text'];
   $result['entry_text'] = html_entity_decode($result['entry_text']);
-  //this restores my <code> tags to a working state, but is really ugly
-  $result['entry_text'] = preg_replace('/<code>/','<code><xmp>',$result['entry_text']);
-  $result['entry_text'] = preg_replace('/<\/code>/','</xmp></code>',$result['entry_text']);
+  //process text
+  $filters = $this->getFilters();
+  foreach ($filters as $filter) {
+    if ($filter['enabled'] == '1') $result['entry_text'] = preg_replace(html_entity_decode($filter['filter']),html_entity_decode($filter['replacement']),$result['entry_text']);
+  }
   if ($result['entry_convert_breaks']) {
    $result['entry_text'] = nl2br($result['entry_text']);
   }
@@ -557,6 +559,19 @@ public function getSetting($setting, $options = array()) {
  if (!$setting) throw new Exception('Setting not found');
  if ($auth['class']!='internal' && !$setting['public']) throw new Exception('Unauthorized to access setting', 403);
  return $this->api_call_finish($setting);
+}
+
+protected function getFilters($options = array()) {
+ $setup['options'] = $options;
+ $setup['defaults'] = array(
+//  'expires' => 1440
+ );
+ extract($setup_result = $this->api_call_setup($setup));
+ $dboptions = array(
+  'htmlParse' => FALSE
+ );
+ $filters = $this->db->getTable('filters',$dboptions);
+ return $this->api_call_finish($filters);
 }
 
 /**********************************

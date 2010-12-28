@@ -20,12 +20,13 @@ public function getTable($table, $options = array()) {
   'limit' => '5000',
   'key' => 'id',
   'cache' => TRUE,
-  'expires' => DEFAULT_CACHE_EXPIRES 
+  'expires' => DEFAULT_CACHE_EXPIRES,
+  'htmlParse' => TRUE
  );
  $options = $this->setOptions($options,$defaults);
  $this->selectDatabase($table, $options['database']);
  $sql = 'SELECT * FROM `'.$table.'` WHERE '.$options['where'].' ORDER BY '.$options['orderBy'].' LIMIT '.$options['limit'];
- return $this->sqlProcessMulti($sql,array('sortkey'=>$options['key'],'cache'=>$options['cache'],'expires'=>$options['expires']));
+ return $this->sqlProcessMulti($sql,array('sortkey'=>$options['key'],'cache'=>$options['cache'],'expires'=>$options['expires'],'htmlParse'=>$options['htmlParse']));
 }
 
 public function getItem($table, $value, $options = array()) {
@@ -105,7 +106,7 @@ private function selectDatabase($table, $db=NULL) {
 private function determineDatabase($table, $db=NULL) { //$table can be overloaded with $db value
  if ($db) return $db;
  $databases[$this->dbprefix.'accesslog'] = array($this->dbprefix.'accesslog','referers','sessions');
- $databases[$this->dbprefix.'cbulock'] = array($this->dbprefix.'cbulock','ads','ads_cat','blockedips','guid_admins','images','quotes','settings','styles','users','comments','api_methods','api_parameters');
+ $databases[$this->dbprefix.'cbulock'] = array($this->dbprefix.'cbulock','ads','ads_cat','blockedips','filters','guid_admins','images','quotes','settings','styles','users','comments','api_methods','api_parameters');
  $databases[$this->dbprefix.'mt2'] = array($this->dbprefix.'mt2','mt_blog','mt_entry','mt_category','mt_placement');
  $databases[$this->dbprefix.'ct3'] = array($this->dbprefix.'ct3','settings');
  foreach ($databases as $dbname => $database) {
@@ -161,7 +162,8 @@ private function sqlProcessMulti($sql,$options = array()) {
  $defaults = array(
   'sortkey' => 'id',
   'cache' => TRUE,
-  'expires' => DEFAULT_CACHE_EXPIRES
+  'expires' => DEFAULT_CACHE_EXPIRES,
+  'htmlParse' => TRUE
  );
  $options = $this->setOptions($options, $defaults);
  if($this->cache->exists($sql,$options['expires'])) {
@@ -173,7 +175,12 @@ private function sqlProcessMulti($sql,$options = array()) {
   while ($row = mysql_fetch_array($sqlReturn,MYSQL_ASSOC)) {
    $id = $row[$options['sortkey']];
    foreach($row as $key => $value) {
-    $result[$id][$key] = $this->htmlParse(stripslashes($value));
+    if ($options['htmlParse']) {
+     $result[$id][$key] = $this->htmlParse(stripslashes($value));
+    }
+    else {
+     $result[$id][$key] = $value;
+    }
    }
   }
   if ($options['cache']) {
