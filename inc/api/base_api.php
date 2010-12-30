@@ -633,6 +633,10 @@ public function getDirectQueryCount() {
  return $this->api_call_finish($this->db->getDirectQueryCount);
 }
 
+public function clearCache() {
+ return $this->cache->clear();
+}
+
 
 /**********************************
    Helper Methods

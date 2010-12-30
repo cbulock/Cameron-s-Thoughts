@@ -33,6 +33,11 @@ public function read($name) {
  return unserialize(fread($file,filesize($filename)));
 }
 
+public function clear() {
+ $mask = CACHE_DIR."*.cache";
+ return array_map("unlink", glob($mask));
+}
+
 public function count() {
  return $this->count;
 }
