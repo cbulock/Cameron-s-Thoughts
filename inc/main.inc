@@ -12,12 +12,6 @@ $ct = new ExtendedAPI();
 //Select page type
 require_once(INCLUDE_DIR.'/backend/pagetype.php');
 
-//Settings stored in database
-//require(INCLUDE_DIR.'/backend/read_settings.php');
-
-//Statistics / GUID
-//include(INCLUDE_DIR.'/backend/stat.php');
-
 //Image System
 //include(INCLUDE_DIR.'images/func.php');
 ?>
