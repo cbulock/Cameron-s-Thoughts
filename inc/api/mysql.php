@@ -128,7 +128,8 @@ private function sqlProcess($sql,$options = array()) {//It may be more consistan
  $defaults = array(
   'return' => 'all',
   'cache' => TRUE,
-  'expires' => DEFAULT_CACHE_EXPIRES
+  'expires' => DEFAULT_CACHE_EXPIRES,
+  'htmlParse' => TRUE
  );
  $options = $this->setOptions($options, $defaults);
  if($this->cache->exists($sql,$options['expires']) && $options['cache']) {
@@ -141,11 +142,21 @@ private function sqlProcess($sql,$options = array()) {//It may be more consistan
   if ($row) {
    if ($options['return'] == 'all') {
     foreach($row as $key => $value) {
-     $result[$key] = $this->htmlParse(stripslashes($value));
+     if ($options['htmlParse']) {
+      $result[$key] = $this->htmlParse(stripslashes($value));
+     }
+     else {
+      $result[$key] = stripslashes($value);
+     }
     }
    }
    else {
-    $result = $this->htmlParse(stripslashes(reset($row)));
+    if ($options['htmlParse']) {
+     $result = $this->htmlParse(stripslashes(reset($row)));
+    }
+    else {
+     $result = stripslashes(reset($row));
+    }
    }
   }
   else {
