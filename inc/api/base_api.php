@@ -87,7 +87,7 @@ public function postEntry($options = array()) {
   $statustitle = $options['title'];
  }
  $this->postStatus('New Blog Post: '.$statustitle.' '.$shorturl);
- 
+ $this->clearCache();//there are random issues if cache isn't cleared
  return $this->api_call_finish(TRUE); //i'd like to return an array of useful data, like entryid for instance
 }
 
@@ -138,7 +138,7 @@ public function prevEntry($id, $options = array()) {//where is very open
  );
  extract($setup_result = $this->api_call_setup($setup));
  $sql = "select max(entry_id) FROM `mt_entry` WHERE (entry_id < ".$this->db->sqlClean($id)." AND entry_blog_id =".$this->db->sqlClean($options['blogid'])." AND ".$options['where'].")";
- $result = $this->db->directProcessQuery($sql,'cbulock_mt2',array('return'=>'single','cache'=>FALSE));//going to disable caching as I believe this can be off when new entries are created
+ $result = $this->db->directProcessQuery($sql,'cbulock_mt2',array('return'=>'single','cache'=>TRUE));//going to disable caching as I believe this can be off when new entries are created (turning on now as cache is cleared during postEntry)
  return $this->api_call_finish($result);
 }
 
@@ -150,7 +150,7 @@ public function nextEntry($id, $options = array()) {//where is very open
  );
  extract($setup_result = $this->api_call_setup($setup));
  $sql = "select min(entry_id) FROM `mt_entry` WHERE (entry_id > ".$this->db->sqlClean($id)." AND entry_blog_id = ".$this->db->sqlClean($options['blogid'])." AND ".$options['where'].")";
- $result = $this->db->directProcessQuery($sql,'cbulock_mt2',array('return'=>'single','cache'=>FALSE));//going to disable caching as I believe this can be off when new entries are created
+ $result = $this->db->directProcessQuery($sql,'cbulock_mt2',array('return'=>'single','cache'=>TRUE));//going to disable caching as I believe this can be off when new entries are created (turning on now as cache is cleared during postEntry)
  return $this->api_call_finish($result);
 }
 
@@ -162,7 +162,7 @@ public function lastEntry($options = array()) {//where is very open
  );
  extract($setup_result = $this->api_call_setup($setup));
  $sql = "select max(entry_id) FROM `mt_entry` WHERE (entry_blog_id = ".$this->db->sqlClean($options['blogid'])." AND ".$options['where'].")";
- $result = $this->db->directProcessQuery($sql,'cbulock_mt2',array('return'=>'single','cache'=>FALSE));//going to disable caching as I believe this can be off when new entries are created
+ $result = $this->db->directProcessQuery($sql,'cbulock_mt2',array('return'=>'single','cache'=>TRUE));//going to disable caching as I believe this can be off when new entries are created (turning on now as cache is cleared during postEntry)
  return $this->api_call_finish($result);
 }
 
