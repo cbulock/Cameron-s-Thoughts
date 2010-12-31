@@ -107,10 +107,10 @@ public function getEntry($value, $options = array()) {
    $sql = "SELECT * FROM `mt_entry` WHERE entry_blog_id='".$this->db->sqlClean($options['blogid'])."' AND entry_id='".$this->db->sqlClean($value)."'";
   break;
  }
- $result = $this->db->directProcessQuery($sql,'cbulock_mt2',array('cache'=>$options['cache']));
+ $result = $this->db->directProcessQuery($sql,'cbulock_mt2',array('cache'=>$options['cache'],'htmlParse'=>FALSE));
  if ($result) {
   $result['entry_raw'] = $result['entry_text'];
-  $result['entry_text'] = html_entity_decode($result['entry_text']);
+//  $result['entry_text'] = html_entity_decode($result['entry_text']);//no idea why this was here, but it was breaking a lot of stuff
   //process text
   $filters = $this->getFilters();
   foreach ($filters as $filter) {
@@ -118,7 +118,7 @@ public function getEntry($value, $options = array()) {
   }
   if ($result['entry_convert_breaks']) {
    $result['entry_text'] = nl2br($result['entry_text']);
-  }
+  } 
   if ($options['blogid'] == '2') {
    $year = date('Y',strtotime($result['entry_created_on']));
    $month = date('m',strtotime($result['entry_created_on']));
