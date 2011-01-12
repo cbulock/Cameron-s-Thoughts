@@ -116,7 +116,19 @@ public function getEntry($value, $options = array()) {
   foreach ($filters as $filter) {
     if ($filter['enabled'] == '1') $result['entry_text'] = preg_replace(html_entity_decode($filter['filter']),html_entity_decode($filter['replacement']),$result['entry_text']);
   }
-
+  //hack to use current image tags to display images
+   if (preg_match_all("/\<\?php echo image\(\"(.*?)\"\)\;\?\>/",$result['entry_text'],$images)) {
+   foreach($images[1] as $i => $image) {
+    $images[2][$i] = $this->getImageDetails($image);
+   }
+   foreach($images[0] as $i => $image) {
+    $result['entry_text'] = preg_replace(
+     '/'.preg_quote($image).'/',
+     '<img src="http://www.cbulock.com/images/view/'.$images[2][$i]['filename'].'" width="'.$images[2][$i]['twidth'].'" height="'.$images[2][$i]['theight'].'" />',
+     $result['entry_text']
+    );
+   }
+  }
   if (preg_match_all("/\<\?php echo imagethumb\(\"(.*?)\"\)\;\?\>/",$result['entry_text'],$images)) {
    foreach($images[1] as $i => $image) {
     $images[2][$i] = $this->getImageDetails($image);
