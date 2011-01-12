@@ -116,6 +116,20 @@ public function getEntry($value, $options = array()) {
   foreach ($filters as $filter) {
     if ($filter['enabled'] == '1') $result['entry_text'] = preg_replace(html_entity_decode($filter['filter']),html_entity_decode($filter['replacement']),$result['entry_text']);
   }
+
+  if (preg_match_all("/\<\?php echo imagethumb\(\"(.*?)\"\)\;\?\>/",$result['entry_text'],$images)) {
+   foreach($images[1] as $i => $image) {
+    $images[2][$i] = $this->getImageDetails($image);
+   }
+   foreach($images[0] as $i => $image) {
+    $result['entry_text'] = preg_replace(
+     '/'.preg_quote($image).'/', 
+     '<a href="http://www.cbulock.com/images/fit/'.$images[2][$i]['filename'].'"><img src="http://www.cbulock.com/images/thumb/'.$images[2][$i]['filename'].'" width="'.$images[2][$i]['twidth'].'" height="'.$images[2][$i]['theight'].'" /></a>',
+     $result['entry_text']
+    );
+   }
+  }
+  
   if ($result['entry_convert_breaks']) {
    $result['entry_text'] = nl2br($result['entry_text']);
   } 
@@ -572,6 +586,13 @@ protected function getFilters($options = array()) {
  );
  $filters = $this->db->getTable('filters',$dboptions);
  return $this->api_call_finish($filters);
+}
+
+public function getImageDetails($name, $options = array()) {
+ $setup['options'] = $options;
+ extract($setup_result = $this->api_call_setup($setup));
+ $image = $this->db->getItem('images',$name,array('field'=>'name'));
+ return $this->api_call_finish($image);
 }
 
 /**********************************
