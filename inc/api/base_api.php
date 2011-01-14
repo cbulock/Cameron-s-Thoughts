@@ -152,7 +152,7 @@ public function getEntry($value, $options = array()) {
   $result['comment_count'] = $this->commentCount($result['entry_id'],array('blogid'=>$options['blogid']));
   return $this->api_call_finish($result);
  }
- return $this->api_call_finish(FALSE);
+ throw new Exception('Entry not found',1000);;
 }
 
 public function prevEntry($id, $options = array()) {//where is very open
