@@ -590,7 +590,7 @@ public function getSetting($setting, $options = array()) {
 protected function getFilters($options = array()) {
  $setup['options'] = $options;
  $setup['defaults'] = array(
-//  'expires' => 1440
+  'expires' => 1440
  );
  extract($setup_result = $this->api_call_setup($setup));
  $dboptions = array(
