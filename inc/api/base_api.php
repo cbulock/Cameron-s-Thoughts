@@ -110,7 +110,6 @@ public function getEntry($value, $options = array()) {
  $result = $this->db->directProcessQuery($sql,'cbulock_mt2',array('cache'=>$options['cache'],'htmlParse'=>FALSE));
  if ($result) {
   $result['entry_raw'] = $result['entry_text'];
-//  $result['entry_text'] = html_entity_decode($result['entry_text']);//no idea why this was here, but it was breaking a lot of stuff
   //process text
   $filters = $this->getFilters();
   foreach ($filters as $filter) {
@@ -354,7 +353,7 @@ protected function checkPass($user,$pass) {
 protected function methodAuth($token=NULL) {
  if ($token) {
   switch($token) {
-   case $this->token://probably should switch to using $this->getAPIToken()
+   case $this->getAPIToken():
     return array('class'=>'internal');
    break;
    default:
