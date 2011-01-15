@@ -12,6 +12,6 @@ $ct = new ExtendedAPI();
 //Select page type
 require_once(INCLUDE_DIR.'/backend/pagetype.php');
 
-//Image System
-//include(INCLUDE_DIR.'images/func.php');
+//Exception Handling
+require_once(INCLUDE_DIR.'/backend/exceptions.php');
 ?>

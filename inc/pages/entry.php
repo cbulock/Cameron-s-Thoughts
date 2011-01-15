@@ -3,10 +3,14 @@
 require_once('pages.inc');
 
 $entry = $ct->getEntry($basename);
-$prev_entry_id = $ct->prevEntry($entry['entry_id']);
-$next_entry_id = $ct->nextEntry($entry['entry_id']);
-if ($prev_entry_id) $prev_entry = $ct->getEntry($prev_entry_id,array('callby'=>'id'));
-if ($next_entry_id) $next_entry = $ct->getEntry($next_entry_id,array('callby'=>'id'));
+$prev_entry_id = call('prevEntry',$entry['entry_id']);
+$next_entry_id = call('nextEntry',$entry['entry_id']);
+//$prev_entry_id = $ct->prevEntry($entry['entry_id']);
+//$next_entry_id = $ct->nextEntry($entry['entry_id']);
+if ($prev_entry_id) $prev_entry = call('getEntry',$prev_entry_id,array('callby'=>'id'));
+if ($next_entry_id) $next_entry = call('getEntry',$next_entry_id,array('callby'=>'id'));
+//if ($prev_entry_id) $prev_entry = $ct->getEntry($prev_entry_id,array('callby'=>'id'));
+//if ($next_entry_id) $next_entry = $ct->getEntry($next_entry_id,array('callby'=>'id'));
 $comments = $ct->getComments($entry['entry_id']);
 $comment_count_text = $ct->commentCountText($entry['comment_count']);
 $cat = $ct->getCat($ct->getCatID($entry['entry_id']));

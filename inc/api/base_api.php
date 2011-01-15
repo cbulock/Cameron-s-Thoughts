@@ -395,7 +395,7 @@ protected function postStatus($message) {
 
 protected function getShortURL($url) {
  $apiurl = 'http://api.bit.ly/v3/shorten?login=cbulock&apiKey='.BITLY_API_KEY.'&longUrl='.urlencode($url);
- $result = json_decode($this->call($apiurl));
+ $result = json_decode($this->callURL($apiurl));
  return $result->data->url;
 }
 
@@ -530,7 +530,7 @@ protected function writeLog($text) {
  return fwrite($this->log,$log);
 }
 
-protected function call($url,$post=NULL) {
+protected function callURL($url,$post=NULL) {
  $ch = curl_init();
  curl_setopt($ch, CURLOPT_URL, $url);
  curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
