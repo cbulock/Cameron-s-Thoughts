@@ -3,8 +3,6 @@
 class ExtendedAPI extends BaseAPI {
 
 public function call($method, $req = array(), $opt = array()) {
- $this->writeLog('#############call array data###########');
- $this->writeLog(print_r($opt,1));
  return call_user_func_array(array($this,$method),array($req,$opt)); 
 }
 

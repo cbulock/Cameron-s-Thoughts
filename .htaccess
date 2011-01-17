@@ -28,6 +28,9 @@ RewriteRule ^snip/(.*)$ index.php?type=snip&snip=$1 [L]
 #API Access
 RewriteRule ^api/(.*)$ index.php?type=api&request=$1 [L]
 
+#Error Pages
+RewriteRule ^error/(.*)$ index.php?type=error&errornum=$1 [L]
+
 ################## Page Specific Redirects
 #About me 
 Redirect 301 about_me.html http://www.cbulock.com/about/me

@@ -30,6 +30,10 @@ switch($_GET['type']) {
   $request = $_GET['request'];
   include(API_DIR.'public.php');
  break;
+ case 'error':
+  $errornum = $_GET['errornum'];
+  include(INCLUDE_DIR.'pages/error.php');
+ break;
  default:
   include(INCLUDE_DIR.'pages/home.php');
 }
