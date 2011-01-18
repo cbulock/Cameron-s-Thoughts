@@ -2,8 +2,8 @@
 
 require_once('pages.inc');
 
-$cat = $ct->getCat($basename,array('field'=>'category_basename'));
-$entries = $ct->getCatEntries($cat['category_id']);
+$cat = call('getCat',$basename,array('field'=>'category_basename'));
+$entries = call('getCatEntries',$cat['category_id']);
 
 include('stats.inc');
 
