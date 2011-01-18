@@ -6,6 +6,8 @@ $entry = $ct->getEntry($basename,array('blogid'=>3));
 $comments = $ct->getComments($entry['entry_id'],array('blogid'=>3));
 $comment_count_text = $ct->commentCountText($entry['comment_count']);
 
+include('stats.inc');
+
 $tpl->assign('entry',$entry);
 if ($comments) $tpl->assign('comments',$comments);
 $tpl->assign('comment_count_text',$comment_count_text);

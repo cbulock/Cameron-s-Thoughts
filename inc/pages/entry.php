@@ -14,6 +14,8 @@ $create_date = strtotime($entry['entry_created_on']);
 $create['date'] = date('M j, Y g:ia',$create_date);
 $create['link'] = '/'.date('Y',$create_date).'/'.date('m',$create_date).'/';
 
+include('stats.inc');
+
 $tpl->assign('entry',$entry);
 if ($prev_entry) $tpl->assign('prev_entry',$prev_entry);
 if ($next_entry) $tpl->assign('next_entry',$next_entry);
