@@ -91,13 +91,19 @@ function send() {
 			}
 		}
 	});
-	result = $.ct.call($('#method').val(),req,opt);
-	if (RealTypeOf(result) == 'object') {
-		$('#results').text(FormatJSON(result));
-	}
-	else {
-		$('#results').text(result);
-	}
+  try {
+	 result = $.ct.call($('#method').val(),req,opt);
+	 if (RealTypeOf(result) == 'object') {
+		 $('#results').text(FormatJSON(result));
+	 }
+	 else {
+		 $('#results').text(result);
+	 }
+  }
+  catch(e) {
+   $('#results').text('Error');
+   alert('Error: '+e.message+'\nNumber: '+e.name);
+  }
 }
 
 //borrowed from http://joncom.be/code/javascript-json-formatter/
