@@ -393,6 +393,24 @@ protected function postStatus($message) {
  return $this->status->postStatus($message);
 }
 
+protected function newEntryStatus($id,$options = array()) {
+ $setup['options'] = $options;
+ $setup['defaults'] = array(
+  'message' => 'New Blog Post: '
+ );
+ extract($setup_result = $this->api_call_setup($setup));
+ $entry = $this->getEntry($options['id'],array('callby'=>'id'));
+ $url = 'http://www.cbulock.com'.$entry['entry_link'];//need to have the url be dynamic
+ $shorturl = $this->getShortURL($url);
+ if (strlen($entry['entry_title']+$options['defaults']) > 115) {
+  $statustitle = substr($options['title'],0,100).'�~@�';
+ }
+ else {
+  $statustitle = $options['title'];
+ }
+
+}
+
 protected function getShortURL($url) {
  $apiurl = 'http://api.bit.ly/v3/shorten?login=cbulock&apiKey='.BITLY_API_KEY.'&longUrl='.urlencode($url);
  $result = json_decode($this->callURL($apiurl));
