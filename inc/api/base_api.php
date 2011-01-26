@@ -403,7 +403,7 @@ protected function newEntryStatus($id,$options = array()) {
  $url = 'http://www.cbulock.com'.$entry['entry_link'];//need to have the url be dynamic
  $shorturl = $this->getShortURL($url);
  if (strlen($entry['entry_title']+$options['defaults']) > 115) {
-  $statustitle = substr($options['title'],0,100).'�~@�';
+  $statustitle = substr($options['title'],0,100).'…';
  }
  else {
   $statustitle = $options['title'];
