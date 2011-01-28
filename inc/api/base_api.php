@@ -77,17 +77,8 @@ public function postEntry($options = array()) {
  );
  if (!$this->db->updateItem('mt_entry',$thisentry,$entrydata,array('field'=>'entry_id'))) throw new Exception('Entry save did not complete, in bad state');
  
- //Create Status Posting
- $url = 'http://www.cbulock.com/'.date('Y').'/'.date('m').'/'.$basename.'.html';//the url needs to be dynamic
- $shorturl = $this->getShortURL($url);
- if (strlen($options['title']) > 100) {
-  $statustitle = substr($options['title'],0,100).'…';
- }
- else {
-  $statustitle = $options['title'];
- }
- $this->postStatus('New Blog Post: '.$statustitle.' '.$shorturl);
  $this->clearCache();//there are random issues if cache isn't cleared
+ $this->newEntryStatus($thisentry);
  return $this->api_call_finish(TRUE); //i'd like to return an array of useful data, like entryid for instance
 }
 
@@ -393,22 +384,22 @@ protected function postStatus($message) {
  return $this->status->postStatus($message);
 }
 
-protected function newEntryStatus($id,$options = array()) {
+public function newEntryStatus($id,$options = array()) {
  $setup['options'] = $options;
  $setup['defaults'] = array(
-  'message' => 'New Blog Post: '
+  'message' => 'New Blog Post: ',
+  'message_max_length' => 119 //bit.ly URL is 20chars plus there is a space, 140-21=119
  );
  extract($setup_result = $this->api_call_setup($setup));
- $entry = $this->getEntry($options['id'],array('callby'=>'id'));
+ $entry = $this->getEntry($id,array('callby'=>'id'));
  $url = 'http://www.cbulock.com'.$entry['entry_link'];//need to have the url be dynamic
  $shorturl = $this->getShortURL($url);
- if (strlen($entry['entry_title']+$options['defaults']) > 115) {
-  $statustitle = substr($options['title'],0,100).'…';
+ $message = $options['message'].$entry['entry_title'];
+ if ((strlen($message) > $options['message_max_length'])) {
+  $message = substr($message,0,$options['message_max_length']-3).'...';
  }
- else {
-  $statustitle = $options['title'];
- }
-
+ $message = $message.' '.$shorturl;
+ return $this->postStatus($message);
 }
 
 protected function getShortURL($url) {
