@@ -393,22 +393,22 @@ protected function postStatus($message) {
  return $this->status->postStatus($message);
 }
 
-protected function newEntryStatus($id,$options = array()) {
+public function newEntryStatus($id,$options = array()) {
  $setup['options'] = $options;
  $setup['defaults'] = array(
-  'message' => 'New Blog Post: '
+  'message' => 'New Blog Post: ',
+  'message_max_length' => 119 //bit.ly URL is 20chars plus there is a space, 140-21=119
  );
  extract($setup_result = $this->api_call_setup($setup));
- $entry = $this->getEntry($options['id'],array('callby'=>'id'));
+ $entry = $this->getEntry($id,array('callby'=>'id'));
  $url = 'http://www.cbulock.com'.$entry['entry_link'];//need to have the url be dynamic
  $shorturl = $this->getShortURL($url);
- if (strlen($entry['entry_title']+$options['defaults']) > 115) {
-  $statustitle = substr($options['title'],0,100).'�~@�';
+ $message = $options['message'].$entry['entry_title'];
+ if ((strlen($message) > $options['message_max_length'])) {
+  $message = substr($message,0,$options['message_max_length']-3).'...';
  }
- else {
-  $statustitle = $options['title'];
- }
-
+ $message = $message.' '.$shorturl;
+ return $this->postStatus($message);
 }
 
 protected function getShortURL($url) {
