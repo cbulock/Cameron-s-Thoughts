@@ -77,6 +77,7 @@ public function postEntry($options = array()) {
  );
  if (!$this->db->updateItem('mt_entry',$thisentry,$entrydata,array('field'=>'entry_id'))) throw new Exception('Entry save did not complete, in bad state');
  
+/*
  //Create Status Posting
  $url = 'http://www.cbulock.com/'.date('Y').'/'.date('m').'/'.$basename.'.html';//the url needs to be dynamic
  $shorturl = $this->getShortURL($url);
@@ -87,7 +88,9 @@ public function postEntry($options = array()) {
   $statustitle = $options['title'];
  }
  $this->postStatus('New Blog Post: '.$statustitle.' '.$shorturl);
+*/
  $this->clearCache();//there are random issues if cache isn't cleared
+ $this->newEntryStatus($thisentry);
  return $this->api_call_finish(TRUE); //i'd like to return an array of useful data, like entryid for instance
 }
 
