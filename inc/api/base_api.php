@@ -50,46 +50,47 @@ public function postEntry($options = array()) {
  catch (exception $e) {
   switch ($e->getCode()) {
    case 1000:
-    throw new Exception('Basename conflict');
+    //throw new Exception('Basename conflict');
+    $thisentry = $this->db->insertItem('mt_entry',array());
+    if (!$thisentry) throw new Exception('Entry failed to save');
+
+    $atomid = 'tag:www.cbulock.com,'.date('Y').'://'.$options['blogid'].'.'.$thisentry;
+    if ($options['category']) {//I think this still posts when not existing
+     $catoptions = array(
+      'placement_entry_id' => $thisentry,
+      'placement_blog_id' => $options['blogid'],
+      'placement_category_id' => $options['category'],
+      'placement_is_primary' => '1'
+     );
+     $this->db->insertItem('mt_placement',$catoptions);
+    };
+
+    $entrydata = array(
+     'entry_blog_id' => $options['blogid'],
+     'entry_status' => '2',
+     'entry_author_id' => '2',
+     'entry_allow_comments' => '1',
+     'entry_allow_pings' => '0',
+     'entry_convert_breaks' => $options['convert_breaks'],
+     'entry_title' => $options['title'],
+     'entry_excerpt' => $options['excerpt'],
+     'entry_text' => $options['text'],
+     'entry_keywords' => $options['keywords'],
+     'entry_created_on' => date('Y-m-d H:i:s'),
+     'entry_basename' => $basename,
+     'entry_atom_id' => $atomid,
+     'entry_week_number' => date('YW'),
+    );
+    if (!$this->db->updateItem('mt_entry',$thisentry,$entrydata,array('field'=>'entry_id'))) throw new Exception('Entry save did not complete, in bad state');
+
+    $this->clearCache();//there are random issues if cache isn't cleared
+    $this->newEntryStatus($thisentry);
+    return $this->api_call_finish(TRUE); //i'd like to return an array of useful data, like entryid for instance
    default:
     throw new Exception($e);
   }
- } 
- $thisentry = $this->db->insertItem('mt_entry',array());
- if (!$thisentry) throw new Exception('Entry failed to save');
- 
- $atomid = 'tag:www.cbulock.com,'.date('Y').'://'.$options['blogid'].'.'.$thisentry;
- if ($options['category']) {//I think this still posts when not existing
-  $catoptions = array(
-   'placement_entry_id' => $thisentry,
-   'placement_blog_id' => $options['blogid'],
-   'placement_category_id' => $options['category'],
-   'placement_is_primary' => '1' 
-  );
-  $this->db->insertItem('mt_placement',$catoptions);
- };
-
- $entrydata = array(
-  'entry_blog_id' => $options['blogid'],
-  'entry_status' => '2',
-  'entry_author_id' => '2',
-  'entry_allow_comments' => '1',
-  'entry_allow_pings' => '0',
-  'entry_convert_breaks' => $options['convert_breaks'],
-  'entry_title' => $options['title'],
-  'entry_excerpt' => $options['excerpt'],
-  'entry_text' => $options['text'],
-  'entry_keywords' => $options['keywords'],
-  'entry_created_on' => date('Y-m-d H:i:s'),
-  'entry_basename' => $basename,
-  'entry_atom_id' => $atomid,
-  'entry_week_number' => date('YW'), 
- );
- if (!$this->db->updateItem('mt_entry',$thisentry,$entrydata,array('field'=>'entry_id'))) throw new Exception('Entry save did not complete, in bad state');
- 
- $this->clearCache();//there are random issues if cache isn't cleared
- $this->newEntryStatus($thisentry);
- return $this->api_call_finish(TRUE); //i'd like to return an array of useful data, like entryid for instance
+ }
+ throw new Exception('Basename conflict');
 }
 
 public function getEntry($value, $options = array()) {
