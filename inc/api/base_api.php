@@ -44,7 +44,17 @@ public function postEntry($options = array()) {
  $basename = ereg_replace("[^ A-Za-z0-9_]", "", $basename);
  $basename = str_replace(" ", "_", $basename);
  //if ($this->getEntry($basename,array('blogid'=>$options['blogid'],'cache'=>FALSE))) throw new Exception('Basename conflict'); //need to figure out how to better handle basename conflicts//at the very least, this needs to catch the execptions that are thrown by getEntry now
- 
+ try {
+  $this->getEntry($basename,array('blogid'=>$options['blogid'],'cache'=>FALSE));
+ }
+ catch (exception $e) {
+  switch ($e->getCode()) {
+   case 1000:
+    throw new Exception('Basename conflict');
+   default:
+    throw new Exception($e);
+  }
+ } 
  $thisentry = $this->db->insertItem('mt_entry',array());
  if (!$thisentry) throw new Exception('Entry failed to save');
  
