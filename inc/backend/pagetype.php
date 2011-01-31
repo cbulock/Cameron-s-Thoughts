@@ -8,10 +8,10 @@ else {
 
 switch(TYPE) {
  case 'rss':
-  header("Content-type: application/rss+xml; charset='UTF-8'");
+  header("Content-type: application/rss+xml; charset=UTF-8");
   break;
  default:
-  header("Content-type: text/html; charset='UTF-8'");
+  header("Content-type: text/html; charset=UTF-8");
   break;
 }
 ?>
