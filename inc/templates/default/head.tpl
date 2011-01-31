@@ -1,5 +1,5 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html>
+<html>
 <head>
 {if $title_append == ''}
 <title>{$site_name}</title>
@@ -9,6 +9,7 @@
 <link rel='shortcut icon' type='image/png' href='/css/img/cameron_icon.png' />
 <link rel='stylesheet' type='text/css' href='/css/grey.css' title='Main' />
 <link rel='stylesheet' type='text/css' href='/css/custom-theme/jquery-ui-1.8.5.custom.css' />
+<link rel='alternate' type='application/rss+xml' title='RSS' href='/rss' />
 <script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jquery/1.4.3/jquery.min.js'></script>
 <script type='text/javascript' src='/js/jquery-ui-1.8.5.custom.min.js'></script>
 <script type='text/javascript' src='/js/jquery.ct.js'></script>
