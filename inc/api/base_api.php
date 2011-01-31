@@ -43,14 +43,12 @@ public function postEntry($options = array()) {
  $basename = strtolower(trim($options['title']));
  $basename = ereg_replace("[^ A-Za-z0-9_]", "", $basename);
  $basename = str_replace(" ", "_", $basename);
- //if ($this->getEntry($basename,array('blogid'=>$options['blogid'],'cache'=>FALSE))) throw new Exception('Basename conflict'); //need to figure out how to better handle basename conflicts//at the very least, this needs to catch the execptions that are thrown by getEntry now
- try {
+ try {//need to verify basename doesn't already exist
   $this->getEntry($basename,array('blogid'=>$options['blogid'],'cache'=>FALSE));
  }
  catch (exception $e) {
   switch ($e->getCode()) {
    case 1000:
-    //throw new Exception('Basename conflict');
     $thisentry = $this->db->insertItem('mt_entry',array());
     if (!$thisentry) throw new Exception('Entry failed to save');
 
@@ -227,7 +225,7 @@ public function getComments($postid, $options = array()) {
   foreach ($results as $key=>$result) {
    $results[$key]['service'] = 0;
    if ($result['user']) {
-    $user = $this->getUser($result['user'],array('callby'=>'id','token'=>$this->token));//should probably use $this->getAPIToken
+    $user = $this->getUser($result['user'],array('callby'=>'id','token'=>$this->getAPIToken()));
     $results[$key]['author'] = $user['name'];
     $results[$key]['url'] = $user['url'];
     $results[$key]['email'] = $user['email'];
@@ -395,7 +393,7 @@ protected function postStatus($message) {
  return $this->status->postStatus($message);
 }
 
-public function newEntryStatus($id,$options = array()) {
+protected function newEntryStatus($id,$options = array()) {
  $setup['options'] = $options;
  $setup['defaults'] = array(
   'message' => 'New Blog Post: ',
