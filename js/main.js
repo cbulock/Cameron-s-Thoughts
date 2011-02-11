@@ -6,25 +6,21 @@ $(document).ready(function() {
   }, function() {
   $(this).find('> ul').stop(true, true).slideUp('slow'); 	
  });
-
  /*other listeners*/
  postCommentListener();
-
  /*click listeners*/
- for (i in listeners) {
+ for (i in clickListeners) {
   $('#'+i).click(function(event) {
    event.preventDefault();
-   listeners[this.id]();
+   clickListeners[this.id]();
   });
  }
-
  /*pageStyling*/
  autoResize();
  roundedAvatars();
-
 });
 
-//snipper() from http://raphaeljs.com/spin-spin-spin.html
+//spinner() from http://raphaeljs.com/spin-spin-spin.html
 function spinner(holderid, R1, R2, count, stroke_width, colour) {
  var sectorsCount = count || 12,
  color = colour || "#fff",
@@ -34,11 +30,11 @@ function spinner(holderid, R1, R2, count, stroke_width, colour) {
  cx = r2 + width,
  cy = r2 + width,
  r = Raphael(holderid, r2 * 2 + width * 2, r2 * 2 + width * 2),
-                    
+
  sectors = [],
  opacity = [],
  beta = 2 * Math.PI / sectorsCount,
- 
+
  pathParams = {stroke: color, "stroke-width": width, "stroke-linecap": "round"};
  Raphael.getColor.reset();
  for (var i = 0; i < sectorsCount; i++) {
@@ -79,8 +75,7 @@ throbber = ({
  }
 });
 
-
-listeners = ({
+clickListeners = ({
  login : function() {
   showLoginBox();
  },
@@ -95,7 +90,6 @@ listeners = ({
   showContactForm();
  }
 });
-
 
 function showLoginBox() {
  if ($('#login_box').length==0) {
@@ -187,6 +181,50 @@ function roundedAvatars() {
  });
 }
 
+function addError(message) {
+ if ($('#error_box').length==0) {
+  snippetLoad('error_box', function() {
+   $('body').prepend(arguments[0]);
+   $('#error_box button').button({icons:{primary:'ui-icon-circle-close'},text:false});
+   $('#error_box p').html(message);
+   $('#error_box button').click(function(){
+    $('#error_box').remove();
+   });
+   $('#error_box').slideDown();
+  });
+ }
+}
+
+error = ({
+ errorList : [],
+ add : function(message) {
+  this.errorList.push(message);
+  if ($('#error_box').length==0) {
+   this.showBox();
+  }
+ },
+ showBox : function() {
+  if ($('#error_box').length==0) {
+   snippetLoad('error_box', function() {
+    $('body').prepend(arguments[0]);
+    $('#error_box button').button({icons:{primary:'ui-icon-circle-close'},text:false});
+    errorList = error.get();
+    if (errorList) {
+     $('#error_box p').html(errorList[0]);
+    }
+    $('#error_box button').click(function(){
+     $('#error_box').remove();
+    });
+    $('#error_box').slideDown();
+   });
+  }
+ },
+ get : function() {
+  if (!this.errorList.length) return false;
+  return this.errorList;
+ }
+});
+
 function call(method,req,opt) {
  req = req || null;
  opt = opt || null;
@@ -202,17 +240,7 @@ function exception_handler(e) {
  if(!e.message) {
   e = {name:0, message:e};
  }
- if ($('#error_box').length==0) {
-  snippetLoad('error_box', function() {
-   $('body').prepend(arguments[0]);
-   $('#error_box button').button({icons:{primary:'ui-icon-circle-close'},text:false});
-   $('#error_box p').html(e.message);
-   $('#error_box button').click(function(){
-    $('#error_box').remove();
-   });
-   $('#error_box').slideDown();
-  });
- }
+ error.add(e.message);
  switch(e.name) {
   case 401: //authentication failure
    showLoginBox();
