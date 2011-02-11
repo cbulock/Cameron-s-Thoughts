@@ -214,6 +214,7 @@ error = ({
     }
     $('#error_box button').click(function(){
      $('#error_box').remove();
+     error.clearList();
     });
     $('#error_box').slideDown();
    });
@@ -222,6 +223,9 @@ error = ({
  get : function() {
   if (!this.errorList.length) return false;
   return this.errorList;
+ },
+ clearList : function() {
+  this.errorList = [];
  }
 });
 
