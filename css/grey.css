@@ -77,14 +77,14 @@ html {
   background-image: url('/css/img/black_tile.jpg');
 }
 a {
-  color: #ffffff;
+  color: #ff9900;
   text-decoration: none;
 }
 a:hover {
   text-decoration: underline;
   color: #ff9900;
 }
-a:visited { color: #ffffff; }
+a:visited { color: #ff9900; }
 a:visited:hover { color: #ff9900; }
 code, pre {
   display: block;
