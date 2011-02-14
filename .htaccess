@@ -42,6 +42,11 @@ RewriteRule ^about/ct/$ index.php?type=static&basename=about_this_site [L]
 Redirect 301 /xml/full.xml http://www.cbulock.com/rss
 RewriteRule ^rss index.php?pagetype=rss [L]
 
+ErrorDocument 400 /error/400
+ErrorDocument 401 /error/401
+ErrorDocument 403 /error/403
+ErrorDocument 404 /error/404
+ErrorDocument 500 /error/500
 
 <Files 403.shtml>
 order allow,deny
