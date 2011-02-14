@@ -152,7 +152,7 @@ public function getEntry($value, $options = array()) {
   $result['comment_count'] = $this->commentCount($result['entry_id'],array('blogid'=>$options['blogid']));
   return $this->api_call_finish($result);
  }
- throw new Exception('Entry not found',1000);;
+ throw new Exception('Entry not found',1000);
 }
 
 public function prevEntry($id, $options = array()) {//where is very open
@@ -290,7 +290,8 @@ public function getCatID($entryid, $options = array()) {
   'field' => 'placement_entry_id'
  ); 
  $item = $this->db->getItem('mt_placement',$entryid,$options);
- return $this->api_call_finish($item['placement_category_id']);
+ if ($item) return $this->api_call_finish($item['placement_category_id']);
+ return $this->api_call_finish(FALSE);
 }
 
 public function getCat($catid, $options = array()) {
@@ -302,7 +303,9 @@ public function getCat($catid, $options = array()) {
  $dboptions = array(
   'field' => $options['field']
  );
- return $this->api_call_finish($this->db->getItem('mt_category',$catid,$dboptions));
+ $cat = $this->db->getItem('mt_category',$catid,$dboptions);
+ if ($cat) return $this->api_call_finish($cat);
+ throw new Exception('Category not found',1000);
 }
 
 public function getCatList($options = array()) {

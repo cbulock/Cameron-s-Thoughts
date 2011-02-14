@@ -9,7 +9,8 @@ if ($prev_entry_id) $prev_entry = call('getEntry',$prev_entry_id,array('callby'=
 if ($next_entry_id) $next_entry = call('getEntry',$next_entry_id,array('callby'=>'id'));
 $comments = $ct->getComments($entry['entry_id']);
 $comment_count_text = $ct->commentCountText($entry['comment_count']);
-$cat = $ct->getCat($ct->getCatID($entry['entry_id']));
+$catid = $ct->getCatID($entry['entry_id']);
+if ($catid) $cat = $ct->getCat($catid);
 $create_date = strtotime($entry['entry_created_on']);
 $create['date'] = date('M j, Y g:ia',$create_date);
 $create['link'] = '/'.date('Y',$create_date).'/'.date('m',$create_date).'/';
