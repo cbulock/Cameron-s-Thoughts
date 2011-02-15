@@ -27,7 +27,7 @@ $statdata = array(
 $ct->addStat($statdata);
 
 try {
- $result = call_user_func_array(array($ct,$method),$url_parameters);
+ $result = @call_user_func_array(array($ct,$method),$url_parameters);
 }
 catch(Exception $e) {
  $result = array(
