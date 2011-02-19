@@ -5,7 +5,7 @@
 <div id='c{$comment.id}' class='comment'>
 <img src='{$comment.avatar}' alt='Avatar for {$comment.author}' class='avatar' />
 <p class='comment_body'>{$comment.text}</p>
-<p class='comment_footer'>Comment by: <a href='{$comment.url}'>{$comment.author}</a> on {$comment.created|date_format:"F d, Y h:i A"}</p>
+{include file='snips/comment_footer.tpl'}
 </div>
 {/foreach}
 {if isset($authUser)}

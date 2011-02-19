@@ -23,6 +23,7 @@ RewriteRule ^cat/(.*)/$ index.php?type=cat&basename=$1 [L]
 RewriteRule ^page/(.*)/$ index.php?type=static&basename=$1 [L]
 
 #Page Snippets
+RewriteRule ^snip/(.*)/(.*)$ index.php?type=snip&snip=$1&option=$2 [L]
 RewriteRule ^snip/(.*)$ index.php?type=snip&snip=$1 [L]
 
 #API Access
@@ -33,10 +34,10 @@ RewriteRule ^error/(.*)$ index.php?type=error&errornum=$1 [L]
 
 ################## Page Specific Redirects
 #About me 
-Redirect 301 about_me.html http://www.cbulock.com/about/me
+Redirect 301 /about_me.html http://www.cbulock.com/about/me/
 RewriteRule ^about/me/$ index.php?type=static&basename=about_me [L]
 #About Cameron's Thoughts
-Redirect 301 about_this_site.html http://www.cbulock.com/about/ct
+Redirect 301 /about_this_site.html http://www.cbulock.com/about/ct/
 RewriteRule ^about/ct/$ index.php?type=static&basename=about_this_site [L]
 #RSS
 Redirect 301 /xml/full.xml http://www.cbulock.com/rss
