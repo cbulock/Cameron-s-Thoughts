@@ -18,7 +18,7 @@
    <link>http://www.cbulock.com{$entry.entry_link}</link>
    <guid isPermaLink="false">{$entry.entry_id}@http://www.cbulock.com/</guid>
    <description>{$entry.entry_excerpt|escape:'htmlall'}</description>
-   <content:encoded><![CDATA[<p>{$entry.entry_text|escape:'htmlall'}</p>]]></content:encoded>
+   <content:encoded><![CDATA[<p>{$entry.entry_text}</p>]]></content:encoded>
   </item>
   {/foreach}
  </channel>
