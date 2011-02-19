@@ -2,7 +2,7 @@
 
 require_once('pages.inc');
 
-$entries = $ct->getMonthlyEntries($month,$year);
+$entries = call('getMonthlyEntries',$month,$year);
 
 include('stats.inc');
 
