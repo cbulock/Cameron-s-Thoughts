@@ -439,7 +439,7 @@ protected function sendMail($options = array()) {
  $setup['options'] = $options;
  $site_email = $this->getSetting('site_email',array('token'=>$this->getAPIToken()));
  $admin_email = $this->getSetting('admin_email',array('token'=>$this->getAPIToken()));
- $site_name = $this=>getSetting('site_name');
+ $site_name = $this->getSetting('site_name');
  $setup['defaults'] = array(
   'from_email' => $site_email['value'],
   'from_name' => $site_name['value'],
