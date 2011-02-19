@@ -263,9 +263,10 @@ public function postComment($postid, $options = array()) {
  //Admin Email
  $data['username'] = $user['login'];
  $data['fullname'] = $user['name'];
+ $site_name = $this->getSetting('site_name');
  $mailoptions = array(
   'data' => $data,
-  'subject' => "New Comment Posted on ".$this->getSetting('site_name'),
+  'subject' => "New Comment Posted on ".$site_name['value'],
   'template' => 'post_comment'
  );
  $this->sendMail($mailoptions);
@@ -438,9 +439,10 @@ protected function sendMail($options = array()) {
  $setup['options'] = $options;
  $site_email = $this->getSetting('site_email',array('token'=>$this->getAPIToken()));
  $admin_email = $this->getSetting('admin_email',array('token'=>$this->getAPIToken()));
+ $site_name = $this=>getSetting('site_name');
  $setup['defaults'] = array(
   'from_email' => $site_email['value'],
-  'from_name' => $this->getSetting('site_name'),
+  'from_name' => $site_name['value'],
   'to_email' => $admin_email['value'],
   'to_name' => 'Cameron'
  );
@@ -552,12 +554,13 @@ protected function writeLog($text) {
 }
 
 protected function callURL($url,$post=NULL) {
+ $site_name = $this->getSetting('site_name');
  $ch = curl_init();
  curl_setopt($ch, CURLOPT_URL, $url);
  curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
  curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
  curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
- curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 ('.$this->getSetting('site_name').' API Caller)');
+ curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 ('.$site_name['value'].' API Caller)');
  curl_setopt($ch, CURLOPT_MAXREDIRS, 5);
  curl_setopt($ch, CURLOPT_TIMEOUT, 20);
  $response = curl_exec($ch);
