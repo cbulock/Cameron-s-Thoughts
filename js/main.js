@@ -124,7 +124,7 @@ function postCommentListener() {
    $('#comment_submit').fadeOut();
    $('#leave_comment').slideUp();
    snippetLoad('comment_footer',function() {
-    ('#comment_body').append(arguments[0]);
+    $('#comment_body').append(arguments[0]);
    },comment.id);
    $('#comments').html(call('commentCountText',comment.count));
   }
