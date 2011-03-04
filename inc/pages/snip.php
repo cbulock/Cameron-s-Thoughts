@@ -4,8 +4,8 @@ require_once('pages.inc');
 
 switch($snip) {
  case 'comment_footer':
-  $comments = $ct->getComments($entry['entry_id']);
-  if ($comments) $tpl->assign('comments',$comments);  
+  $comment = $ct->getComment($option);
+  if ($comment) $tpl->assign('comment',$comment);  
  break;
 }
 

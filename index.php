@@ -23,6 +23,7 @@ switch($_GET['type']) {
   include(INCLUDE_DIR.'pages/static.php');
  break;
  case 'snip':
+  if($_GET['option']) $option = $_GET['option'];
   $snip = $_GET['snip'];
   include(INCLUDE_DIR.'pages/snip.php');
  break;
