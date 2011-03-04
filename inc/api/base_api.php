@@ -208,7 +208,36 @@ function commentCount($postid, $options = array()) {
  return $this->api_call_finish($result);
 }
 
-public function getComments($postid, $options = array()) {
+public function getComment($id, $options = array()) {
+ $setup['options'] = $options;
+ $setup['defaults'] = array(
+  'expires' => '0.2'
+ );
+ extract($setup_result = $this->api_call_setup($setup));
+ $dboptions = array(
+  'expires' => $options['expires']
+ );
+ $result = $this->db->getItem('comments', $id, $dboptions);
+ if ($result) {
+  $result['service'] = 0;
+  if ($result['user']) {
+   $user = $this->getUser($result['user'],array('callby'=>'id','token'=>$this->getAPIToken()));
+   $result['author'] = $user['name'];
+   $result['url'] = $user['url'];
+   $result['email'] = $user['email'];
+   $result['service'] = $user['service'];
+  }
+  $result['email_hash'] = md5($result['email']);
+  if ($auth['class']!='internal') {
+   unset($result['email']);
+  }
+  $result['avatar'] = $this->getAvatarPath($result['email_hash'],$result['service']);
+ return $this->api_call_finish($result);
+ }
+ throw new Exception('Comment not found');
+}
+
+public function getComments($postid, $options = array()) {//this should be rewritten to use getComment
  $setup['options'] = $options;
  $setup['defaults'] = array(
   'blogid' => '2',
