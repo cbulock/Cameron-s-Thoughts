@@ -121,12 +121,10 @@ function postCommentListener() {
   opt = {text: $('#comment_text').val()}
   comment = call('postComment',[$('#postid').val()],opt)
   if(comment) {
-//   $('#comment_submit').fadeOut();
-//   $('#leave_comment').slideUp();
+   $('#comment_submit').fadeOut();
+   $('#leave_comment').slideUp();
    snippetLoad('comment_footer',function() {
     $('#new_comment .comment_body').after(arguments[0]);
-    $('#comment_submit').fadeOut();
-    $('#leave_comment').slideUp();
    },comment.id);
    $('#comments').html(call('commentCountText',comment.count));
   }

@@ -17,6 +17,7 @@
 <p class='comment_body'><textarea id='comment_text' name='comment_text'></textarea></p>
 <input type='submit' id='comment_submit' value='Save Comment' />
 </form>
+</div>
 {else}
 <p>You will need to be <a href='#' id='comment_login'>logged in</a> to add any comments.</p>
 {/if}
