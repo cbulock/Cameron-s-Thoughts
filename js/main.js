@@ -154,10 +154,16 @@ function contactFormBoxListener() {
  });
 }
 
-function snippetLoad(snip, callback) {
+function snippetLoad(snip, callback, option) {
  throbber.show();
+ if (option) {
+  url =  '/snip/'+snip+'/'+option;
+ }
+ else {
+  url =  '/snip/'+snip;
+ }
  $.ajax({
-  url: '/snip/'+snip,
+  url: url,
   dataType: 'html',
   success: function(data) {
    callback(data);
