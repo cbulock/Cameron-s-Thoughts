@@ -132,19 +132,38 @@ function postCommentListener() {
 }
 
 function showContactForm() {
- if ($('#contact_form').length==0) {
-  snippetLoad('contact_form', function() {
-   $('body').prepend(arguments[0]);
-   $('#contact_form').slideDown();
-   contactFormBoxListener();
-   window.location.hash = '#contact_form';
+ snippetLoad('contact_form', function() {
+  $.ct.contact_form = $('<div></div>').html(arguments[0]);
+  $.ct.contact_form.dialog({
+   title: 'Contact Form',
+   height: 415,
+   width: 750,
+   hide: 'highlight',
+   modal: true,
+   buttons: {
+    'Send': function() {
+     opt = {
+      name : $('#contact_name').val(),
+      email : $('#contact_email').val(),
+      message : $('#contact_message').val()
+     };
+     if(call('sendMessage',null,opt)) {
+      $(this).dialog('close');
+     }
+    }
+   },
+   close: function() {
+    $(this).dialog('destroy');
+    delete $.ct.contact_form;
+    $('#contact_form').remove();
+   }
   });
- }
+ });
 }
-
+/*
 function contactFormBoxListener() {
  $('#contact').submit(function(event){
-   event.preventDefault();
+  event.preventDefault();
   opt = {
    name : $('#contact_name').val(),
    email : $('#contact_email').val(),
@@ -156,7 +175,7 @@ function contactFormBoxListener() {
   }
  });
 }
-
+*/
 function snippetLoad(snip, callback, option) {
  throbber.show();
  if (option) {
