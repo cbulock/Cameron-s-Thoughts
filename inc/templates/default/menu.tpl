@@ -1,7 +1,8 @@
 <ul class='main_nav'>
  <li><p>Posts</p>
   <ul class='sub_nav'>
-   <li><a href=''>Archives</a></li>
+   <!-- This menu item isn't ready yet
+   <li><a href=''>Archives</a></li> -->
 {foreach from=$cats item=cat}
    <li><a href='/cat/{$cat.category_basename}/'>{$cat.category_label}</a></li>
 {/foreach}
