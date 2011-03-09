@@ -92,26 +92,31 @@ clickListeners = ({
 });
 
 function showLoginBox() {
- if ($('#login_box').length==0) {
+ if (!$.ct.login_box) {
   snippetLoad('login_box', function() {
-   $('body').prepend(arguments[0]);
-   $('#login_box').slideDown();
-   loginboxListener();
-   $('#username').focus();
-   window.location.hash = '#login_box';
+   $.ct.login_box = $('<div></div>').html(arguments[0]);
+   $.ct.login_box.dialog({
+    title: 'Login',
+    height: 230,
+    width: 340,
+    hide: 'highlight',
+    modal: true,
+    buttons: {
+     'Login': function() {
+      opt = {pass: $('#password').attr('value')};
+      if(call('login',[$('#username').val()],opt)) {
+       location.reload();
+      }
+     }
+    },
+    close: function() {
+     $(this).dialog('destroy');
+     delete $.ct.login_box;
+     $('#login_box').remove();
+    }
+   });
   });
  }
-}
-
-function loginboxListener() {
- $('#login_form').submit(function(event) {
-  event.preventDefault();
-  opt = {pass: $('#password').attr('value')};
-   if(call('login',[$('#username').val()],opt)) {
-    window.location.hash = '';
-    location.reload();
-  } 
- });
 }
 
 function postCommentListener() {
@@ -160,22 +165,7 @@ function showContactForm() {
   });
  });
 }
-/*
-function contactFormBoxListener() {
- $('#contact').submit(function(event){
-  event.preventDefault();
-  opt = {
-   name : $('#contact_name').val(),
-   email : $('#contact_email').val(),
-   message : $('#contact_message').val()
-  };
-  if(call('sendMessage',null,opt)) {
-   $('#contact_form').slideUp();
-   window.location.hash = '';
-  }
- });
-}
-*/
+
 function snippetLoad(snip, callback, option) {
  throbber.show();
  if (option) {

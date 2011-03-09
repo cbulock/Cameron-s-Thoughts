@@ -1,10 +1,6 @@
 <div id='login_box'>
-<h1>Login</h1>
-<form id='login_form'>
-<label for='username'>Username:</label>
-<input id='username' />
-<label for='password'>Password:</label>
-<input type='password' id='password' />
-<input type='submit' id='login_submit' value='Login'>
-</form>
+<p><label for='username'>Username:</label>
+<input id='username' /></p>
+<p><label for='password'>Password:</label>
+<input type='password' id='password' /></p>
 </div>

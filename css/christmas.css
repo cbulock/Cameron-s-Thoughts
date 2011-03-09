@@ -181,7 +181,7 @@ img { border: none; }
 input:focus { padding: 1px; }
 textarea:focus { padding: 1px; }
 input, textarea, select { padding: 1px; }
-#login_box, #error_box { display: none; }
+#error_box { display: none; }
 #comment_submit {
   font-size: 80%;
   margin-left: 110px;
@@ -221,11 +221,7 @@ input, textarea, select { padding: 1px; }
   border-color: red;
 }
 #error_box span { background-color: red; }
-#login_box {
-  display: none;
-  padding: 8px;
-}
-#login_box h1 { font-size: 1.2em; }
+#login_box { text-align: right; }
 #throbber {
   top: 10px;
   right: 75px;
