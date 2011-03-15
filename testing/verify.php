@@ -15,14 +15,20 @@ $writetests = array(
 
 
 //Beginning of test logic
+require_once('../var.inc');
+require_once(INCLUDE_DIR.'main.inc');
+require_once(API_DIR.'base_api.php');
+require_once(API_DIR.'extended_api.php');
+if (!$ct) $ct = new ExtendedAPI();
+
 foreach ($tests as $testname) {
  run_test($testname);
 }
 
 function run_test($testname) {
+ global $ct;
  require_once('tests/'.$testname.'.php');
- $api = 1;
- $test = new $testname($api);
+ $test = new $testname(&$ct);
  $result = array();
  $result['name'] = $testname;
  $result['test'] = $test->run();
