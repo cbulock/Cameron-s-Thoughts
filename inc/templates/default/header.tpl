@@ -2,7 +2,7 @@
 {if isset($authUser)}
 Welcome, {$authUser.name} | <a href='' id='logout'>Logout</a>
 {else}
-<a href='' id='login'>Login</a>
+<a href='' id='login'>Login</a> | <a href='' id='signup'>Sign Up</a>
 {/if}
 </div>
 <div id='heading'>
