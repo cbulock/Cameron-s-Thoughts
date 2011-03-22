@@ -496,17 +496,37 @@ protected function sendMail($options = array()) {
    User Methods
 **********************************/
 
-public function addUser($name, $options = array()) {
+public function createUser($login, $options = array()) {
  $setup['options'] = $options;
  $setup['defaults'] = array(
+  'name' => '',
+  'url' => '',
+  'type' => 'user',
+  'service' => 1,
+  'service_id' => NULL
  );
  extract($setup_result = $this->api_call_setup($setup));
- return $this->api_call_finish();
+ if ($this->checkRBL($options['remote_ip'])) throw new Exception('IP listed on RBL, spam account rejected');
+ if ($options['type']!='user' && $user['type']!='admin') throw new Exception('Must be admin to setup non-standard users');
+ if (!$options['pass']) throw new Exception('Password required');
+ if (!$options['email']) throw new Exception('Email required');
+ if (!$this->nameFree($login)) throw new Exception('Username already taken');
+ $useroptions = array(
+  'login' => $login,
+  'pass' => md5($options['pass']),
+  'type' => $options['type'],
+  'name' => $options['name'],
+  'email' => $options['email'],
+  'url' => $options['url'],
+  'service' => $options['service'],
+  'service_id' => $options['service_id']
+ );
+ return $this->api_call_finish($this->db->insertItem('users',$useroptions));
 }
 
-public function nameFree($name, $options = array()) {
- if ($this->getUser($name)) return $this->api_call_finish(TRUE);
- return $this->api_call_finish(FALSE);
+public function nameFree($login, $options = array()) {
+ if ($this->getUser($login)) return $this->api_call_finish(FALSE);//exception?
+ return $this->api_call_finish(TRUE);
 }
 
 public function getUser($value, $options = array()) {
@@ -534,13 +554,21 @@ public function getAuthUser($options = array()) {
   unset($user['pass']);
   unset($user['email']);
  }
- if ($user) return $user;
+ if ($user) return $this->api_call_finish($user);
  return $this->api_call_finish(FALSE);
 }
 
 /**********************************
    Misc Methods
 **********************************/
+
+protected function checkRBL($ip, $options = array()) {
+ require_once('rbl.php');
+ $rbl = new http_bl(HTTP_BL_KEY);
+ $result = $rbl->query($ip);
+ if ($result == 2) return TRUE;
+ return FALSE;
+}
 
 public function sendMessage($options = array()) {
  $setup['options'] = $options;
