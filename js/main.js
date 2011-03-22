@@ -79,6 +79,9 @@ clickListeners = ({
  login : function() {
   showLoginBox();
  },
+ signup : function() {
+  showSignupForm();
+ },
  comment_login : function() {
   showLoginBox();
  },
@@ -90,6 +93,46 @@ clickListeners = ({
   showContactForm();
  }
 });
+
+function showSignupForm() {
+ if (!$.ct.signup_form) {
+  snippetLoad('signup_form', function() {
+   $.ct.signup_form = $('<div></div>').html(arguments[0]);
+   $.ct.signup_form.dialog({
+    title: 'Create Account',
+    height: 415,
+    width: 400,
+    hide: 'highlight',
+    modal: true,
+    buttons: {
+     'Sign Up': function() {
+      if ($('#pass').attr('value')==$('#pass2').attr('value')){
+       opt = {
+        pass : $('#pass').attr('value'),
+        name : $('#name').attr('value'),
+        email : $('#email').attr('value'),
+        url : $('#url').attr('value')
+       }
+       if(call('createUser',[$('#username').val()],opt)) {
+        if(call('login',[$('#username').val()],opt)) {
+         location.reload();
+        }
+       }
+      }
+      else {
+       error.add('Passwords do not match!');
+      }
+     }
+    },
+    close: function() {
+     $(this).dialog('destroy');
+     delete $.ct.signup_form;
+     $('#signup_form').remove();
+    }
+   });
+  });
+ }
+}
 
 function showLoginBox() {
  if (!$.ct.login_box) {
@@ -198,7 +241,7 @@ function roundedAvatars() {
   $(this).css("opacity","0");
  });
 }
-
+/*
 function addError(message) {
  if ($('#error_box').length==0) {
   snippetLoad('error_box', function() {
@@ -211,7 +254,7 @@ function addError(message) {
    $('#error_box').slideDown();
   });
  }
-}
+}*/
 
 error = ({
  errorList : [],
