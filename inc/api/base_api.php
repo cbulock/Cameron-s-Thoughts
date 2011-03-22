@@ -511,6 +511,7 @@ public function createUser($login, $options = array()) {
  if (!$options['pass']) throw new Exception('Password required');
  if (!$options['email']) throw new Exception('Email required');
  if (!$this->nameFree($login)) throw new Exception('Username already taken');
+ $this->clearCache();
  $useroptions = array(
   'login' => $login,
   'pass' => md5($options['pass']),
