@@ -12,4 +12,5 @@ define('TWITTER_CONSUMER_KEY','');
 define('TWITTER_CONSUMER_SECRET','');
 define('TWITTER_OAUTH_TOKEN','');
 define('TWITTER_OAUTH_SECRET','');
+define('HTTP_BL_KEY',''); //http://www.projecthoneypot.org/httpbl_configure.php
 ?>
