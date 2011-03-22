@@ -1,4 +1,4 @@
-<div id='login_box'>
+<div id='signup_form'>
 <p><label for='login'>Username:</label>
 <input id='login' /></p>
 <p><label for='pass'>Password:</label>
