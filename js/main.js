@@ -99,7 +99,7 @@ function showSignupForm() {
   snippetLoad('signup_form', function() {
    $.ct.signup_form = $('<div></div>').html(arguments[0]);
    $.ct.signup_form.dialog({
-    title: 'Create Account',
+    title: "Create Account",
     height: 415,
     width: 400,
     hide: 'highlight',
@@ -137,14 +137,21 @@ function showSignupForm() {
 function showLoginBox() {
  if (!$.ct.login_box) {
   snippetLoad('login_box', function() {
+   signup = function() {
+    $.ct.login_box.dialog('close');
+    showSignupForm();
+   };
    $.ct.login_box = $('<div></div>').html(arguments[0]);
    $.ct.login_box.dialog({
     title: 'Login',
-    height: 230,
+    height: 260,
     width: 340,
     hide: 'highlight',
     modal: true,
     buttons: {
+     'Signup': function() {
+      signup();
+     },
      'Login': function() {
       opt = {pass: $('#password').attr('value')};
       if(call('login',[$('#username').val()],opt)) {
@@ -157,6 +164,10 @@ function showLoginBox() {
      delete $.ct.login_box;
      $('#login_box').remove();
     }
+   });
+   $('#login_box a').click(function(event) {
+    event.preventDefault();
+    signup();
    });
   });
  }

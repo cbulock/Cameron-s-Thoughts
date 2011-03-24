@@ -3,4 +3,5 @@
 <input id='username' /></p>
 <p><label for='password'>Password:</label>
 <input type='password' id='password' /></p>
+<a href=''>No account? Sign Up!</a>
 </div>

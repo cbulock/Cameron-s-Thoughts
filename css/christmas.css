@@ -222,6 +222,7 @@ input, textarea, select { padding: 1px; }
 }
 #error_box span { background-color: red; }
 #login_box, #signup_form { text-align: right; }
+#login_box a { text-decoration: underline; }
 #throbber {
   top: 10px;
   right: 75px;
