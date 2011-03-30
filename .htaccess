@@ -32,6 +32,9 @@ RewriteRule ^api/(.*)$ index.php?type=api&request=$1 [L]
 #Error Pages
 RewriteRule ^error/(.*)$ index.php?type=error&errornum=$1 [L]
 
+#Form Pages
+RewriteRule ^form/(.*)$ index.php?type=form&name=$1 [L]
+
 ################## Page Specific Redirects
 #About me 
 Redirect 301 /about_me.html http://www.cbulock.com/about/me/
