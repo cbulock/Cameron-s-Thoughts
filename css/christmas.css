@@ -221,7 +221,8 @@ input, textarea, select { padding: 1px; }
   border-color: red;
 }
 #error_box span { background-color: red; }
-#login_box, #signup_form { text-align: right; }
+.ui-dialog #login_box { text-align: right; }
+.ui-dialog #signup_form { text-align: right; }
 #login_box a { text-decoration: underline; }
 #throbber {
   top: 10px;
