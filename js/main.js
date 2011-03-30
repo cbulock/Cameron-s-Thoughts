@@ -96,7 +96,7 @@ clickListeners = ({
 
 function showSignupForm() {
  if (!$.ct.signup_form) {
-  snippetLoad('signup_form', function() {
+  snippetLoad('signup', function() {
    $.ct.signup_form = $('<div></div>').html(arguments[0]);
    $.ct.signup_form.dialog({
     title: "Create Account",
@@ -136,7 +136,7 @@ function showSignupForm() {
 
 function showLoginBox() {
  if (!$.ct.login_box) {
-  snippetLoad('login_box', function() {
+  snippetLoad('login', function() {
    signup = function() {
     $.ct.login_box.dialog('close');
     showSignupForm();
@@ -191,7 +191,7 @@ function postCommentListener() {
 }
 
 function showContactForm() {
- snippetLoad('contact_form', function() {
+ snippetLoad('contact', function() {
   $.ct.contact_form = $('<div></div>').html(arguments[0]);
   $.ct.contact_form.dialog({
    title: 'Contact Form',
