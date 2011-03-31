@@ -34,6 +34,7 @@ RewriteRule ^error/(.*)$ index.php?type=error&errornum=$1 [L]
 
 #Form Pages
 RewriteRule ^form/(.*)$ index.php?type=form&name=$1 [L]
+RewriteRule ^process$ index.php?type=process [L]
 
 ################## Page Specific Redirects
 #About me 

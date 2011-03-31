@@ -39,6 +39,10 @@ switch($_GET['type']) {
   $name = $_GET['name'];
   include(INCLUDE_DIR.'pages/form.php');
  break;
+ case 'process':
+  $name = $_POST['name'];
+  include(INCLUDE_DIR.'pages/form.php');
+ break;
  default:
   include(INCLUDE_DIR.'pages/home.php');
 }

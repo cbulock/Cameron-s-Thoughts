@@ -19,6 +19,9 @@
     include(INCLUDE_DIR.'pages/error.php');
     die();
    break;
+   default://may want to change this behavior as it may lead to uncaught exceptions
+    throw new Exception($e->getMessage(),$e->getCode());
+   break;
   }
  }
 ?>
