@@ -86,6 +86,7 @@ switch($name) {
  case 'comment'://Posting comments only
   try {
    $response = call('postComment',$_POST['postid'],array('text'=>$_POST['comment_text']));
+   call('clearCache');//this is lame, should do this better in the future
   }
   catch (exception $e){//nothing can really be done currently on error
   }
