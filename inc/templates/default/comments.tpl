@@ -20,5 +20,5 @@
 </form>
 </div>
 {else}
-<p>You will need to be <a href='#' id='comment_login'>logged in</a> to add any comments.</p>
+<p>You will need to be <a href='/form/login/' id='comment_login'>logged in</a> to add any comments.</p>
 {/if}
