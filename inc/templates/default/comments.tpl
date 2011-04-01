@@ -12,8 +12,9 @@
 <h4 id='leave_comment'>Leave a Comment</h4>
 <div id='new_comment' class='comment'>
 <img src='{$authUser.avatar}' alt='Avatar for {$authUser.name}' class='avatar' />
-<form id='comment_form'>
+<form id='comment_form' action='/process' method='post'>
 <input type='hidden' name='postid' id='postid' value='{$entry.entry_id}'>
+<input type='hidden' name='name' value='comment'>
 <p class='comment_body'><textarea id='comment_text' name='comment_text'></textarea></p>
 <input type='submit' id='comment_submit' value='Save Comment' />
 </form>

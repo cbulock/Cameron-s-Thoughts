@@ -72,8 +72,7 @@ switch($name) {
   try {
    $response = call('logout');
   }
-  catch (exception $e){
-   $tpl->assign('error',$e->getMessage());
+  catch (exception $e){//nothing can really be done currently on error
   }
   if ($response) {
    if ($_SERVER['HTTP_REFERER']) {
@@ -85,7 +84,19 @@ switch($name) {
   }
  break;
  case 'comment'://Posting comments only
-  //how's this work?
+  try {
+   $response = call('postComment',$_POST['postid'],array('text'=>$_POST['comment_text']));
+  }
+  catch (exception $e){//nothing can really be done currently on error
+  }
+  if ($response) {
+   if ($_SERVER['HTTP_REFERER']) {
+    header('Location: '.$_SERVER['HTTP_REFERER']);
+   }
+   else {
+    header('Location: '.LOCATION);
+   }
+  }
  break;
 }
 
