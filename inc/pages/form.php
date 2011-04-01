@@ -27,23 +27,28 @@ switch($name) {
   $tpl->assign('title','Sign Up');
   $tpl->assign('button','Sign Up');
   if ($_POST['username']) {
-   try {
-    $response = call('createUser',$_POST['username'],array(
-     'pass'=>$_POST['password'],
-     'email'=>$_POST['email'],
-     'name'=>$_POST['name'],
-     'url'=>$_POST['url']
-    ));
+   if ($_POST['pass'] != $_POST['pass2']) {
+    $tpl->assign('error',"Passwords don't match");
    }
-   catch (exception $e){
-    $tpl->assign('error',$e->getMessage());
-   }
-   if ($response) {
-    if ($_POST['referer']) {
-     header('Location: '.$_POST['referer']);
+   else {
+    try {
+     $response = call('createUser',$_POST['username'],array(
+      'pass'=>$_POST['pass'],
+      'email'=>$_POST['email'],
+      'name'=>$_POST['name'],
+      'url'=>$_POST['url']
+     ));
     }
-    else {
-     header('Location: '.LOCATION);
+    catch (exception $e){
+     $tpl->assign('error',$e->getMessage());
+    }
+    if ($response) {
+     if ($_POST['referer']) {
+      header('Location: '.$_POST['referer']);
+     }
+     else {
+      header('Location: '.LOCATION);
+     }
     }
    }
   }
