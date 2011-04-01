@@ -43,6 +43,7 @@ switch($name) {
      $tpl->assign('error',$e->getMessage());
     }
     if ($response) {
+     call('login',$_POST['username'],array('pass'=>$_POST['pass']));
      if ($_POST['referer']) {
       header('Location: '.$_POST['referer']);
      }
