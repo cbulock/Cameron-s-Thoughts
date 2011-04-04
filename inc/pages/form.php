@@ -35,7 +35,7 @@ switch($name) {
      $response = call('createUser',$_POST['username'],array(
       'pass'=>$_POST['pass'],
       'email'=>$_POST['email'],
-      'name'=>$_POST['name'],
+      'name'=>$_POST['fullname'],
       'url'=>$_POST['url']
      ));
     }

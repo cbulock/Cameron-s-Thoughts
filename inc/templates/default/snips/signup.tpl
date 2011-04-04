@@ -5,8 +5,8 @@
 <input type='password' name='pass' id='pass' /></p>
 <p><label for='pass2'>Confirm Password:</label>
 <input type='password' name='pass2' id='pass2' /></p>
-<p><label for='name'>Name:</label>
-<input name='name' id='name' /></p>
+<p><label for='fullname'>Name:</label>
+<input name='fullname' id='fullname' /></p>
 <p><label for='email'>E-mail:</label>
 <input type='email' name='email' id='email' /></p>
 <p><label for='url'>Website:</label>

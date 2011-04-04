@@ -109,7 +109,7 @@ function showSignupForm() {
       if ($('#pass').attr('value')==$('#pass2').attr('value')){
        opt = {
         pass : $('#pass').attr('value'),
-        name : $('#name').attr('value'),
+        name : $('#fullname').attr('value'),
         email : $('#email').attr('value'),
         url : $('#url').attr('value')
        }
