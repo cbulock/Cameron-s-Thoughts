@@ -2,6 +2,10 @@
 
 class ExtendedAPI extends BaseAPI {
 
+public function call($method, $req = array(), $opt = array()) {
+ return call_user_func_array(array($this,$method),array($req,$opt)); 
+}
+
 public function getNewEntries($options = array()) {
  $setup['options'] = $options;
  $setup['defaults'] = array(
@@ -55,6 +59,7 @@ public function getMonthlyEntries($month, $year, $options = array()) {
   'key' => 'entry_id'
  );
  $entry_list = $this->db->getTable('mt_entry',$dboptions);
+ if (!$entry_list) throw new Exception('Month not found',1000);
  foreach ($entry_list as $entry) {
   $entries[$entry['entry_id']] = $this->getEntry($entry['entry_id'],array('callby'=>'id'));
  }

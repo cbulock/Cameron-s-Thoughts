@@ -2,18 +2,15 @@
 
 require_once('pages.inc');
 
-$cat = $ct->getCat($basename,array('field'=>'category_basename'));
-$entries = $ct->getCatEntries($cat['category_id']);
-$cats = $ct->getCatList();
+$cat = call('getCat',$basename,array('field'=>'category_basename'));
+$entries = call('getCatEntries',$cat['category_id']);
 
-$query_count = $ct->getQueryCount();
-$cache_count = $ct->getCacheCount();
+include('stats.inc');
 
 $tpl->assign('entries',$entries);
 $tpl->assign('cat',$cat);
-$tpl->assign('cats',$cats);
-$tpl->assign('query_count',$query_count);
-$tpl->assign('cache_count',$cache_count);
+$tpl->assign('query_count',$ct->getQueryCount());
+$tpl->assign('cache_count',$ct->getCacheCount());
 
 $tpl->display('cat.tpl');
 ?>

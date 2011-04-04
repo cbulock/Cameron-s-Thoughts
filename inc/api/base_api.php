@@ -43,52 +43,52 @@ public function postEntry($options = array()) {
  $basename = strtolower(trim($options['title']));
  $basename = ereg_replace("[^ A-Za-z0-9_]", "", $basename);
  $basename = str_replace(" ", "_", $basename);
- if ($this->getEntry($basename,array('blogid'=>$options['blogid'],'cache'=>FALSE))) throw new Exception('Basename conflict'); //need to figure out how to better handle basename conflicts
- 
- $thisentry = $this->db->insertItem('mt_entry',array());
- if (!$thisentry) throw new Exception('Entry failed to save');
- 
- $atomid = 'tag:www.cbulock.com,'.date('Y').'://'.$options['blogid'].'.'.$thisentry;
- if ($options['category']) {//I think this still posts when not existing
-  $catoptions = array(
-   'placement_entry_id' => $thisentry,
-   'placement_blog_id' => $options['blogid'],
-   'placement_category_id' => $options['category'],
-   'placement_is_primary' => '1' 
-  );
-  $this->db->insertItem('mt_placement',$catoptions);
- };
+ try {//need to verify basename doesn't already exist
+  $this->getEntry($basename,array('blogid'=>$options['blogid'],'cache'=>FALSE));
+ }
+ catch (exception $e) {
+  switch ($e->getCode()) {
+   case 1000:
+    $thisentry = $this->db->insertItem('mt_entry',array());
+    if (!$thisentry) throw new Exception('Entry failed to save');
 
- $entrydata = array(
-  'entry_blog_id' => $options['blogid'],
-  'entry_status' => '2',
-  'entry_author_id' => '2',
-  'entry_allow_comments' => '1',
-  'entry_allow_pings' => '0',
-  'entry_convert_breaks' => $options['convert_breaks'],
-  'entry_title' => $options['title'],
-  'entry_excerpt' => $options['excerpt'],
-  'entry_text' => $options['text'],
-  'entry_keywords' => $options['keywords'],
-  'entry_created_on' => date('Y-m-d H:i:s'),
-  'entry_basename' => $basename,
-  'entry_atom_id' => $atomid,
-  'entry_week_number' => date('YW'), 
- );
- if (!$this->db->updateItem('mt_entry',$thisentry,$entrydata,array('field'=>'entry_id'))) throw new Exception('Entry save did not complete, in bad state');
- 
- //Create Status Posting
- $url = 'http://ct3.cbulock.com/'.date('Y').'/'.date('m').'/'.$basename.'.html';//the url needs to be dynamic
- $shorturl = $this->getShortURL($url);
- if (strlen($options['title']) > 100) {
-  $statustitle = substr($options['title'],0,100).'…';
+    $atomid = 'tag:www.cbulock.com,'.date('Y').'://'.$options['blogid'].'.'.$thisentry;
+    if ($options['category']) {//I think this still posts when not existing
+     $catoptions = array(
+      'placement_entry_id' => $thisentry,
+      'placement_blog_id' => $options['blogid'],
+      'placement_category_id' => $options['category'],
+      'placement_is_primary' => '1'
+     );
+     $this->db->insertItem('mt_placement',$catoptions);
+    };
+
+    $entrydata = array(
+     'entry_blog_id' => $options['blogid'],
+     'entry_status' => '2',
+     'entry_author_id' => '2',
+     'entry_allow_comments' => '1',
+     'entry_allow_pings' => '0',
+     'entry_convert_breaks' => $options['convert_breaks'],
+     'entry_title' => $options['title'],
+     'entry_excerpt' => $options['excerpt'],
+     'entry_text' => $options['text'],
+     'entry_keywords' => $options['keywords'],
+     'entry_created_on' => date('Y-m-d H:i:s'),
+     'entry_basename' => $basename,
+     'entry_atom_id' => $atomid,
+     'entry_week_number' => date('YW'),
+    );
+    if (!$this->db->updateItem('mt_entry',$thisentry,$entrydata,array('field'=>'entry_id'))) throw new Exception('Entry save did not complete, in bad state');
+
+    $this->clearCache();//there are random issues if cache isn't cleared
+    $this->newEntryStatus($thisentry);
+    return $this->api_call_finish(TRUE); //i'd like to return an array of useful data, like entryid for instance
+   default:
+    throw new Exception($e);
+  }
  }
- else {
-  $statustitle = $options['title'];
- }
- $this->postStatus('New Blog Post: '.$statustitle.' '.$shorturl);
- 
- return $this->api_call_finish(TRUE); //i'd like to return an array of useful data, like entryid for instance
+ throw new Exception('Basename conflict');
 }
 
 public function getEntry($value, $options = array()) {
@@ -107,16 +107,43 @@ public function getEntry($value, $options = array()) {
    $sql = "SELECT * FROM `mt_entry` WHERE entry_blog_id='".$this->db->sqlClean($options['blogid'])."' AND entry_id='".$this->db->sqlClean($value)."'";
   break;
  }
- $result = $this->db->directProcessQuery($sql,'cbulock_mt2',array('cache'=>$options['cache']));
+ $result = $this->db->directProcessQuery($sql,'mt_entry',array('cache'=>$options['cache'],'htmlParse'=>FALSE));
  if ($result) {
   $result['entry_raw'] = $result['entry_text'];
-  $result['entry_text'] = html_entity_decode($result['entry_text']);
-  //this restores my <code> tags to a working state, but is really ugly
-  $result['entry_text'] = preg_replace('/<code>/','<code><xmp>',$result['entry_text']);
-  $result['entry_text'] = preg_replace('/<\/code>/','</xmp></code>',$result['entry_text']);
+  //process text
+  $filters = $this->getFilters();
+  foreach ($filters as $filter) {
+    if ($filter['enabled'] == '1') $result['entry_text'] = preg_replace(html_entity_decode($filter['filter']),html_entity_decode($filter['replacement']),$result['entry_text']);
+  }
+  //hack to use current image tags to display images
+   if (preg_match_all("/\<\?php echo image\(\"(.*?)\"\)\;\?\>/",$result['entry_text'],$images)) {
+   foreach($images[1] as $i => $image) {
+    $images[2][$i] = $this->getImageDetails($image);
+   }
+   foreach($images[0] as $i => $image) {
+    $result['entry_text'] = preg_replace(
+     '/'.preg_quote($image).'/',
+     '<img src="http://www.cbulock.com/images/view/'.$images[2][$i]['filename'].'" width="'.$images[2][$i]['twidth'].'" height="'.$images[2][$i]['theight'].'" />',
+     $result['entry_text']
+    );
+   }
+  }
+  if (preg_match_all("/\<\?php echo imagethumb\(\"(.*?)\"\)\;\?\>/",$result['entry_text'],$images)) {
+   foreach($images[1] as $i => $image) {
+    $images[2][$i] = $this->getImageDetails($image);
+   }
+   foreach($images[0] as $i => $image) {
+    $result['entry_text'] = preg_replace(
+     '/'.preg_quote($image).'/', 
+     '<a href="http://www.cbulock.com/images/fit/'.$images[2][$i]['filename'].'"><img src="http://www.cbulock.com/images/thumb/'.$images[2][$i]['filename'].'" width="'.$images[2][$i]['twidth'].'" height="'.$images[2][$i]['theight'].'" /></a>',
+     $result['entry_text']
+    );
+   }
+  }
+  
   if ($result['entry_convert_breaks']) {
    $result['entry_text'] = nl2br($result['entry_text']);
-  }
+  } 
   if ($options['blogid'] == '2') {
    $year = date('Y',strtotime($result['entry_created_on']));
    $month = date('m',strtotime($result['entry_created_on']));
@@ -125,7 +152,7 @@ public function getEntry($value, $options = array()) {
   $result['comment_count'] = $this->commentCount($result['entry_id'],array('blogid'=>$options['blogid']));
   return $this->api_call_finish($result);
  }
- return $this->api_call_finish(FALSE);
+ throw new Exception('Entry not found',1000);
 }
 
 public function prevEntry($id, $options = array()) {//where is very open
@@ -136,7 +163,7 @@ public function prevEntry($id, $options = array()) {//where is very open
  );
  extract($setup_result = $this->api_call_setup($setup));
  $sql = "select max(entry_id) FROM `mt_entry` WHERE (entry_id < ".$this->db->sqlClean($id)." AND entry_blog_id =".$this->db->sqlClean($options['blogid'])." AND ".$options['where'].")";
- $result = $this->db->directProcessQuery($sql,'cbulock_mt2',array('return'=>'single','cache'=>FALSE));//going to disable caching as I believe this can be off when new entries are created
+ $result = $this->db->directProcessQuery($sql,'mt_entry',array('return'=>'single','cache'=>TRUE));//going to disable caching as I believe this can be off when new entries are created (turning on now as cache is cleared during postEntry)
  return $this->api_call_finish($result);
 }
 
@@ -148,7 +175,7 @@ public function nextEntry($id, $options = array()) {//where is very open
  );
  extract($setup_result = $this->api_call_setup($setup));
  $sql = "select min(entry_id) FROM `mt_entry` WHERE (entry_id > ".$this->db->sqlClean($id)." AND entry_blog_id = ".$this->db->sqlClean($options['blogid'])." AND ".$options['where'].")";
- $result = $this->db->directProcessQuery($sql,'cbulock_mt2',array('return'=>'single','cache'=>FALSE));//going to disable caching as I believe this can be off when new entries are created
+ $result = $this->db->directProcessQuery($sql,'mt_entry',array('return'=>'single','cache'=>TRUE));//going to disable caching as I believe this can be off when new entries are created (turning on now as cache is cleared during postEntry)
  return $this->api_call_finish($result);
 }
 
@@ -160,7 +187,7 @@ public function lastEntry($options = array()) {//where is very open
  );
  extract($setup_result = $this->api_call_setup($setup));
  $sql = "select max(entry_id) FROM `mt_entry` WHERE (entry_blog_id = ".$this->db->sqlClean($options['blogid'])." AND ".$options['where'].")";
- $result = $this->db->directProcessQuery($sql,'cbulock_mt2',array('return'=>'single','cache'=>FALSE));//going to disable caching as I believe this can be off when new entries are created
+ $result = $this->db->directProcessQuery($sql,'mt_entry',array('return'=>'single','cache'=>TRUE));//going to disable caching as I believe this can be off when new entries are created (turning on now as cache is cleared during postEntry)
  return $this->api_call_finish($result);
 }
 
@@ -181,7 +208,36 @@ function commentCount($postid, $options = array()) {
  return $this->api_call_finish($result);
 }
 
-public function getComments($postid, $options = array()) {
+public function getComment($id, $options = array()) {
+ $setup['options'] = $options;
+ $setup['defaults'] = array(
+  'expires' => '0.2'
+ );
+ extract($setup_result = $this->api_call_setup($setup));
+ $dboptions = array(
+  'expires' => $options['expires']
+ );
+ $result = $this->db->getItem('comments', $id, $dboptions);
+ if ($result) {
+  $result['service'] = 0;
+  if ($result['user']) {
+   $user = $this->getUser($result['user'],array('callby'=>'id','token'=>$this->getAPIToken()));
+   $result['author'] = $user['name'];
+   $result['url'] = $user['url'];
+   $result['email'] = $user['email'];
+   $result['service'] = $user['service'];
+  }
+  $result['email_hash'] = md5($result['email']);
+  if ($auth['class']!='internal') {
+   unset($result['email']);
+  }
+  $result['avatar'] = $this->getAvatarPath($result['email_hash'],$result['service']);
+ return $this->api_call_finish($result);
+ }
+ throw new Exception('Comment not found');
+}
+
+public function getComments($postid, $options = array()) {//this should be rewritten to use getComment
  $setup['options'] = $options;
  $setup['defaults'] = array(
   'blogid' => '2',
@@ -198,7 +254,7 @@ public function getComments($postid, $options = array()) {
   foreach ($results as $key=>$result) {
    $results[$key]['service'] = 0;
    if ($result['user']) {
-    $user = $this->getUser($result['user'],array('callby'=>'id','token'=>$this->token));
+    $user = $this->getUser($result['user'],array('callby'=>'id','token'=>$this->getAPIToken()));
     $results[$key]['author'] = $user['name'];
     $results[$key]['url'] = $user['url'];
     $results[$key]['email'] = $user['email'];
@@ -236,9 +292,10 @@ public function postComment($postid, $options = array()) {
  //Admin Email
  $data['username'] = $user['login'];
  $data['fullname'] = $user['name'];
+ $site_name = $this->getSetting('site_name');
  $mailoptions = array(
   'data' => $data,
-  'subject' => "New Comment Posted on Cameron's Thoughts",
+  'subject' => "New Comment Posted on ".$site_name['value'],
   'template' => 'post_comment'
  );
  $this->sendMail($mailoptions);
@@ -263,7 +320,8 @@ public function getCatID($entryid, $options = array()) {
   'field' => 'placement_entry_id'
  ); 
  $item = $this->db->getItem('mt_placement',$entryid,$options);
- return $this->api_call_finish($item['placement_category_id']);
+ if ($item) return $this->api_call_finish($item['placement_category_id']);
+ return $this->api_call_finish(FALSE);
 }
 
 public function getCat($catid, $options = array()) {
@@ -275,7 +333,9 @@ public function getCat($catid, $options = array()) {
  $dboptions = array(
   'field' => $options['field']
  );
- return $this->api_call_finish($this->db->getItem('mt_category',$catid,$dboptions));
+ $cat = $this->db->getItem('mt_category',$catid,$dboptions);
+ if ($cat) return $this->api_call_finish($cat);
+ throw new Exception('Category not found',1000);
 }
 
 public function getCatList($options = array()) {
@@ -326,7 +386,7 @@ protected function checkPass($user,$pass) {
 protected function methodAuth($token=NULL) {
  if ($token) {
   switch($token) {
-   case $this->token:
+   case $this->getAPIToken():
     return array('class'=>'internal');
    break;
    default:
@@ -366,9 +426,27 @@ protected function postStatus($message) {
  return $this->status->postStatus($message);
 }
 
+protected function newEntryStatus($id,$options = array()) {
+ $setup['options'] = $options;
+ $setup['defaults'] = array(
+  'message' => 'New Blog Post: ',
+  'message_max_length' => 119 //bit.ly URL is 20chars plus there is a space, 140-21=119
+ );
+ extract($setup_result = $this->api_call_setup($setup));
+ $entry = $this->getEntry($id,array('callby'=>'id'));
+ $url = 'http://www.cbulock.com'.$entry['entry_link'];//need to have the url be dynamic
+ $shorturl = $this->getShortURL($url);
+ $message = $options['message'].$entry['entry_title'];
+ if ((strlen($message) > $options['message_max_length'])) {
+  $message = substr($message,0,$options['message_max_length']-3).'...';
+ }
+ $message = $message.' '.$shorturl;
+ return $this->postStatus($message);
+}
+
 protected function getShortURL($url) {
  $apiurl = 'http://api.bit.ly/v3/shorten?login=cbulock&apiKey='.BITLY_API_KEY.'&longUrl='.urlencode($url);
- $result = json_decode($this->call($apiurl));
+ $result = json_decode($this->callURL($apiurl));
  return $result->data->url;
 }
 
@@ -388,10 +466,13 @@ protected function getMailTemplate($name,$data = array()) {
 
 protected function sendMail($options = array()) {
  $setup['options'] = $options;
+ $site_email = $this->getSetting('site_email',array('token'=>$this->getAPIToken()));
+ $admin_email = $this->getSetting('admin_email',array('token'=>$this->getAPIToken()));
+ $site_name = $this->getSetting('site_name');
  $setup['defaults'] = array(
-  'from_email' => SITE_EMAIL,
-  'from_name' => "Cameron's Thoughts",
-  'to_email' => ADMIN_EMAIL,
+  'from_email' => $site_email['value'],
+  'from_name' => $site_name['value'],
+  'to_email' => $admin_email['value'],
   'to_name' => 'Cameron'
  );
  extract($setup_result = $this->api_call_setup($setup));
@@ -415,17 +496,38 @@ protected function sendMail($options = array()) {
    User Methods
 **********************************/
 
-public function addUser($name, $options = array()) {
+public function createUser($login, $options = array()) {
  $setup['options'] = $options;
  $setup['defaults'] = array(
+  'name' => '',
+  'url' => '',
+  'type' => 'user',
+  'service' => 1,
+  'service_id' => NULL
  );
  extract($setup_result = $this->api_call_setup($setup));
- return $this->api_call_finish();
+ if ($this->checkRBL($options['remote_ip'])) throw new Exception('IP listed on RBL, spam account rejected');
+ if ($options['type']!='user' && $user['type']!='admin') throw new Exception('Must be admin to setup non-standard users');
+ if (!$options['pass']) throw new Exception('Password required');
+ if (!$options['email']) throw new Exception('Email required');
+ if (!$this->nameFree($login)) throw new Exception('Username already taken');
+ $this->clearCache();
+ $useroptions = array(
+  'login' => $login,
+  'pass' => md5($options['pass']),
+  'type' => $options['type'],
+  'name' => $options['name'],
+  'email' => $options['email'],
+  'url' => $options['url'],
+  'service' => $options['service'],
+  'service_id' => $options['service_id']
+ );
+ return $this->api_call_finish($this->db->insertItem('users',$useroptions));
 }
 
-public function nameFree($name, $options = array()) {
- if ($this->getUser($name)) return $this->api_call_finish(TRUE);
- return $this->api_call_finish(FALSE);
+public function nameFree($login, $options = array()) {
+ if ($this->getUser($login)) return $this->api_call_finish(FALSE);//exception?
+ return $this->api_call_finish(TRUE);
 }
 
 public function getUser($value, $options = array()) {
@@ -435,7 +537,7 @@ public function getUser($value, $options = array()) {
  );
  extract($setup_result = $this->api_call_setup($setup));
  $user = $this->db->getItem('users',$value,array('field'=>$options['callby']));
- if (!$user) return FALSE;
+ if (!$user) return FALSE;//throw an exception here?
  $user['email_hash'] = md5($user['email']);
  $user['avatar'] = $this->getAvatarPath($user['email_hash'],$user['service']);
  if ($auth['class']!='internal') {
@@ -453,13 +555,21 @@ public function getAuthUser($options = array()) {
   unset($user['pass']);
   unset($user['email']);
  }
- if ($user) return $user;
+ if ($user) return $this->api_call_finish($user);
  return $this->api_call_finish(FALSE);
 }
 
 /**********************************
    Misc Methods
 **********************************/
+
+protected function checkRBL($ip, $options = array()) {
+ require_once('rbl.php');
+ $rbl = new http_bl(HTTP_BL_KEY);
+ $result = $rbl->query($ip);
+ if ($result == 2) return TRUE;
+ return FALSE;
+}
 
 public function sendMessage($options = array()) {
  $setup['options'] = $options;
@@ -474,7 +584,8 @@ public function sendMessage($options = array()) {
   'from_email' => $options['email'],
   'from_name' => $options['name'],
   'subject' => 'New Contact Form Message',
-  'template' => 'contact_form'
+  'template' => 'contact_form',
+  'token' => $this->getAPIToken()
  );
  if ($this->sendMail($mailoptions)) return $this->api_call_finish(TRUE);
  throw new Exception('Message failed to send',1002); 
@@ -500,13 +611,14 @@ protected function writeLog($text) {
  return fwrite($this->log,$log);
 }
 
-protected function call($url,$post=NULL) {
+protected function callURL($url,$post=NULL) {
+ $site_name = $this->getSetting('site_name');
  $ch = curl_init();
  curl_setopt($ch, CURLOPT_URL, $url);
  curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
  curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
  curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
- curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Cameron\'s Thoughts API Caller)');
+ curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 ('.$site_name['value'].' API Caller)');
  curl_setopt($ch, CURLOPT_MAXREDIRS, 5);
  curl_setopt($ch, CURLOPT_TIMEOUT, 20);
  $response = curl_exec($ch);
@@ -538,6 +650,42 @@ public function addStat($options = array()) {
  if ($user) $data['user_id'] = $user['id'];
  $result = $this->db->insertItem('referers',$data);
  return $this->api_call_finish($result);
+}
+
+public function getSetting($setting, $options = array()) {
+ $setup['options'] = $options;
+ $setup['defaults'] = array(
+  'expires' => 360
+ );
+ extract($setup_result = $this->api_call_setup($setup));
+ $dboptions = array(
+  'field' => 'name',
+  'expires' => $options['expires']
+ );
+ $setting = $this->db->getItem('settings',$setting, $dboptions);
+ if (!$setting) throw new Exception('Setting not found');
+ if ($auth['class']!='internal' && !$setting['public']) throw new Exception('Unauthorized to access setting', 403);
+ return $this->api_call_finish($setting);
+}
+
+protected function getFilters($options = array()) {
+ $setup['options'] = $options;
+ $setup['defaults'] = array(
+  'expires' => 1440
+ );
+ extract($setup_result = $this->api_call_setup($setup));
+ $dboptions = array(
+  'htmlParse' => FALSE
+ );
+ $filters = $this->db->getTable('filters',$dboptions);
+ return $this->api_call_finish($filters);
+}
+
+public function getImageDetails($name, $options = array()) {
+ $setup['options'] = $options;
+ extract($setup_result = $this->api_call_setup($setup));
+ $image = $this->db->getItem('images',$name,array('field'=>'name'));
+ return $this->api_call_finish($image);
 }
 
 /**********************************
@@ -581,7 +729,7 @@ public function getQueryLog($options = array()) {
 }
 
 public function getAPIMethods($options = array()) {
- return $this->api_call_finish($this->db->getTable('api_methods'));
+ return $this->api_call_finish($this->db->getTable('api_methods',array('orderBy'=>'value','key'=>'value')));
 }
 
 public function getMethodParameters($methodid, $options = array()) {
@@ -597,6 +745,10 @@ public function getQueryCount() {
 
 public function getDirectQueryCount() {
  return $this->api_call_finish($this->db->getDirectQueryCount);
+}
+
+public function clearCache() {
+ return $this->cache->clear();
 }
 
 
@@ -628,7 +780,7 @@ protected function setOptions($options, $defaults) {
    Core Methods
 **********************************/
 
-public function __construct($settings) {
+public function __construct() {
  //create internal token
  $this->setAPIToken($this->createGUID());
  //setup caching
@@ -636,7 +788,7 @@ public function __construct($settings) {
  $this->cache = new Cache;
  //connect to database
  require_once('db.php');
- $this->db = new DB($settings['db']['host'],$settings['db']['user'],$settings['db']['pass'],array('prefix'=>DB_PREFIX,'cache'=>$this->cache));
+ $this->db = new DB(DB_HOST,DB_USER,DB_PASS,array('prefix'=>DB_PREFIX,'cache'=>$this->cache));
  //setup user token/login
  if ($_COOKIE['guid']) {
   $this->tokenLogin($_COOKIE['guid']);

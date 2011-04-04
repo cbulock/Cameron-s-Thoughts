@@ -1,4 +1,15 @@
-@import url('fonts.css');
+@textcolor: #FFF;
+@hovercolor: #00B069;
+@bgcolor: #CB3131;
+@bgimage: url('/css/img/green_tree.jpg');
+@codecolor: #222;
+@commenttextcolor: #000;
+@commentbgcolor: #DCDCDC;
+@menubgcolor: #00B069;
+@menuddbgcolor: #006A3F;
+@menuborder: #BCBCBC;
+
+@import 'fonts.css';
 
 .border_radius (@size: 8px) {
  border-radius: @size;
@@ -24,9 +35,9 @@ body
 {
  .font;
  font-size: 0.9em;
- background-color: #777;
+ background-color: @bgcolor;
  .text_shadow;
- color: #FFF;
+ color: @textcolor;
  margin: 0;
  padding: 1em;
 }
@@ -36,20 +47,20 @@ html
  margin:0 auto;
  padding:0;
  width:780px;
- background-image: url('/css/img/black_tile.jpg');
+ background-image: @bgimage;
 }
 
 a {
- color: white;
+ color: @textcolor;
  text-decoration: none;
  :hover {
   text-decoration: underline;
-  color: #ff9900;
+  color: @hovercolor;
  }
  :visited {
-  color: white;
+  color: @textcolor;
   :hover {
-   color: #ff9900;
+   color: @hovercolor;
   }
  }
 }
@@ -58,8 +69,8 @@ code, pre {
  display: block;
  overflow: auto;
  font-family: AndaleMonoRegular, 'Lucida Console', 'Bitstream Vera Sans Mono', 'Courier New', Monaco, Courier, monospace;
- color: #FFF;
- background-color: #222;
+ color: @textcolor;
+ background-color: @codecolor;
  .border_radius;
  .box_shadow;
  padding: 0.8em;
@@ -77,14 +88,14 @@ h1, h2, h3, h4, h5 {
  clear:both;
  a {
   text-decoration: none;
-  color: #FFF;
+  color: @textcolor;
   .text_shadow(#111, 2px, 2px, 4px);
   :hover {
    text-decoration: underline;
-   color: #FFF;
+   color: @textcolor;
   }
   :visited {
-   color: #FFF;
+   color: @textcolor;
   }
  }
 }
@@ -104,7 +115,7 @@ input, textarea, select
  padding: 1px;
 }
 
-#contact_form, #login_box, #error_box {
+#error_box {
  display: none;
 }
 
@@ -155,12 +166,20 @@ height: 120px;
  }
 }
 
-#login_box {
- display: none;
- padding: 8px;
- h1 {
-  font-size: 1.2em;
- }
+.ui-dialog #login_box, .ui-dialog #signup_form {
+ text-align: right;
+}
+
+#login_box a{
+ text-decoration: underline;
+}
+
+#throbber {
+ top: 10px;
+ right: 75px;
+ width: 30px;
+ position: fixed;
+ z-index:10;
 }
 
 #welcome {
@@ -169,8 +188,8 @@ height: 120px;
  position:absolute;
  top: 0;
  left: 0;
- background-color:#777;
- color: #FFF;
+ background-color: @bgcolor;
+ color: @textcolor;
  font-size:0.85em;
  .border_radius(0 0 5px 0);
 }
@@ -186,7 +205,7 @@ height: 120px;
 
 #title a:hover {
  text-decoration: none;
- color: white;
+ color: @textcolor;
 }
 
 #prev_entry {
@@ -230,8 +249,8 @@ height: 120px;
 
 .comment_body {
  padding: 10px;
- color: #000;
- background-color: #DCDCDC;
+ color: @commenttextcolor;
+ background-color: @commentbgcolor;
  .text_shadow(#AAA, 1px, 1px, 1px);
  .border_radius;
  .box_shadow(7px, 7px, 10px, #333);
@@ -241,13 +260,13 @@ height: 120px;
  textarea {
   .font;
   .text_shadow(#AAA, 1px, 1px, 1px);
-  color: #000;
+  color: @commenttextcolor;
   width: 600px;
   border: 0;
-  border-color: #dcdcdc;
+  border-color: @commentbgcolor;
   outline: 0;
-  outline-color: #dcdcdc;
-  background-color: #dcdcdc;
+  outline-color: @commentbgcolor;
+  background-color: @commentbgcolor;
   font-size: 100%;
   margin: 0;
   padding: 0;
@@ -279,8 +298,8 @@ ul.main_nav p {
 }
 
 ul.main_nav li {
- background-color: #586261;
- border-right: 1px solid #BCBCBC;
+ background-color: @menubgcolor;
+ border-right: 1px solid @menuborder;
  float: left;
  position: relative;
  text-align: center;
@@ -298,7 +317,7 @@ ul.main_nav > li:last-child {
 }
 
 ul.main_nav li a, ul.main_nav li p{
- color: #FFFFFF;
+ color: @textcolor;
  width: 100px;
  padding: 5px;
  text-decoration: none;
@@ -306,7 +325,7 @@ ul.main_nav li a, ul.main_nav li p{
 }
 
 ul.main_nav li a:hover {
- color: #424242;
+ color: @textcolor;
 }
 
 ul.main_nav li ul.sub_nav {
@@ -321,9 +340,9 @@ ul.main_nav li:hover > ul {
 }
 
 ul.main_nav li ul.sub_nav li {
- background-color: #483D41;
+ background-color: @menuddbgcolor;
  border-right: none;
- border-top: 1px solid #BCBCBC;
+ border-top: 1px solid @menuborder;
  text-align: left;
  z-index:1;
 }
@@ -333,7 +352,7 @@ ul.main_nav li ul.sub_nav li:first-child {
 }
 
 ul.main_nav li ul.sub_nav li a:hover {
- color: #FF9900;
+ color: @hovercolor;
 }
 
 ul.main_nav li ul.sub_nav li:last-child {

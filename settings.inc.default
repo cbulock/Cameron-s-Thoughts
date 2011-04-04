@@ -1,0 +1,17 @@
+<?php
+define('LOCATION','');
+define('DB_HOST','');
+define('DB_USER','');
+define('DB_PASS','');
+define('DB_PREFIX','');
+define('ROOT_DIR','');
+define('FACEBOOK_APP_ID','');
+define('FACEBOOK_SECRET','');
+define('BITLY_API_KEY','');
+define('TWITTER_UID','');
+define('TWITTER_CONSUMER_KEY','');
+define('TWITTER_CONSUMER_SECRET','');
+define('TWITTER_OAUTH_TOKEN','');
+define('TWITTER_OAUTH_SECRET','');
+define('HTTP_BL_KEY',''); //http://www.projecthoneypot.org/httpbl_configure.php
+?>

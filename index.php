@@ -23,12 +23,25 @@ switch($_GET['type']) {
   include(INCLUDE_DIR.'pages/static.php');
  break;
  case 'snip':
+  if($_GET['option']) $option = $_GET['option'];
   $snip = $_GET['snip'];
   include(INCLUDE_DIR.'pages/snip.php');
  break;
  case 'api':
   $request = $_GET['request'];
   include(API_DIR.'public.php');
+ break;
+ case 'error':
+  $errornum = $_GET['errornum'];
+  include(INCLUDE_DIR.'pages/error.php');
+ break;
+ case 'form':
+  $name = $_GET['name'];
+  include(INCLUDE_DIR.'pages/form.php');
+ break;
+ case 'process':
+  $name = $_POST['name'];
+  include(INCLUDE_DIR.'pages/form.php');
  break;
  default:
   include(INCLUDE_DIR.'pages/home.php');

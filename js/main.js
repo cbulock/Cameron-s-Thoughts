@@ -6,59 +6,171 @@ $(document).ready(function() {
   }, function() {
   $(this).find('> ul').stop(true, true).slideUp('slow'); 	
  });
-
- /*listeners*/
- loginListener();
- logoutListener();
+ /*other listeners*/
  postCommentListener();
- contactFormListener();
-
+ /*click listeners*/
+ for (i in clickListeners) {
+  $('#'+i).click(function(event) {
+   event.preventDefault();
+   clickListeners[this.id]();
+  });
+ }
  /*pageStyling*/
  autoResize();
  roundedAvatars();
-
 });
 
-function loginListener() {
- $('#login').click(function(event) {
-  event.preventDefault();
-  showLoginBox();
- });
- $('#comment_login').click(function(event) {
-  event.preventDefault();
-  showLoginBox();
- });
+//spinner() from http://raphaeljs.com/spin-spin-spin.html
+function spinner(holderid, R1, R2, count, stroke_width, colour) {
+ var sectorsCount = count || 12,
+ color = colour || "#fff",
+ width = stroke_width || 15,
+ r1 = Math.min(R1, R2) || 35,
+ r2 = Math.max(R1, R2) || 60,
+ cx = r2 + width,
+ cy = r2 + width,
+ r = Raphael(holderid, r2 * 2 + width * 2, r2 * 2 + width * 2),
+
+ sectors = [],
+ opacity = [],
+ beta = 2 * Math.PI / sectorsCount,
+
+ pathParams = {stroke: color, "stroke-width": width, "stroke-linecap": "round"};
+ Raphael.getColor.reset();
+ for (var i = 0; i < sectorsCount; i++) {
+  var alpha = beta * i - Math.PI / 2,
+  cos = Math.cos(alpha),
+  sin = Math.sin(alpha);
+  opacity[i] = 1 / sectorsCount * i;
+  sectors[i] = r.path([["M", cx + r1 * cos, cy + r1 * sin], ["L", cx + r2 * cos, cy + r2 * sin]]).attr(pathParams);
+  if (color == "rainbow") {
+   sectors[i].attr("stroke", Raphael.getColor());
+  }
+ }
+ var tick;
+ (function ticker() {
+  opacity.unshift(opacity.pop());
+  for (var i = 0; i < sectorsCount; i++) {
+   sectors[i].attr("opacity", opacity[i]);
+  }
+  r.safari();
+  tick = setTimeout(ticker, 1000 / sectorsCount);
+ })();
+ return function () {
+  clearTimeout(tick);
+  r.remove();
+ };
 }
 
-function showLoginBox() {
- if ($('#login_box').length==0) {
-  snippetLoad('login_box', function() {
-   $('body').prepend(arguments[0]);
-   $('#login_box').slideDown();
-   loginboxListener();
-   $('#username').focus();
-   window.location.hash = '#login_box';
+throbber = ({
+ show : function() {
+  if ($('#throbber').length==0) {
+   $('body').prepend('<div id="throbber"></div>');
+   spinner("throbber", 18, 30, 8, 8, "#fff");
+  }
+  $('#throbber').show();
+ },
+ hide : function() {
+  $('#throbber').hide();
+ }
+});
+
+clickListeners = ({
+ login : function() {
+  showLoginBox();
+ },
+ signup : function() {
+  showSignupForm();
+ },
+ comment_login : function() {
+  showLoginBox();
+ },
+ logout : function() {
+  call('logout');
+  location.reload();
+ },
+ contact : function() {
+  showContactForm();
+ }
+});
+
+function showSignupForm() {
+ if (!$.ct.signup_form) {
+  snippetLoad('signup', function() {
+   $.ct.signup_form = $('<div></div>').html(arguments[0]);
+   $.ct.signup_form.dialog({
+    title: "Create Account",
+    height: 415,
+    width: 400,
+    hide: 'highlight',
+    modal: true,
+    buttons: {
+     'Sign Up': function() {
+      if ($('#pass').attr('value')==$('#pass2').attr('value')){
+       opt = {
+        pass : $('#pass').attr('value'),
+        name : $('#fullname').attr('value'),
+        email : $('#email').attr('value'),
+        url : $('#url').attr('value')
+       }
+       if(call('createUser',[$('#username').val()],opt)) {
+        if(call('login',[$('#username').val()],opt)) {
+         location.reload();
+        }
+       }
+      }
+      else {
+       error.add('Passwords do not match!');
+      }
+     }
+    },
+    close: function() {
+     $(this).dialog('destroy');
+     delete $.ct.signup_form;
+     $('#signup_form').remove();
+    }
+   });
   });
  }
 }
 
-function logoutListener() {
- $('#logout').click(function(event) {
-  event.preventDefault();
-  call('logout');
-  location.reload();
- });
-}
-
-function loginboxListener() {
- $('#login_form').submit(function(event) {
-  event.preventDefault();
-  opt = {pass: $('#password').attr('value')};
-   if(call('login',[$('#username').val()],opt)) {
-    window.location.hash = '';
-    location.reload();
-  } 
- });
+function showLoginBox() {
+ if (!$.ct.login_box) {
+  snippetLoad('login', function() {
+   signup = function() {
+    $.ct.login_box.dialog('close');
+    showSignupForm();
+   };
+   $.ct.login_box = $('<div></div>').html(arguments[0]);
+   $.ct.login_box.dialog({
+    title: 'Login',
+    height: 260,
+    width: 340,
+    hide: 'highlight',
+    modal: true,
+    buttons: {
+     'Signup': function() {
+      signup();
+     },
+     'Login': function() {
+      opt = {pass: $('#password').attr('value')};
+      if(call('login',[$('#username').val()],opt)) {
+       location.reload();
+      }
+     }
+    },
+    close: function() {
+     $(this).dialog('destroy');
+     delete $.ct.login_box;
+     $('#login_box').remove();
+    }
+   });
+   $('#login_box a').click(function(event) {
+    event.preventDefault();
+    signup();
+   });
+  });
+ }
 }
 
 function postCommentListener() {
@@ -70,50 +182,58 @@ function postCommentListener() {
   if(comment) {
    $('#comment_submit').fadeOut();
    $('#leave_comment').slideUp();
-    $('#comments').html(call('commentCountText',comment.count));
+   snippetLoad('comment_footer',function() {
+    $('#new_comment .comment_body').after(arguments[0]);
+   },comment.id);
+   $('#comments').html(call('commentCountText',comment.count));
   }
- });
-}
-
-function contactFormListener() {
- $('#contact').click(function(event) {
-  event.preventDefault();
-  showContactForm();
  });
 }
 
 function showContactForm() {
- if ($('#contact_form').length==0) {
-  snippetLoad('contact_form', function() {
-   $('body').prepend(arguments[0]);
-   $('#contact_form').slideDown();
-   contactFormBoxListener();
-   window.location.hash = '#contact_form';
+ snippetLoad('contact', function() {
+  $.ct.contact_form = $('<div></div>').html(arguments[0]);
+  $.ct.contact_form.dialog({
+   title: 'Contact Form',
+   height: 415,
+   width: 750,
+   hide: 'highlight',
+   modal: true,
+   buttons: {
+    'Send': function() {
+     opt = {
+      name : $('#contact_name').val(),
+      email : $('#contact_email').val(),
+      message : $('#contact_message').val()
+     };
+     if(call('sendMessage',null,opt)) {
+      $(this).dialog('close');
+     }
+    }
+   },
+   close: function() {
+    $(this).dialog('destroy');
+    delete $.ct.contact_form;
+    $('#contact_form').remove();
+   }
   });
- }
-}
-
-function contactFormBoxListener() {
- $('#contact').submit(function(event){
-   event.preventDefault();
-  opt = {
-   name : $('#contact_name').val(),
-   email : $('#contact_email').val(),
-   message : $('#contact_message').val()
-  };
-  if(call('sendMessage',null,opt)) {
-   $('#contact_form').slideUp();
-   window.location.hash = '';
-  }
  });
 }
 
-function snippetLoad(snip, callback) {
+function snippetLoad(snip, callback, option) {
+ throbber.show();
+ if (option) {
+  url =  '/snip/'+snip+'/'+option;
+ }
+ else {
+  url =  '/snip/'+snip;
+ }
  $.ajax({
-  url: '/snip/'+snip,
+  url: url,
   dataType: 'html',
   success: function(data) {
    callback(data);
+   throbber.hide();
   }
  });
 }
@@ -132,6 +252,54 @@ function roundedAvatars() {
   $(this).css("opacity","0");
  });
 }
+/*
+function addError(message) {
+ if ($('#error_box').length==0) {
+  snippetLoad('error_box', function() {
+   $('body').prepend(arguments[0]);
+   $('#error_box button').button({icons:{primary:'ui-icon-circle-close'},text:false});
+   $('#error_box p').html(message);
+   $('#error_box button').click(function(){
+    $('#error_box').remove();
+   });
+   $('#error_box').slideDown();
+  });
+ }
+}*/
+
+error = ({
+ errorList : [],
+ add : function(message) {
+  this.errorList.push(message);
+  if ($('#error_box').length==0) {
+   this.showBox();
+  }
+ },
+ showBox : function() {
+  if ($('#error_box').length==0) {
+   snippetLoad('error_box', function() {
+    $('body').prepend(arguments[0]);
+    $('#error_box button').button({icons:{primary:'ui-icon-circle-close'},text:false});
+    errorList = error.get();
+    if (errorList) {
+     $('#error_box p').html(errorList[0]);
+    }
+    $('#error_box button').click(function(){
+     $('#error_box').remove();
+     error.clearList();
+    });
+    $('#error_box').slideDown();
+   });
+  }
+ },
+ get : function() {
+  if (!this.errorList.length) return false;
+  return this.errorList;
+ },
+ clearList : function() {
+  this.errorList = [];
+ }
+});
 
 function call(method,req,opt) {
  req = req || null;
@@ -148,17 +316,7 @@ function exception_handler(e) {
  if(!e.message) {
   e = {name:0, message:e};
  }
- if ($('#error_box').length==0) {
-  snippetLoad('error_box', function() {
-   $('body').prepend(arguments[0]);
-   $('#error_box button').button({icons:{primary:'ui-icon-circle-close'},text:false});
-   $('#error_box p').html(e.message);
-   $('#error_box button').click(function(){
-    $('#error_box').remove();
-   });
-   $('#error_box').slideDown();
-  });
- }
+ error.add(e.message);
  switch(e.name) {
   case 401: //authentication failure
    showLoginBox();
