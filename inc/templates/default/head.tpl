@@ -15,7 +15,6 @@
 <script type='text/javascript' src='/js/jquery-ui-1.8.5.custom.min.js'></script>
 <script type='text/javascript' src='/js/jquery.ct.js'></script>
 <script type='text/javascript' src='/js/autoresize.jquery.min.js'></script>
-<script type='text/javascript' src='/js/less-1.0.38.min.js'></script>
 <script type='text/javascript' src="/js/raphael.js"></script>
 <script type='text/javascript' src='/js/main.js'></script>
 </head>
