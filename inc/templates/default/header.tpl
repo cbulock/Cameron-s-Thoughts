@@ -1,6 +1,6 @@
 <div id='welcome'>
 {if isset($authUser)}
-Welcome, {$authUser.name} | <a href='/form/logout' id='logout'>Logout</a>
+Welcome, <a href='/profile/{$authUser.login}'>{$authUser.name}</a> | <a href='/form/logout' id='logout'>Logout</a>
 {else}
 <a href='/form/login' id='login'>Login</a> | <a href='/form/signup' id='signup'>Sign Up</a>
 {/if}

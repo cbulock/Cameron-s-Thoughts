@@ -107,6 +107,8 @@ switch($name) {
  break;
 }
 
+include('stats.inc');
+
 if ($_POST['referer']) {
  $tpl->assign('referer',$_POST['referer']);
 } 
