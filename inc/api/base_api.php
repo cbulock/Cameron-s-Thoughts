@@ -567,8 +567,8 @@ protected function checkRBL($ip, $options = array()) {
  require_once('rbl.php');
  $rbl = new http_bl(HTTP_BL_KEY);
  $result = $rbl->query($ip);
- if ($result == 2) return TRUE;
- throw new Exception('IP listed on RBL, spam account rejected',1003);
+ if ($result == 2) throw new Exception('IP listed on RBL, spam account rejected',1003);
+ return FALSE;
 }
 
 public function sendMessage($options = array()) {
