@@ -506,7 +506,7 @@ public function createUser($login, $options = array()) {
   'service_id' => NULL
  );
  extract($setup_result = $this->api_call_setup($setup));
- if ($this->checkRBL($options['remote_ip'])) throw new Exception('IP listed on RBL, spam account rejected');
+ $this->checkRBL($options['remote_ip']);
  if ($options['type']!='user' && $user['type']!='admin') throw new Exception('Must be admin to setup non-standard users');
  if (!$options['pass']) throw new Exception('Password required');
  if (!$options['email']) throw new Exception('Email required');
@@ -568,7 +568,7 @@ protected function checkRBL($ip, $options = array()) {
  $rbl = new http_bl(HTTP_BL_KEY);
  $result = $rbl->query($ip);
  if ($result == 2) return TRUE;
- return FALSE;
+ throw new Exception('IP listed on RBL, spam account rejected',1003);
 }
 
 public function sendMessage($options = array()) {
@@ -578,6 +578,7 @@ public function sendMessage($options = array()) {
   'name' => 'Contact Form User'
  );
  extract($setup_result = $this->api_call_setup($setup));
+ $this->checkRBL($options['remote_ip']);
  $data['message'] = $options['message'];
  $mailoptions = array(
   'data' => $data,
