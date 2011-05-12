@@ -689,6 +689,28 @@ public function getImageDetails($name, $options = array()) {
  return $this->api_call_finish($image);
 }
 
+public function search($term, $options = array()) {
+ $setup['options'] = $options;
+ $setup['defaults'] = array(
+  'blogid' => '2'
+ );
+ extract($setup_result = $this->api_call_setup($setup));
+ $sql = 'SELECT entry_id FROM `mt_entry` WHERE entry_blog_id = "'.$this->db->sqlClean($options['blogid']).'" AND MATCH (entry_keywords,entry_title,entry_excerpt) AGAINST ("'.$this->db->sqlClean($term).'");';
+ $sqlresults = $this->db->directProcessMultiQuery($sql,'mt_entry',array('sortkey'=>'entry_id'));
+ $count = 0;
+ if ($sqlresults) {
+  foreach($sqlresults as $sqlresult) {
+   $count++;
+   $results[$count] = $this->getEntry($sqlresult['entry_id'],array('callby'=>'id'));
+  }
+ }
+ $output = array(
+  'count'=>$count,
+  'results'=>$results
+ );
+ return $this->api_call_finish($output);
+}
+
 /**********************************
    Token Methods
 **********************************/
