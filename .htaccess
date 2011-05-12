@@ -30,6 +30,9 @@ RewriteRule ^snip/(.*)$ index.php?type=snip&snip=$1 [L]
 #API Access
 RewriteRule ^api/(.*)$ index.php?type=api&request=$1 [L]
 
+#Seach Page
+RewriteRule ^search/(.*)$ index.php?type=search&term=$1 [L]
+
 #Profile Pages
 RewriteRule ^profile/(.*)$ index.php?type=profile&user=$1 [L]
 
