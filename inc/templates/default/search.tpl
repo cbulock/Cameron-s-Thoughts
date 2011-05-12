@@ -2,7 +2,9 @@
 
 {include file='header.tpl'}
 
-{foreach from=$entries item=entry}
+<h3>Search results for {$term}</h3>
+
+{foreach from=$results item=entry}
 {include file='entry_body_excerpt.tpl'}
 {include file='comment_link.tpl'}
 {/foreach}
