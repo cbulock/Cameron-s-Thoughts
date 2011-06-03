@@ -3,6 +3,9 @@
 require_once('pages.inc');
 
 switch($name) {
+ case 'search'://Search Form
+  
+ break;
  case 'login'://Login Form
   $tpl->assign('title','Login');
   $tpl->assign('button','Login');

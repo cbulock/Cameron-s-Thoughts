@@ -12,6 +12,7 @@ $site_name = $ct->getSetting('site_name');
 $tpl->assign('site_name',$site_name['value']);
 $site_tagline = $ct->getSetting('site_tagline');
 $tpl->assign('site_tagline',$site_tagline['value']);
+$tpl->assign('site_location',LOCATION);
 
 $tpl->assign('cats',$ct->getCatList());
 

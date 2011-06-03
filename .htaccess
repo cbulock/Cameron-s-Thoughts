@@ -53,6 +53,8 @@ RewriteRule ^about/ct/$ index.php?type=static&basename=about_this_site [L]
 #RSS
 Redirect 301 /xml/full.xml http://www.cbulock.com/rss
 RewriteRule ^rss index.php?pagetype=rss [L]
+#OpenSearch
+RewriteRule ^opensearch index.php?pagetype=opensearch [L]
 
 ErrorDocument 400 /error/400
 ErrorDocument 401 /error/401
