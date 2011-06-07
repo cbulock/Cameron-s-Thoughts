@@ -605,13 +605,13 @@ protected function setCookie($name, $value, $expire=1893456000) {
 }
 
 protected function writeLog($text, $type='log') {
- if (!isset($this->$type)) {
+ if (!isset($this->{$type})) {
   $logfile = LOG_DIR.$type.'.log';
-  $this->$type = fopen($logfile,'a');
+  $this->{$type} = fopen($logfile,'a');
  }
  $timestamp = date('c');
  $log = $timestamp.' '.$_SERVER['REMOTE_ADDR'].' '.$text."\n";
- return fwrite($this->$type,$log);
+ return fwrite($this->{$type},$log);
 }
 
 protected function callURL($url,$post=NULL) {
