@@ -7,6 +7,7 @@ protected $db;		//database connection
 protected $guid;	//user token
 protected $token;	//internal token
 protected $log;		//log file
+protected $errorlog; //error log file
 protected $user;	//authenticated user
 protected $status;      //external status object
 protected $cache;	//cache
@@ -83,6 +84,7 @@ public function postEntry($options = array()) {
 
     $this->clearCache();//there are random issues if cache isn't cleared
     $this->newEntryStatus($thisentry);
+    $this->writeLog('New entry posted. ID:'.$thisentry.' Title: '.$options['title']);
     return $this->api_call_finish(TRUE); //i'd like to return an array of useful data, like entryid for instance
    default:
     throw new Exception($e);
@@ -602,14 +604,14 @@ protected function setCookie($name, $value, $expire=1893456000) {
  return setcookie($name, $value, $expire, "/");
 }
 
-protected function writeLog($text) {
- if (!isset($this->log)) {
-  $logfile = LOG_DIR.'api.log';
-  $this->log = fopen($logfile,'a');
+protected function writeLog($text, $type='log') {
+ if (!isset($this->$type)) {
+  $logfile = LOG_DIR.$type.'.log';
+  $this->$type = fopen($logfile,'a');
  }
  $timestamp = date('c');
  $log = $timestamp.' '.$_SERVER['REMOTE_ADDR'].' '.$text."\n";
- return fwrite($this->log,$log);
+ return fwrite($this->$type,$log);
 }
 
 protected function callURL($url,$post=NULL) {
@@ -824,14 +826,17 @@ public function __construct() {
 
 public function __destruct() {
  //for debugging
- $this->writeLog(print_r($this->getQueryLog(),1));
+ //$this->writeLog(print_r($this->getQueryLog(),1));
  //close database
  if (isset($this->db)) {
   unset($this->db);
  }
- //close logfile
+ //close logfiles
  if (isset($this->log)) {
   fclose($this->log);
+ }
+ if (isset($this->errorlog)) {
+  fclose($this->errorlog);
  }
 }
 
