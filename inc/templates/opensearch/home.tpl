@@ -1,5 +1,5 @@
 <OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/">
-  <Url template="{$site_location}search/{literal}{searchTerms}{/literal}" type="text/html" />
+  <Url template="{$site_location}/search/{literal}{searchTerms}{/literal}" type="text/html" />
   <ShortName>cbulock.com</ShortName>
   <LongName>{$site_name}</LongName>
 

@@ -436,7 +436,7 @@ protected function newEntryStatus($id,$options = array()) {
  );
  extract($setup_result = $this->api_call_setup($setup));
  $entry = $this->getEntry($id,array('callby'=>'id'));
- $url = 'http://www.cbulock.com'.$entry['entry_link'];//need to have the url be dynamic
+ $url = LOCATION.$entry['entry_link'];//need to have the url be dynamic
  $shorturl = $this->getShortURL($url);
  $message = $options['message'].$entry['entry_title'];
  if ((strlen($message) > $options['message_max_length'])) {
