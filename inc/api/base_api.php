@@ -609,7 +609,6 @@ protected function writeLog($text, $type='log') {
   $logfile = LOG_DIR.$type.'.log';
   $this->{$type} = fopen($logfile,'a');
  }
- print_r($this);
  $timestamp = date('c');
  $log = $timestamp.' '.$_SERVER['REMOTE_ADDR'].' '.$text."\n";
  return fwrite($this->{$type},$log);
@@ -823,8 +822,6 @@ public function __construct() {
   $this->setUserToken($this->createGUID());
   $this->setCookie('guid',$this->getUserToken());
  }
- //debugging
- $this->writeLog('API initialized');
 }
 
 public function __destruct() {
