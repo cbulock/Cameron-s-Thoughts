@@ -35,101 +35,132 @@ throbber = ({
 
 clickListeners = ({
  login : function() {
-  showLoginBox();
+  show.loginBox();
  },
  signup : function() {
-  showSignupForm();
+  show.signupForm();
  },
  comment_login : function() {
-  showLoginBox();
+  show.loginBox();
  },
  logout : function() {
   call('logout');
   location.reload();
  },
  contact : function() {
-  showContactForm();
+  show.contactForm();
  }
 });
 
-function showSignupForm() {
- if (!$.ct.signup_form) {
-  snippetLoad('signup', function() {
-   $.ct.signup_form = $('<div></div>').html(arguments[0]);
-   $.ct.signup_form.dialog({
-    title: "Create Account",
-    height: 415,
-    width: 400,
-    hide: 'highlight',
-    modal: true,
-    buttons: {
-     'Sign Up': function() {
-      if ($('#pass').attr('value')==$('#pass2').attr('value')){
-       opt = {
-        pass : $('#pass').attr('value'),
-        name : $('#fullname').attr('value'),
-        email : $('#email').attr('value'),
-        url : $('#url').attr('value')
-       }
-       if(call('createUser',[$('#username').val()],opt)) {
-        if(call('login',[$('#username').val()],opt)) {
-         location.reload();
+show = ({
+ signupForm : function() {
+  if (!$.ct.signup_form) {
+   snippetLoad('signup', function() {
+    $.ct.signup_form = $('<div></div>').html(arguments[0]);
+    $.ct.signup_form.dialog({
+     title: "Create Account",
+     height: 415,
+     width: 400,
+     hide: 'highlight',
+     modal: true,
+     buttons: {
+      'Sign Up': function() {
+       if ($('#pass').attr('value')==$('#pass2').attr('value')){
+        opt = {
+         pass : $('#pass').attr('value'),
+         name : $('#fullname').attr('value'),
+         email : $('#email').attr('value'),
+         url : $('#url').attr('value')
+        }
+        if(call('createUser',[$('#username').val()],opt)) {
+         if(call('login',[$('#username').val()],opt)) {
+          location.reload();
+         }
         }
        }
+       else {
+        error.add('Passwords do not match!');
+       }
       }
-      else {
-       error.add('Passwords do not match!');
-      }
+     },
+     close: function() {
+      $(this).dialog('destroy');
+      delete $.ct.signup_form;
+      $('#signup_form').remove();
      }
-    },
-    close: function() {
-     $(this).dialog('destroy');
-     delete $.ct.signup_form;
-     $('#signup_form').remove();
-    }
+    });
    });
-  });
- }
-}
-
-function showLoginBox() {
- if (!$.ct.login_box) {
-  snippetLoad('login', function() {
-   signup = function() {
-    $.ct.login_box.dialog('close');
-    showSignupForm();
-   };
-   $.ct.login_box = $('<div></div>').html(arguments[0]);
-   $.ct.login_box.dialog({
-    title: 'Login',
-    height: 260,
-    width: 340,
+  }
+ },
+ loginBox : function() {
+  if (!$.ct.login_box) {
+   snippetLoad('login', function() {
+    signup = function() {
+     $.ct.login_box.dialog('close');
+     show.signupForm();
+    };
+    $.ct.login_box = $('<div></div>').html(arguments[0]);
+    $.ct.login_box.dialog({
+     title: 'Login',
+     height: 260,
+     width: 340,
+     hide: 'highlight',
+     modal: true,
+     buttons: {
+      'Signup': function() {
+       signup();
+      },
+      'Login': function() {
+       opt = {pass: $('#password').attr('value')};
+       if(call('login',[$('#username').val()],opt)) {
+        location.reload();
+       }
+      }
+     },
+     close: function() {
+      $(this).dialog('destroy');
+      delete $.ct.login_box;
+      $('#login_box').remove();
+     }
+    });
+    $('#login_box a').click(function(event) {
+     event.preventDefault();
+     signup();
+    });
+   });
+  }
+ },
+ contactForm : function() {
+  snippetLoad('contact', function() {
+   $.ct.contact_form = $('<div></div>').html(arguments[0]);
+   $.ct.contact_form.dialog({
+    title: 'Contact Form',
+    height: 415,
+    width: 750,
     hide: 'highlight',
     modal: true,
     buttons: {
-     'Signup': function() {
-      signup();
-     },
-     'Login': function() {
-      opt = {pass: $('#password').attr('value')};
-      if(call('login',[$('#username').val()],opt)) {
-       location.reload();
+     'Send': function() {
+      opt = {
+       name : $('#contact_name').val(),
+       email : $('#contact_email').val(),
+       message : $('#contact_message').val()
+      };
+      if(call('sendMessage',null,opt)) {
+       $(this).dialog('close');
       }
      }
     },
     close: function() {
      $(this).dialog('destroy');
-     delete $.ct.login_box;
-     $('#login_box').remove();
+     delete $.ct.contact_form;
+     $('#contact_form').remove();
     }
-   });
-   $('#login_box a').click(function(event) {
-    event.preventDefault();
-    signup();
    });
   });
  }
-}
+});
+
 
 function postCommentListener() {
  $('#comment_form').submit(function(event) {
@@ -145,36 +176,6 @@ function postCommentListener() {
    },comment.id);
    $('#comments').html(call('commentCountText',comment.count));
   }
- });
-}
-
-function showContactForm() {
- snippetLoad('contact', function() {
-  $.ct.contact_form = $('<div></div>').html(arguments[0]);
-  $.ct.contact_form.dialog({
-   title: 'Contact Form',
-   height: 415,
-   width: 750,
-   hide: 'highlight',
-   modal: true,
-   buttons: {
-    'Send': function() {
-     opt = {
-      name : $('#contact_name').val(),
-      email : $('#contact_email').val(),
-      message : $('#contact_message').val()
-     };
-     if(call('sendMessage',null,opt)) {
-      $(this).dialog('close');
-     }
-    }
-   },
-   close: function() {
-    $(this).dialog('destroy');
-    delete $.ct.contact_form;
-    $('#contact_form').remove();
-   }
-  });
  });
 }
 
@@ -210,20 +211,6 @@ function roundedAvatars() {
   $(this).css("opacity","0");
  });
 }
-/*
-function addError(message) {
- if ($('#error_box').length==0) {
-  snippetLoad('error_box', function() {
-   $('body').prepend(arguments[0]);
-   $('#error_box button').button({icons:{primary:'ui-icon-circle-close'},text:false});
-   $('#error_box p').html(message);
-   $('#error_box button').click(function(){
-    $('#error_box').remove();
-   });
-   $('#error_box').slideDown();
-  });
- }
-}*/
 
 error = ({
  errorList : [],
@@ -277,7 +264,7 @@ function exception_handler(e) {
  error.add(e.message);
  switch(e.name) {
   case 401: //authentication failure
-   showLoginBox();
+   show.loginBox();
    break;
   case 1001: //blank comment
    $('#comment_submit').attr('disabled','');
