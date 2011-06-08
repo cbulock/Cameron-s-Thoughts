@@ -38,9 +38,15 @@ public function postEntry($options = array()) {
  );
  extract($setup_result = $this->api_call_setup($setup));
  $user = $this->getAuthUser();
- if ($user['type'] != 'admin') throw new Exception('Must be Admin to do this',403);
- if (!$options['title']) throw new Exception('Missing Title');
- if (!$options['text']) throw new Exception('Missing Text');
+ if ($user['type'] != 'admin') throw new Exception('Must be Admin to do this',403);//this is going away once permissions are added to api_call_setup
+ if (!$options['title']) {
+  $this->writeLog('Missing title when posting entry','errorlog');
+  throw new Exception('Missing Title');
+ }
+ if (!$options['text']) {
+  $this->writeLog('Missing text when posting entry','errorlog');
+  throw new Exception('Missing Text');
+ }
  $basename = strtolower(trim($options['title']));
  $basename = ereg_replace("[^ A-Za-z0-9_]", "", $basename);
  $basename = str_replace(" ", "_", $basename);
@@ -51,7 +57,10 @@ public function postEntry($options = array()) {
   switch ($e->getCode()) {
    case 1000:
     $thisentry = $this->db->insertItem('mt_entry',array());
-    if (!$thisentry) throw new Exception('Entry failed to save');
+    if (!$thisentry) {
+     $this->writeLog('Entry failed to save: '.$options['title'],'errorlog');
+     throw new Exception('Entry failed to save');
+    }
 
     $atomid = 'tag:www.cbulock.com,'.date('Y').'://'.$options['blogid'].'.'.$thisentry;
     if ($options['category']) {//I think this still posts when not existing
@@ -80,7 +89,10 @@ public function postEntry($options = array()) {
      'entry_atom_id' => $atomid,
      'entry_week_number' => date('YW'),
     );
-    if (!$this->db->updateItem('mt_entry',$thisentry,$entrydata,array('field'=>'entry_id'))) throw new Exception('Entry save did not complete, in bad state');
+    if (!$this->db->updateItem('mt_entry',$thisentry,$entrydata,array('field'=>'entry_id'))) {
+     $this->writeLog('[WARNING] Entry save did not complete and was left in bad state ID:'.$thisentry,'errorlog');
+     throw new Exception('Entry save did not complete, in bad state');
+    }
 
     $this->clearCache();//there are random issues if cache isn't cleared
     $this->newEntryStatus($thisentry);
@@ -90,6 +102,7 @@ public function postEntry($options = array()) {
     throw new Exception($e);
   }
  }
+ $this->writeLog('Basename conflict: '.$basename,'errorlog');
  throw new Exception('Basename conflict');
 }
 
@@ -154,6 +167,7 @@ public function getEntry($value, $options = array()) {
   $result['comment_count'] = $this->commentCount($result['entry_id'],array('blogid'=>$options['blogid']));
   return $this->api_call_finish($result);
  }
+ $this->writeLog('Entry not found: '.$value,'errorlog');
  throw new Exception('Entry not found',1000);
 }
 
@@ -236,6 +250,7 @@ public function getComment($id, $options = array()) {
   $result['avatar'] = $this->getAvatarPath($result['email_hash'],$result['service']);
  return $this->api_call_finish($result);
  }
+ $this->writeLog('Comment not found: '.$id,'errorlog');
  throw new Exception('Comment not found');
 }
 
@@ -279,8 +294,14 @@ public function postComment($postid, $options = array()) {
  );
  extract($setup_result = $this->api_call_setup($setup));
  $user = $this->getAuthUser();
- if (!$user) throw new Exception('Must be logged in to post comment',401);
- if (!$options['text']) throw new Exception('Must enter text into comment box',1001);
+ if (!$user) {
+  $this->writeLog('Must be logged in to post comment','errorlog');
+  throw new Exception('Must be logged in to post comment',401);
+ }
+ if (!$options['text']) {
+  $this->writeLog('Text missing from comment','errorlog');
+  throw new Exception('Must enter text into comment box',1001);
+ }
  $data = array(
   'blogid' => $options['blogid'],
   'postid' => $postid,//this needs to be sanitized better
@@ -289,7 +310,12 @@ public function postComment($postid, $options = array()) {
   'text' => $options['text']
  );
  $comment = $this->db->insertItem('comments',$data);
- if (!$comment) throw new Exception('Error saving comment');
+ if (!$comment) {
+  $this->writeLog('Error saving comment','errorlog');
+  throw new Exception('Error saving comment');
+ }
+
+ $this->writeLog('New comment on entry '.$postid);
  
  //Admin Email
  $data['username'] = $user['login'];
@@ -337,6 +363,7 @@ public function getCat($catid, $options = array()) {
  );
  $cat = $this->db->getItem('mt_category',$catid,$dboptions);
  if ($cat) return $this->api_call_finish($cat);
+ $this->writeLog('Category not found: '.$catid,'errorlog');
  throw new Exception('Category not found',1000);
 }
 
@@ -359,7 +386,10 @@ public function login($user, $options = array()) {
  extract($setup_result = $this->api_call_setup($setup));
 
  $id = $this->checkPass($user,$options['pass']);
- if (!$id) throw new Exception('Authentication Failure',401);
+ if (!$id) {
+  $this->writeLog('[AUTH] Login failure: '.$user,'errorlog');
+  throw new Exception('Authentication Failure',401);
+ }
  $data = array(
   'user'=>$id,
   'guid'=>$this->getUserToken()
@@ -489,6 +519,7 @@ protected function sendMail($options = array()) {
  try {
  $result = $mail->Send();
  } catch (phpmailerException $e) {
+  $this->writeLog('PHPMailer encountered an error','errorlog');
   throw new Exception($e);
  }
  return $result;
@@ -509,10 +540,22 @@ public function createUser($login, $options = array()) {
  );
  extract($setup_result = $this->api_call_setup($setup));
  $this->checkRBL($options['remote_ip']);
- if ($options['type']!='user' && $user['type']!='admin') throw new Exception('Must be admin to setup non-standard users');
- if (!$options['pass']) throw new Exception('Password required');
- if (!$options['email']) throw new Exception('Email required');
- if (!$this->nameFree($login)) throw new Exception('Username already taken');
+ if ($options['type']!='user' && $user['type']!='admin') {
+  $this->writeLog('Must be admin to create admin users','errorlog');
+  throw new Exception('Must be admin to setup non-standard users');
+ }
+ if (!$options['pass']) {
+  $this->writeLog('Tried to create user without password','errorlog');
+  throw new Exception('Password required');
+ }
+ if (!$options['email']) {
+  $this->writeLog('Tried to create user without email address','errorlog');
+  throw new Exception('Email required');
+ }
+ if (!$this->nameFree($login)) {
+  $this->writeLog('Tried to create user, name was already taken. Name: '.$login,'errorlog');
+  throw new Exception('Username already taken');
+ }
  $this->clearCache();
  $useroptions = array(
   'login' => $login,
@@ -524,7 +567,15 @@ public function createUser($login, $options = array()) {
   'service' => $options['service'],
   'service_id' => $options['service_id']
  );
- return $this->api_call_finish($this->db->insertItem('users',$useroptions));
+ $userid = $this->db->insertItem('users',$useroptions);
+ if ($userid) {
+  $this->writeLog('Created new user, '.$login.' ID:'.$userid);
+  return $userid;
+ }
+ else {
+  $this->writeLog('Error creating user '.$login,'errorlog');
+  throw new Exception('Error creating user '.$login);
+ }
 }
 
 public function nameFree($login, $options = array()) {
@@ -569,7 +620,10 @@ protected function checkRBL($ip, $options = array()) {
  require_once('rbl.php');
  $rbl = new http_bl(HTTP_BL_KEY);
  $result = $rbl->query($ip);
- if ($result == 2) throw new Exception('IP listed on RBL, spam account rejected',1003);
+ if ($result == 2) {
+  $this->writeLog('RBL failure: '.$ip,'errorlog');
+  throw new Exception('IP listed on RBL, spam account rejected',1003);
+ }
  return FALSE;
 }
 
@@ -591,6 +645,7 @@ public function sendMessage($options = array()) {
   'token' => $this->getAPIToken()
  );
  if ($this->sendMail($mailoptions)) return $this->api_call_finish(TRUE);
+ $this->writeLog('Message sending failure','errorlog');
  throw new Exception('Message failed to send',1002); 
 }
 
@@ -666,8 +721,14 @@ public function getSetting($setting, $options = array()) {
   'expires' => $options['expires']
  );
  $setting = $this->db->getItem('settings',$setting, $dboptions);
- if (!$setting) throw new Exception('Setting not found');
- if ($auth['class']!='internal' && !$setting['public']) throw new Exception('Unauthorized to access setting', 403);
+ if (!$setting) {
+  $this->writeLog('Setting not found: '.$setting,'errorlog');
+  throw new Exception('Setting not found');
+ }
+ if ($auth['class']!='internal' && !$setting['public']) {
+  $this->writeLog('Insufficent permissions for setting: '.$setting,'errorlog');
+  throw new Exception('Unauthorized to access setting', 403);
+ }
  return $this->api_call_finish($setting);
 }
 
