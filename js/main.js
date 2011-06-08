@@ -175,6 +175,7 @@ function postCommentListener() {
     $('#new_comment .comment_body').after(arguments[0]);
    },comment.id);
    $('#comments').html(call('commentCountText',comment.count));
+   info.add('Comment saved');
   }
  });
 }
