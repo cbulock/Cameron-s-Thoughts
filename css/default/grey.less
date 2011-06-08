@@ -114,10 +114,6 @@ input, textarea, select
  padding: 1px;
 }
 
-#error_box {
- display: none;
-}
-
 #comment_submit {
  font-size: 80%;
  margin-left:110px;
@@ -134,14 +130,14 @@ width: 700px;
 height: 120px;
 }
 
-#error_box {
+#error_box, #notice_box, #info_box {
+ display: none;
  padding: 4px 0 4px 0;
  margin: 0;
  position: fixed;
  top: 0px;
  left: 0px;
  width: 100%;
- background-color: rgba(255,0,0,0.7);
  z-index:5;
  h1 {
   padding-left:25%;
@@ -157,11 +153,38 @@ height: 120px;
   position: fixed;
   top: 3px;
   right:4px;
+ }
+}
+
+#error_box {
+ background-color: rgba(255,0,0,0.7);
+ button {
   background-color:red;
   border-color:red;
  }
  span {
   background-color:red;
+ }
+}
+
+#notice_box {
+ background-color: rgba(255,255,0,0.7);
+ button {
+  background-color:yellow;
+  border-color:yellow;
+ }
+ span {
+  background-color:yellow;
+ }
+
+}#info_box {
+ background-color: rgba(0,192,0,0.7);
+ button {
+  background-color:green;
+  border-color:green;
+ }
+ span {
+  background-color:green;
  }
 }
 

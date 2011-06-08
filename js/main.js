@@ -212,37 +212,58 @@ function roundedAvatars() {
  });
 }
 
-error = ({
- errorList : [],
- add : function(message) {
-  this.errorList.push(message);
-  if ($('#error_box').length==0) {
-   this.showBox();
+display = ({
+ list : {
+  error : [],
+  notice : [],
+  info : []
+ },
+ add : function(message,type) {
+  this.list[type].push(message);
+  if ($('#'+type+'_box').length==0) {
+   this.showBox(type);
   }
  },
- showBox : function() {
-  if ($('#error_box').length==0) {
-   snippetLoad('error_box', function() {
+ showBox : function(type) {
+  if ($('#'+type+'_box').length==0) {
+   snippetLoad(type+'_box', function() {
     $('body').prepend(arguments[0]);
-    $('#error_box button').button({icons:{primary:'ui-icon-circle-close'},text:false});
-    errorList = error.get();
-    if (errorList) {
-     $('#error_box p').html(errorList[0]);
+    $('#'+type+'_box button').button({icons:{primary:'ui-icon-circle-close'},text:false});
+    list = display.get(type);
+    if (list) {
+     $('#'+type+'_box p').html(list[0]);
     }
-    $('#error_box button').click(function(){
-     $('#error_box').remove();
-     error.clearList();
+    $('#'+type+'_box button').click(function(){
+     $('#'+type+'_box').remove();
+     display.clearList(type);
     });
-    $('#error_box').slideDown();
+    $('#'+type+'_box').slideDown();
    });
   }
  },
- get : function() {
-  if (!this.errorList.length) return false;
-  return this.errorList;
+ get : function(type) {
+  if (!this.list[type].length) return false;
+  return this.list[type];
  },
- clearList : function() {
-  this.errorList = [];
+ clearList : function(type) {
+  this.list[type] = [];
+ }
+});
+
+//Aliases to display method
+error = ({
+ add : function(message) {
+  display.add(message,'error');
+ }
+});
+notice = ({
+ add : function(message) {
+  display.add(message,'notice');
+ }
+});
+info = ({
+ add : function(message) {
+  display.add(message,'info');
  }
 });
 
