@@ -36,9 +36,12 @@ public function postEntry($options = array()) {
   'excerpt' => '',
   'keywords' => ''
  );
+ $setup['perms'] = array(
+  'admin'
+ );
  extract($setup_result = $this->api_call_setup($setup));
- $user = $this->getAuthUser();
- if ($user['type'] != 'admin') throw new Exception('Must be Admin to do this',403);//this is going away once permissions are added to api_call_setup
+// $user = $this->getAuthUser();
+// if ($user['type'] != 'admin') throw new Exception('Must be Admin to do this',403);//this is going away once permissions are added to api_call_setup
  if (!$options['title']) {
   $this->writeLog('Missing title when posting entry','errorlog');
   throw new Exception('Missing Title');
@@ -292,12 +295,15 @@ public function postComment($postid, $options = array()) {
  $setup['defaults'] = array(
   'blogid' => '2'
  );
+ $setup['perms'] = array(
+  'user'
+ );
  extract($setup_result = $this->api_call_setup($setup));
  $user = $this->getAuthUser();
- if (!$user) {
-  $this->writeLog('Must be logged in to post comment','errorlog');
-  throw new Exception('Must be logged in to post comment',401);
- }
+// if (!$user) {
+//  $this->writeLog('Must be logged in to post comment','errorlog');
+//  throw new Exception('Must be logged in to post comment',401);
+// }
  if (!$options['text']) {
   $this->writeLog('Text missing from comment','errorlog');
   throw new Exception('Must enter text into comment box',1001);
@@ -305,7 +311,7 @@ public function postComment($postid, $options = array()) {
  $data = array(
   'blogid' => $options['blogid'],
   'postid' => $postid,//this needs to be sanitized better
-  'user' => $user['id'],
+  'user' => $user['id'],//see about removing the user requirement, then i can have one less getAuthUser call
   'ip' => $remote_ip,
   'text' => $options['text']
  );
@@ -665,7 +671,7 @@ protected function writeLog($text, $type='log') {
   $this->{$type} = fopen($logfile,'a');
  }
  $timestamp = date('c');
- $log = $timestamp.' '.$_SERVER['REMOTE_ADDR'].' '.$text."\n";
+ $log = $timestamp."\t".$_SERVER['REMOTE_ADDR']."\t".$text."\n";
  return fwrite($this->{$type},$log);
 }
 
@@ -843,6 +849,17 @@ public function clearCache() {
 **********************************/
 
 protected function api_call_setup($setup) {
+ if ($setup['perms']) {
+  $permassets = array();
+  $user = $this->user;
+  if ($setup['options']['token'] == $this->getAPIToken()) array_push($permassets,'internal');
+  if ($user['id']) array_push($permassets,'user');
+  if ($user['type'] == 'admin') array_push($permassets,'admin');
+  if (!array_intersect($permassets,$setup['perms'])) {
+   $this->writeLog('Insufficient permissions for method','errorlog');
+   throw new Exception('Insufficient permissions for method');
+  };
+ }
  if ($setup['defaults']) $result['options'] = $this->setOptions($setup['options'],$setup['defaults']);
  $result['auth'] = $this->methodAuth($setup['options']['token']);
  $result['remote_ip'] = $_SERVER['REMOTE_ADDR'];
@@ -886,8 +903,6 @@ public function __construct() {
 }
 
 public function __destruct() {
- //for debugging
- //$this->writeLog(print_r($this->getQueryLog(),1));
  //close database
  if (isset($this->db)) {
   unset($this->db);
