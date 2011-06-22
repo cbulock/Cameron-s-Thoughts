@@ -1,5 +1,6 @@
 <?php
 define('LOCATION','');//No trailing slash
+define('STATIC_LOCATION','');
 define('DB_HOST','');
 define('DB_USER','');
 define('DB_PASS','');
