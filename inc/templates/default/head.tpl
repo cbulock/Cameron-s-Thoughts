@@ -17,5 +17,6 @@
 <script type='text/javascript' src='{$static_location}/js/autoresize.jquery.min.js'></script>
 <script type='text/javascript' src='{$static_location}/js/raphael.js'></script>
 <script type='text/javascript' src='{$static_location}/js/main.js'></script>
+<script type="text/javascript" src="https://apis.google.com/js/plusone.js"></script>
 </head>
 <body>
