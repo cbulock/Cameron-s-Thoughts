@@ -62,6 +62,7 @@ RewriteRule ^rss index.php?pagetype=rss [L]
 RewriteRule ^opensearch index.php?pagetype=opensearch [L]
 #Specific old pages
 RewriteRule ^archives/000016.html http://www.cbulock.com/2003/07/divx_playback_for_clies.html
+RewriteRule ^archives/000061.html http://www.cbulock.com/2003/11/free_palm_software_on_sd_cards.html
 
 ErrorDocument 400 /error/400
 ErrorDocument 401 /error/401
