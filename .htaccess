@@ -16,6 +16,14 @@ AddType application/javascript js
 #Rewrites
 RewriteEngine On
 Options +FollowSymlinks
+################## Force www
+RewriteCond %{HTTP_HOST} ^cbulock\.com
+RewriteCond %{HTTPS} =on
+RewriteRule .* https://www.%{SERVER_NAME}%{REQUEST_URI} [R]
+RewriteCond %{HTTP_HOST} ^cbulock\.com
+RewriteCond %{HTTPS} !=on
+RewriteRule .* http://www.%{SERVER_NAME}%{REQUEST_URI} [R]
+
 ################## Main Redirects
 #Monthly archives
 RewriteRule ^20*(.*)/(.*)/$ index.php?type=month&year=$1&month=$2 [L]
