@@ -1,5 +1,6 @@
 <?php
 //Handles all forms that are not submitted via ajax
+$template = 'form.tpl';
 require_once('pages.inc');
 
 switch($name) {
@@ -119,5 +120,5 @@ else {
  $tpl->assign('referer',$_SERVER['HTTP_REFERER']);
 }
 $tpl->assign('name',$name);
-$tpl->display('form.tpl');
+require_once('display.inc');
 ?>

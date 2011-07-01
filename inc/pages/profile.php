@@ -1,5 +1,5 @@
 <?php
-
+$template = 'profile.tpl';
 require_once('pages.inc');
 
 $user = call('getUser',$user);
@@ -10,5 +10,5 @@ $tpl->assign('user',$user);
 $tpl->assign('query_count',$ct->getQueryCount());
 $tpl->assign('cache_count',$ct->getCacheCount());
 
-$tpl->display('profile.tpl');
+require_once('display.inc');
 ?>

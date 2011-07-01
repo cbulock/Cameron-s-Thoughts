@@ -9,7 +9,7 @@
 <script type='text/javascript' src='https://apis.google.com/js/plusone.js'></script>
 <script type='text/javascript' src='//connect.facebook.net/en_US/all.js#xfbml=1'></script>
 
-<!-- SQL Queries: {$query_count} -->
-<!-- Cached Queries: {$cache_count} -->
+{*<!-- SQL Queries: {$query_count} --> *}
+{* <!-- Cached Queries: {$cache_count} --> *}
 </body>
 </html>

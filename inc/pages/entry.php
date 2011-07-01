@@ -1,5 +1,5 @@
 <?php
-
+$template = 'entry.tpl';
 require_once('pages.inc');
 
 $entry = call('getEntry',$basename);
@@ -27,5 +27,5 @@ $tpl->assign('comment_count_text',$comment_count_text);
 $tpl->assign('query_count',$ct->getQueryCount());
 $tpl->assign('cache_count',$ct->getCacheCount());
 
-$tpl->display('entry.tpl');
+require_once('display.inc');
 ?>

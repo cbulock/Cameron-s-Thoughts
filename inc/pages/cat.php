@@ -1,5 +1,5 @@
 <?php
-
+$template = 'cat.tpl';
 require_once('pages.inc');
 
 $cat = call('getCat',$basename,array('field'=>'category_basename'));
@@ -12,5 +12,5 @@ $tpl->assign('cat',$cat);
 $tpl->assign('query_count',$ct->getQueryCount());
 $tpl->assign('cache_count',$ct->getCacheCount());
 
-$tpl->display('cat.tpl');
+require_once('display.inc');
 ?>

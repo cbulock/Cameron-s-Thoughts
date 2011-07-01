@@ -13,6 +13,9 @@ AddType application/javascript js
  AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css application/javascript application/rss+xml
 </IfModule>
 
+#Disable Apache ETags
+FileETag None
+
 #Rewrites
 RewriteEngine On
 Options +FollowSymlinks

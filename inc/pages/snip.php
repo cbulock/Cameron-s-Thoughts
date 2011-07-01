@@ -1,5 +1,5 @@
 <?php
-
+$template = 'snips/'.$snip.'.tpl';
 require_once('pages.inc');
 
 switch($snip) {
@@ -9,5 +9,5 @@ switch($snip) {
  break;
 }
 
-$tpl->display('snips/'.$snip.'.tpl');
+require_once('display.inc');
 ?>
