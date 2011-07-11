@@ -97,7 +97,7 @@ public function postEntry($options = array()) {
      throw new Exception('Entry save did not complete, in bad state');
     }
 
-    $this->clearCache();//there are random issues if cache isn't cleared
+    $this->clearCache(array('token'=>$this->getAPIToken()));//there are random issues if cache isn't cleared
     $this->newEntryStatus($thisentry);
     $this->writeLog('New entry posted. ID:'.$thisentry.' Title: '.$options['title']);
     return $this->api_call_finish(TRUE); //i'd like to return an array of useful data, like entryid for instance
@@ -562,7 +562,7 @@ public function createUser($login, $options = array()) {
   $this->writeLog('Tried to create user, name was already taken. Name: '.$login,'errorlog');
   throw new Exception('Username already taken');
  }
- $this->clearCache();
+ $this->clearCache(array('token'=>$this->getAPIToken()));
  $useroptions = array(
   'login' => $login,
   'pass' => md5($options['pass']),
@@ -839,8 +839,14 @@ public function getDirectQueryCount() {
  return $this->api_call_finish($this->db->getDirectQueryCount);
 }
 
-public function clearCache() {
- return $this->cache->clear();
+public function clearCache($options = array()) {
+ $setup['options'] = $options;
+ $setup['perms'] = array(
+  'admin',
+  'internal'
+ );
+ extract($setup_result = $this->api_call_setup($setup));
+ return $this->api_call_finish($this->cache->clear());
 }
 
 
