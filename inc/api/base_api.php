@@ -40,8 +40,6 @@ public function postEntry($options = array()) {
   'admin'
  );
  extract($setup_result = $this->api_call_setup($setup));
-// $user = $this->getAuthUser();
-// if ($user['type'] != 'admin') throw new Exception('Must be Admin to do this',403);//this is going away once permissions are added to api_call_setup
  if (!$options['title']) {
   $this->writeLog('Missing title when posting entry','errorlog');
   throw new Exception('Missing Title');
@@ -66,7 +64,7 @@ public function postEntry($options = array()) {
     }
 
     $atomid = 'tag:www.cbulock.com,'.date('Y').'://'.$options['blogid'].'.'.$thisentry;
-    if ($options['category']) {//I think this still posts when not existing
+    if (isset($options['category'])) {//I think this still posts when not existing
      $catoptions = array(
       'placement_entry_id' => $thisentry,
       'placement_blog_id' => $options['blogid'],
@@ -247,7 +245,7 @@ public function getComment($id, $options = array()) {
    $result['service'] = $user['service'];
   }
   $result['email_hash'] = md5($result['email']);
-  if ($auth['class']!='internal') {
+  if (!array_key_exists('internal',$permassets)) {
    unset($result['email']);
   }
   $result['avatar'] = $this->getAvatarPath($result['email_hash'],$result['service']);
@@ -281,7 +279,7 @@ public function getComments($postid, $options = array()) {//this should be rewri
     $results[$key]['service'] = $user['service'];
    }
    $results[$key]['email_hash'] = md5($results[$key]['email']);
-   if ($auth['class']!='internal') {
+   if (!array_key_exists('internal',$permassets)) {
     unset($results[$key]['email']);
    }
    $results[$key]['avatar'] = $this->getAvatarPath($results[$key]['email_hash'],$results[$key]['service']);
@@ -299,19 +297,15 @@ public function postComment($postid, $options = array()) {
   'user'
  );
  extract($setup_result = $this->api_call_setup($setup));
- $user = $this->getAuthUser();
-// if (!$user) {
-//  $this->writeLog('Must be logged in to post comment','errorlog');
-//  throw new Exception('Must be logged in to post comment',401);
-// }
  if (!$options['text']) {
   $this->writeLog('Text missing from comment','errorlog');
   throw new Exception('Must enter text into comment box',1001);
  }
+ $user = $this->getAuthUser();
  $data = array(
   'blogid' => $options['blogid'],
   'postid' => $postid,//this needs to be sanitized better
-  'user' => $user['id'],//see about removing the user requirement, then i can have one less getAuthUser call
+  'user' => $user['id'],
   'ip' => $remote_ip,
   'text' => $options['text']
  );
@@ -421,6 +415,7 @@ protected function checkPass($user,$pass) {
  return FALSE;
 }
 
+/*
 protected function methodAuth($token=NULL) {
  if ($token) {
   switch($token) {
@@ -441,7 +436,7 @@ protected function methodAuth($token=NULL) {
 
 public function logout() {
  return $this->api_call_finish($this->db->deleteItem('sessions',$this->getUserToken(),array('field'=>'guid')));
-}
+} */
 
 /**********************************
    Status Methods
@@ -546,7 +541,7 @@ public function createUser($login, $options = array()) {
  );
  extract($setup_result = $this->api_call_setup($setup));
  $this->checkRBL($options['remote_ip']);
- if ($options['type']!='user' && $user['type']!='admin') {
+ if ($options['type']!='user' && !array_key_exists('admin',$permassets)) {
   $this->writeLog('Must be admin to create admin users','errorlog');
   throw new Exception('Must be admin to setup non-standard users');
  }
@@ -599,7 +594,7 @@ public function getUser($value, $options = array()) {
  if (!$user) return FALSE;//throw an exception here?
  $user['email_hash'] = md5($user['email']);
  $user['avatar'] = $this->getAvatarPath($user['email_hash'],$user['service']);
- if ($auth['class']!='internal') {
+ if (!array_key_exists('internal',$permassets)) {//in the future, the current user should be able to recover their own email. The admin should as well
   unset($user['pass']);
   unset($user['email']);
  }
@@ -610,7 +605,7 @@ public function getAuthUser($options = array()) {
  $setup['options'] = $options;
  extract($setup_result = $this->api_call_setup($setup));
  $user = $this->user;
- if ($auth['class']!='internal') {
+ if (!array_key_exists('internal',$permassets)) {
   unset($user['pass']);
   unset($user['email']);
  }
@@ -731,7 +726,7 @@ public function getSetting($setting, $options = array()) {
   $this->writeLog('Setting not found: '.$setting,'errorlog');
   throw new Exception('Setting not found');
  }
- if ($auth['class']!='internal' && !$setting['public']) {
+ if (!array_key_exists('internal',$permassets) && !$setting['public']) {
   $this->writeLog('Insufficent permissions for setting: '.$setting,'errorlog');
   throw new Exception('Unauthorized to access setting', 403);
  }
@@ -855,19 +850,20 @@ public function clearCache($options = array()) {
 **********************************/
 
 protected function api_call_setup($setup) {
+ $permassets = array();
+ $user = $this->user;
+ if ($setup['options']['token'] == $this->getAPIToken()) array_push($permassets,'internal');
+ if ($user['id']) array_push($permassets,'user');
+ if ($user['type'] == 'admin') array_push($permassets,'admin');
  if ($setup['perms']) {
-  $permassets = array();
-  $user = $this->user;
-  if ($setup['options']['token'] == $this->getAPIToken()) array_push($permassets,'internal');
-  if ($user['id']) array_push($permassets,'user');
-  if ($user['type'] == 'admin') array_push($permassets,'admin');
   if (!array_intersect($permassets,$setup['perms'])) {
    $this->writeLog('Insufficient permissions for method','errorlog');
-   throw new Exception('Insufficient permissions for method');
+   throw new Exception('Insufficient permissions', 403);
   };
  }
  if ($setup['defaults']) $result['options'] = $this->setOptions($setup['options'],$setup['defaults']);
- $result['auth'] = $this->methodAuth($setup['options']['token']);
+ //$result['auth'] = $this->methodAuth($setup['options']['token']);//this is probably reduntant due to permassets
+ $result['permassets'] = $permassets;
  $result['remote_ip'] = $_SERVER['REMOTE_ADDR'];
  return $result;
 }
