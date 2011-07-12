@@ -245,7 +245,7 @@ public function getComment($id, $options = array()) {
    $result['service'] = $user['service'];
   }
   $result['email_hash'] = md5($result['email']);
-  if (!array_key_exists('internal',$permassets)) {
+  if (!in_array('internal',$permassets)) {
    unset($result['email']);
   }
   $result['avatar'] = $this->getAvatarPath($result['email_hash'],$result['service']);
@@ -279,7 +279,7 @@ public function getComments($postid, $options = array()) {//this should be rewri
     $results[$key]['service'] = $user['service'];
    }
    $results[$key]['email_hash'] = md5($results[$key]['email']);
-   if (!array_key_exists('internal',$permassets)) {
+   if (!in_array('internal',$permassets)) {
     unset($results[$key]['email']);
    }
    $results[$key]['avatar'] = $this->getAvatarPath($results[$key]['email_hash'],$results[$key]['service']);
@@ -541,7 +541,7 @@ public function createUser($login, $options = array()) {
  );
  extract($setup_result = $this->api_call_setup($setup));
  $this->checkRBL($options['remote_ip']);
- if ($options['type']!='user' && !array_key_exists('admin',$permassets)) {
+ if ($options['type']!='user' && !in_array('admin',$permassets)) {
   $this->writeLog('Must be admin to create admin users','errorlog');
   throw new Exception('Must be admin to setup non-standard users');
  }
@@ -594,7 +594,7 @@ public function getUser($value, $options = array()) {
  if (!$user) return FALSE;//throw an exception here?
  $user['email_hash'] = md5($user['email']);
  $user['avatar'] = $this->getAvatarPath($user['email_hash'],$user['service']);
- if (!array_key_exists('internal',$permassets)) {//in the future, the current user should be able to recover their own email. The admin should as well
+ if (!in_array('internal',$permassets)) {//in the future, the current user should be able to recover their own email. The admin should as well
   unset($user['pass']);
   unset($user['email']);
  }
@@ -605,7 +605,7 @@ public function getAuthUser($options = array()) {
  $setup['options'] = $options;
  extract($setup_result = $this->api_call_setup($setup));
  $user = $this->user;
- if (!array_key_exists('internal',$permassets)) {
+ if (!in_array('internal',$permassets)) {
   unset($user['pass']);
   unset($user['email']);
  }
@@ -726,7 +726,7 @@ public function getSetting($setting, $options = array()) {
   $this->writeLog('Setting not found: '.$setting,'errorlog');
   throw new Exception('Setting not found');
  }
- if (!array_key_exists('internal',$permassets) && !$setting['public']) {
+ if (!in_array('internal',$permassets) && !$setting['public']) {
   $this->writeLog('Insufficent permissions for setting: '.$setting,'errorlog');
   throw new Exception('Unauthorized to access setting', 403);
  }
