@@ -432,11 +432,11 @@ protected function methodAuth($token=NULL) {
   return FALSE;
  }
  return array('class'=>'user');
-}
+}*/
 
 public function logout() {
  return $this->api_call_finish($this->db->deleteItem('sessions',$this->getUserToken(),array('field'=>'guid')));
-} */
+} 
 
 /**********************************
    Status Methods
