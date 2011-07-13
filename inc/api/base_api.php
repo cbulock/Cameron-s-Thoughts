@@ -54,7 +54,7 @@ public function postEntry($options = array()) {
  try {//need to verify basename doesn't already exist
   $this->getEntry($basename,array('blogid'=>$options['blogid'],'cache'=>FALSE));
  }
- catch (exception $e) {
+ catch (UnexpectedValueException $e) {
   switch ($e->getCode()) {
    case 1000:
     $thisentry = $this->db->insertItem('mt_entry',array());
@@ -169,7 +169,7 @@ public function getEntry($value, $options = array()) {
   return $this->api_call_finish($result);
  }
  $this->writeLog('Entry not found: '.$value,'errorlog');
- throw new Exception('Entry not found',1000);
+ throw new UnexpectedValueException('Entry not found',1000);
 }
 
 public function prevEntry($id, $options = array()) {//where is very open
