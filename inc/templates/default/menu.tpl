@@ -17,6 +17,7 @@
  <li><p>Connect</p>
   <ul class='sub_nav'>
    <li><a href='/form/contact' id='contact'>Contact Form</a></li>
+   <li><a rel='author' href='https://profiles.google.com/cbulock'>Google+</a></li>
    <li><a href='http://www.facebook.com/cbulock'>Facebook</a></li>
   </ul>
  </li>
