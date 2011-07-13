@@ -657,7 +657,10 @@ protected function getAvatarPath($hash, $service) {
 }
 
 protected function setCookie($name, $value, $expire=1893456000) {
- return setcookie($name, $value, $expire, "/");
+ if (!headers_sent()) {
+  return setcookie($name, $value, $expire, "/");
+ }
+ return FALSE;
 }
 
 protected function writeLog($text, $type='log') {
