@@ -252,7 +252,7 @@ public function getComment($id, $options = array()) {
  return $this->api_call_finish($result);
  }
  $this->writeLog('Comment not found: '.$id,'errorlog');
- throw new Exception('Comment not found');
+ throw new UnexpectedValueException('Comment not found');
 }
 
 public function getComments($postid, $options = array()) {//this should be rewritten to use getComment
@@ -364,7 +364,7 @@ public function getCat($catid, $options = array()) {
  $cat = $this->db->getItem('mt_category',$catid,$dboptions);
  if ($cat) return $this->api_call_finish($cat);
  $this->writeLog('Category not found: '.$catid,'errorlog');
- throw new Exception('Category not found',1000);
+ throw new UnexpectedValueException('Category not found',1000);
 }
 
 public function getCatList($options = array()) {
