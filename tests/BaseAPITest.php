@@ -105,8 +105,30 @@ class BaseAPITest extends PHPUnit_Framework_TestCase {
   }
   $this->fail('An expected exception has not been raised.');
  }
+ 
+ /**** getCatList ****/
+ public function test_getCatList() {
+  $list = $this->api->getCatList();
+  $this->assertArrayHasKey('category_basename',$list[1]);
+ }
+
+ /**** login ****/
+ public function test_login_pass() {
+  $login = $this->api->login('testuser',array('pass'=>'!test!'));
+  $this->assertInternalType('string',$login);
+ }
+ public function test_login_fail() {
+  try {
+   $login = $this->api->login('testuser',array('pass'=>'!test'));//bad password
+  }
+  catch (Exception $e) {
+   return;
+  }
+  $this->fail('An expected exception has not been raised.');
+ }
 
 
+ 
 
 }
 ?>
