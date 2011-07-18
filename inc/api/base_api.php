@@ -778,6 +778,16 @@ public function search($term, $options = array()) {
  return $this->api_call_finish($output);
 }
 
+public function clearCache($options = array()) {
+ $setup['options'] = $options;
+ $setup['perms'] = array(
+  'admin',
+  'internal'
+ );
+ extract($setup_result = $this->api_call_setup($setup));
+ return $this->api_call_finish($this->cache->clear());
+}
+
 /**********************************
    Token Methods
 **********************************/
@@ -836,17 +846,6 @@ public function getQueryCount() {
 public function getDirectQueryCount() {
  return $this->api_call_finish($this->db->getDirectQueryCount);
 }
-
-public function clearCache($options = array()) {
- $setup['options'] = $options;
- $setup['perms'] = array(
-  'admin',
-  'internal'
- );
- extract($setup_result = $this->api_call_setup($setup));
- return $this->api_call_finish($this->cache->clear());
-}
-
 
 /**********************************
    Helper Methods
