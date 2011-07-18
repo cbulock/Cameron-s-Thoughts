@@ -127,10 +127,6 @@ class BaseAPITest extends PHPUnit_Framework_TestCase {
   $this->fail('An expected exception has not been raised.');
  }
 
- /***tokenLogin***/
- //can't directly test tokenLogin as it's protected,
- //need to come up with some indirect tests
-
  /***logout***/
  public function test_logout() {
   $this->assertTrue($this->api->logout());
@@ -152,8 +148,84 @@ class BaseAPITest extends PHPUnit_Framework_TestCase {
   $this->assertTrue($result);
  }
 
+ /***getUser***/
+ public function test_getUser_login() {
+  $user = $this->api->getUser('cbulock');
+  $this->assertArrayHasKey('login',$user);
+ }
+ public function test_getUser_email() {
+  $user = $this->api->getUser('cbulock');
+  $this->assertArrayNotHasKey('email',$user);
+ }
+ public function test_getUser_notexist() {
+  $user = $this->api->getUser('qqqWWW');//a user that likely shouldn't exist
+  $this->assertFalse($user);
+ }
 
+ /***getAuthUser***/ /***tokenLogin***/
+ public function test_getAuthUser_loggedin() {
+  $login = 'testuser';
+  $token = $this->api->login($login,array('pass'=>'!test!'));
+  $user = $this->api->getAuthUser(array('token'=>$token));
+  $this->assertEquals($login,$user['login']);
+ }
+ public function test_getAuthUser_none() {
+  $user = $this->api->getAuthUser();
+  $this->assertFalse($user);
+ }
 
+ /***getSetting***/
+ public function test_getSetting_exists() {
+  $setting = $this->api->getSetting('site_name');
+  $this->assertEquals("Cameron's Thoughts",$setting['value']);
+ }
+ public function test_getSetting_fail() {
+  try {
+   $this->api->getSetting('qqqWWW');//a setting that doesn't exist
+  }
+  catch (Exception $e){
+   return;
+  }
+  $this->fail('An expected exception has not been raised.');
+ }
+ public function test_getSetting_internal() {
+  try {
+   $this->api->getSetting('admin_email');
+  }
+  catch (Exception $e){
+   if ($e->getCode() != '403') $this->fail('An exception was raised, but it was not the correct one.');
+   return;
+  }
+  $this->fail('An expected exception has not been raised.');
+ }
+ 
+ /***getImageDetails***/
+ public function test_getImageDetails() {
+  $image = $this->api->getImageDetails('Test');
+  $this->assertArrayHasKey('type',$image);
+ }
+
+ /***search***/
+ public function test_search_results() {
+  $result = $this->api->search('cameron');
+  $this->assertArrayHasKey('results',$result);
+ }
+ public function test_search_noresults() {
+  $result = $this->api->search('qqqWWW');//this should return 0 results
+  $this->assertEquals(0,$result['count']);
+ }
+
+ /***clearCache***/
+ public function test_clearCache() {
+  try {
+   $this->api->clearCache();
+  }
+  catch (Exception $e) {
+   if ($e->getCode() != '403') $this->fail('An exception was raised, but it was not the correct one.');
+   return;
+  }
+  $this->fail('An expected exception has not been raised.');
+ }
  
 }
 ?>
