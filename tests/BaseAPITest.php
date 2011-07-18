@@ -114,12 +114,12 @@ class BaseAPITest extends PHPUnit_Framework_TestCase {
 
  /**** login ****/
  public function test_login_pass() {
-  $login = $this->api->login('testuser',array('pass'=>'!test!'));
-  $this->assertInternalType('string',$login);
+  $token = $this->api->login('testuser',array('pass'=>'!test!'));
+  $this->assertInternalType('string',$token);
  }
  public function test_login_fail() {
   try {
-   $login = $this->api->login('testuser',array('pass'=>'!test'));//bad password
+   $this->api->login('testuser',array('pass'=>'!test'));//bad password
   }
   catch (Exception $e) {
    return;
@@ -127,8 +127,33 @@ class BaseAPITest extends PHPUnit_Framework_TestCase {
   $this->fail('An expected exception has not been raised.');
  }
 
+ /***tokenLogin***/
+ //can't directly test tokenLogin as it's protected,
+ //need to come up with some indirect tests
+
+ /***logout***/
+ public function test_logout() {
+  $this->assertTrue($this->api->logout());
+ }
+
+ /***getLatestStatus***/
+ public function test_getLatestStatus() {
+  $status = $this->api->getLatestStatus();
+  $this->assertObjectHasAttribute('text',$status[0]);
+ }
+
+ /***nameFree***/
+ public function test_nameFree_notfree() {
+  $result = $this->api->nameFree('testuser');
+  $this->assertFalse($result);
+ }
+ public function test_nameFree_isfree() {
+  $result = $this->api->nameFree('qqqWWW');//a user that likely shouldn't exist
+  $this->assertTrue($result);
+ }
+
+
 
  
-
 }
 ?>
