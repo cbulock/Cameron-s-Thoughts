@@ -103,7 +103,7 @@ show = ({
     $.ct.login_box.dialog({
      title: 'Login',
      height: 260,
-     width: 340,
+     width: 360,
      hide: 'highlight',
      modal: true,
      buttons: {
