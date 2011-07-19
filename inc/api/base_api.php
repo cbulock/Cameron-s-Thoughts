@@ -449,9 +449,22 @@ protected function useStatus() {
  }
 }
 
-public function getLatestStatus() {
- $this->useStatus();
- return $this->api_call_finish($this->status->getStatus(array('count'=>'1')));
+public function getLatestStatus($options = array()) {
+ $setup['options'] = $options;
+ $setup['defaults'] = array(
+  'cache' => TRUE,
+  'expires' => 180
+ );
+ extract($setup_result = $this->api_call_setup($setup));
+ if($this->cache->exists('latestStatus',$options['expires']) && $options['cache']) {
+  $status = $this->cache->read('latestStatus');
+ }
+ else { 
+  $this->useStatus();
+  $status = $this->api_call_finish($this->status->getStatus(array('count'=>'1')));
+  $this->cache->add('latestStatus',$status);
+ }
+ return $status;
 }
 
 protected function postStatus($message) {
