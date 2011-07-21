@@ -12,6 +12,7 @@ $comment_count_text = $ct->commentCountText($entry['comment_count']);
 $catid = $ct->getCatID($entry['entry_id']);
 if ($catid) $cat = $ct->getCat($catid);
 $create_date = strtotime($entry['entry_created_on']);
+$create['dateiso'] = date('c',$create_date);
 $create['date'] = date('M j, Y g:ia',$create_date);
 $create['link'] = '/'.date('Y',$create_date).'/'.date('m',$create_date).'/';
 
