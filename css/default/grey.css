@@ -86,6 +86,7 @@ a:hover {
 }
 a:visited { color: #ffffff; }
 a:visited:hover { color: #ff9900; }
+article { font-size: 120%; }
 code, pre {
   display: block;
   overflow: auto;
@@ -323,7 +324,6 @@ input, textarea, select { padding: 1px; }
   margin: 0 0 0 1em;
 }
 #next_entry:after { content: " »"; }
-.entry { font-size: 120%; }
 #entry_nav { clear: left; }
 .comment {
   min-height: 100px;
@@ -379,59 +379,59 @@ ul, li {
   padding: 0;
   list-style: none;
 }
-ul.main_nav {
+nav > ul {
   margin: 0 auto;
   width: 400px;
 }
-ul.main_nav p { margin: 0; }
-ul.main_nav li {
+nav > ul p { margin: 0; }
+nav > ul li {
   background-color: #586261;
   border-right: 1px solid #bcbcbc;
   float: left;
   position: relative;
   text-align: center;
 }
-ul.main_nav > li:first-child {
+nav > ul > li:first-child {
   -moz-border-radius-topleft: 10px;
   -webkit-border-top-left-radius: 10px;
 }
-ul.main_nav > li:last-child {
+nav > ul > li:last-child {
   border: none;
   -moz-border-radius-topright: 10px;
   -webkit-border-top-right-radius: 10px;
 }
-ul.main_nav li a {
+nav > ul li a {
   color: #ffffff;
   width: 100px;
   padding: 5px;
   text-decoration: none;
   display: block;
 }
-ul.main_nav li p {
+nav > ul li p {
   color: #ffffff;
   width: 100px;
   padding: 5px;
   text-decoration: none;
   display: block;
 }
-ul.main_nav li a:hover { color: #ffffff; }
-ul.main_nav li ul.sub_nav {
+nav > ul li a:hover { color: #ffffff; }
+nav > ul li ul {
   position: absolute;
   left: 0px;
   top: 100%;
   display: none;
 }
-ul.main_nav li:hover > ul { display: block; }
-ul.main_nav li ul.sub_nav li {
+nav > ul li:hover > ul { display: block; }
+nav > ul li ul li {
   background-color: #483d41;
   border-right: none;
   border-top: 1px solid #bcbcbc;
   text-align: left;
   z-index: 1;
 }
-ul.main_nav li ul.sub_nav li:first-child { border: none; }
-ul.main_nav li ul.sub_nav li a:hover { color: #ff9900; }
-ul.main_nav li ul.sub_nav li:last-child {
+nav > ul li ul li:first-child { border: none; }
+nav > ul li ul li a:hover { color: #ff9900; }
+nav > ul li ul li:last-child {
   -moz-border-radius-bottomright: 10px;
   -moz-border-radius-bottomleft: 10px;
   -webkit-border-bottom-right-radius: 10px;
