@@ -10,6 +10,6 @@
 <link rel='alternate' type='application/rss+xml' title='RSS' href='/rss' />
 <link rel='stylesheet' type='text/css' href='{$static_location}/css/default/grey.css' title='Default Grey' />
 <link rel='stylesheet' type='text/css' href='{$static_location}/css/custom-theme/jquery-ui-1.8.5.custom.css' />
-<link title='{$site_name}' type='application/opensearchdescription+xml' rel='search' href='{$static_location}/opensearch' />
+<link title="{$site_name}" type='application/opensearchdescription+xml' rel='search' href='{$static_location}/opensearch' />
 </head>
 <body>

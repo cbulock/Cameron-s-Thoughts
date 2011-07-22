@@ -1,4 +1,4 @@
-<div>Design &copy; 2010-{$smarty.now|date_format:'%Y'}, Content &copy; 2003-{$smarty.now|date_format:'%Y'} Cameron Bulock</div>
+<footer>Design &copy; 2010-{$smarty.now|date_format:'%Y'}, Content &copy; 2003-{$smarty.now|date_format:'%Y'} Cameron Bulock</footer>
 
 <script src='//ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js'></script>
 <script src='{$static_location}/js/jquery-ui-1.8.5.custom.min.js'></script>

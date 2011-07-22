@@ -86,7 +86,7 @@ a:hover {
 }
 a:visited { color: #ffffff; }
 a:visited:hover { color: #ff9900; }
-article { font-size: 120%; }
+article p { font-size: 120%; }
 code, pre {
   display: block;
   overflow: auto;
@@ -103,6 +103,7 @@ code, pre {
   margin: 0.3em 0.1em 0.3em 0.1em;
 }
 fieldset { width: 10em; }
+body > header { text-align: center; }
 h1 {
   font-family: UbuntuBold, Arial, sans-serif;
   font-weight: bold;
@@ -305,7 +306,6 @@ input, textarea, select { padding: 1px; }
   -moz-border-radius: 0 0 5px 0;
   -webkit-border-radius: 0 0 5px 0;
 }
-#heading { text-align: center; }
 #title {
   font-size: 4.7em;
   margin: 0 0 -0.3em 0;

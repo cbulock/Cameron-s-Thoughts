@@ -5,8 +5,8 @@ Welcome, <a href='/profile/{$authUser.login}'>{$authUser.name}</a> | <a href='/f
 <a href='/form/login' id='login'>Login</a> | <a href='/form/signup' id='signup'>Sign Up</a>
 {/if}
 </div>
-<div id='heading'>
+<header>
 <h1 id='title'><a href='/'>{$site_name}</a></h1>
 <p id='sitetag'>{$site_tagline}</p>
-</div>
+</header>
 {include file='menu.tpl'}
