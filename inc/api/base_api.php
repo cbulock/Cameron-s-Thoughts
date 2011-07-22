@@ -40,8 +40,6 @@ public function postEntry($options = array()) {
   'admin'
  );
  extract($setup_result = $this->api_call_setup($setup));
-// $user = $this->getAuthUser();
-// if ($user['type'] != 'admin') throw new Exception('Must be Admin to do this',403);//this is going away once permissions are added to api_call_setup
  if (!$options['title']) {
   $this->writeLog('Missing title when posting entry','errorlog');
   throw new Exception('Missing Title');
@@ -56,7 +54,7 @@ public function postEntry($options = array()) {
  try {//need to verify basename doesn't already exist
   $this->getEntry($basename,array('blogid'=>$options['blogid'],'cache'=>FALSE));
  }
- catch (exception $e) {
+ catch (UnexpectedValueException $e) {
   switch ($e->getCode()) {
    case 1000:
     $thisentry = $this->db->insertItem('mt_entry',array());
@@ -66,7 +64,7 @@ public function postEntry($options = array()) {
     }
 
     $atomid = 'tag:www.cbulock.com,'.date('Y').'://'.$options['blogid'].'.'.$thisentry;
-    if ($options['category']) {//I think this still posts when not existing
+    if (isset($options['category'])) {//I think this still posts when not existing
      $catoptions = array(
       'placement_entry_id' => $thisentry,
       'placement_blog_id' => $options['blogid'],
@@ -97,7 +95,7 @@ public function postEntry($options = array()) {
      throw new Exception('Entry save did not complete, in bad state');
     }
 
-    $this->clearCache();//there are random issues if cache isn't cleared
+    $this->clearCache(array('token'=>$this->getAPIToken()));//there are random issues if cache isn't cleared
     $this->newEntryStatus($thisentry);
     $this->writeLog('New entry posted. ID:'.$thisentry.' Title: '.$options['title']);
     return $this->api_call_finish(TRUE); //i'd like to return an array of useful data, like entryid for instance
@@ -171,7 +169,7 @@ public function getEntry($value, $options = array()) {
   return $this->api_call_finish($result);
  }
  $this->writeLog('Entry not found: '.$value,'errorlog');
- throw new Exception('Entry not found',1000);
+ throw new UnexpectedValueException('Entry not found',1000);
 }
 
 public function prevEntry($id, $options = array()) {//where is very open
@@ -182,7 +180,7 @@ public function prevEntry($id, $options = array()) {//where is very open
  );
  extract($setup_result = $this->api_call_setup($setup));
  $sql = "select max(entry_id) FROM `mt_entry` WHERE (entry_id < ".$this->db->sqlClean($id)." AND entry_blog_id =".$this->db->sqlClean($options['blogid'])." AND ".$options['where'].")";
- $result = $this->db->directProcessQuery($sql,'mt_entry',array('return'=>'single','cache'=>TRUE));//going to disable caching as I believe this can be off when new entries are created (turning on now as cache is cleared during postEntry)
+ $result = $this->db->directProcessQuery($sql,'mt_entry',array('return'=>'single','cache'=>TRUE));
  return $this->api_call_finish($result);
 }
 
@@ -194,7 +192,7 @@ public function nextEntry($id, $options = array()) {//where is very open
  );
  extract($setup_result = $this->api_call_setup($setup));
  $sql = "select min(entry_id) FROM `mt_entry` WHERE (entry_id > ".$this->db->sqlClean($id)." AND entry_blog_id = ".$this->db->sqlClean($options['blogid'])." AND ".$options['where'].")";
- $result = $this->db->directProcessQuery($sql,'mt_entry',array('return'=>'single','cache'=>TRUE));//going to disable caching as I believe this can be off when new entries are created (turning on now as cache is cleared during postEntry)
+ $result = $this->db->directProcessQuery($sql,'mt_entry',array('return'=>'single','cache'=>TRUE));
  return $this->api_call_finish($result);
 }
 
@@ -206,7 +204,7 @@ public function lastEntry($options = array()) {//where is very open
  );
  extract($setup_result = $this->api_call_setup($setup));
  $sql = "select max(entry_id) FROM `mt_entry` WHERE (entry_blog_id = ".$this->db->sqlClean($options['blogid'])." AND ".$options['where'].")";
- $result = $this->db->directProcessQuery($sql,'mt_entry',array('return'=>'single','cache'=>TRUE));//going to disable caching as I believe this can be off when new entries are created (turning on now as cache is cleared during postEntry)
+ $result = $this->db->directProcessQuery($sql,'mt_entry',array('return'=>'single','cache'=>TRUE));
  return $this->api_call_finish($result);
 }
 
@@ -247,14 +245,14 @@ public function getComment($id, $options = array()) {
    $result['service'] = $user['service'];
   }
   $result['email_hash'] = md5($result['email']);
-  if ($auth['class']!='internal') {
+  if (!in_array('internal',$permassets)) {
    unset($result['email']);
   }
   $result['avatar'] = $this->getAvatarPath($result['email_hash'],$result['service']);
  return $this->api_call_finish($result);
  }
  $this->writeLog('Comment not found: '.$id,'errorlog');
- throw new Exception('Comment not found');
+ throw new UnexpectedValueException('Comment not found');
 }
 
 public function getComments($postid, $options = array()) {//this should be rewritten to use getComment
@@ -281,7 +279,7 @@ public function getComments($postid, $options = array()) {//this should be rewri
     $results[$key]['service'] = $user['service'];
    }
    $results[$key]['email_hash'] = md5($results[$key]['email']);
-   if ($auth['class']!='internal') {
+   if (!in_array('internal',$permassets)) {
     unset($results[$key]['email']);
    }
    $results[$key]['avatar'] = $this->getAvatarPath($results[$key]['email_hash'],$results[$key]['service']);
@@ -299,19 +297,15 @@ public function postComment($postid, $options = array()) {
   'user'
  );
  extract($setup_result = $this->api_call_setup($setup));
- $user = $this->getAuthUser();
-// if (!$user) {
-//  $this->writeLog('Must be logged in to post comment','errorlog');
-//  throw new Exception('Must be logged in to post comment',401);
-// }
  if (!$options['text']) {
   $this->writeLog('Text missing from comment','errorlog');
   throw new Exception('Must enter text into comment box',1001);
  }
+ $user = $this->getAuthUser();
  $data = array(
   'blogid' => $options['blogid'],
   'postid' => $postid,//this needs to be sanitized better
-  'user' => $user['id'],//see about removing the user requirement, then i can have one less getAuthUser call
+  'user' => $user['id'],
   'ip' => $remote_ip,
   'text' => $options['text']
  );
@@ -370,7 +364,7 @@ public function getCat($catid, $options = array()) {
  $cat = $this->db->getItem('mt_category',$catid,$dboptions);
  if ($cat) return $this->api_call_finish($cat);
  $this->writeLog('Category not found: '.$catid,'errorlog');
- throw new Exception('Category not found',1000);
+ throw new UnexpectedValueException('Category not found',1000);
 }
 
 public function getCatList($options = array()) {
@@ -421,6 +415,7 @@ protected function checkPass($user,$pass) {
  return FALSE;
 }
 
+/*
 protected function methodAuth($token=NULL) {
  if ($token) {
   switch($token) {
@@ -437,11 +432,11 @@ protected function methodAuth($token=NULL) {
   return FALSE;
  }
  return array('class'=>'user');
-}
+}*/
 
 public function logout() {
  return $this->api_call_finish($this->db->deleteItem('sessions',$this->getUserToken(),array('field'=>'guid')));
-}
+} 
 
 /**********************************
    Status Methods
@@ -454,9 +449,22 @@ protected function useStatus() {
  }
 }
 
-public function getLatestStatus() {
- $this->useStatus();
- return $this->api_call_finish($this->status->getStatus(array('count'=>'1')));
+public function getLatestStatus($options = array()) {
+ $setup['options'] = $options;
+ $setup['defaults'] = array(
+  'cache' => TRUE,
+  'expires' => 180
+ );
+ extract($setup_result = $this->api_call_setup($setup));
+ if($this->cache->exists('latestStatus',$options['expires']) && $options['cache']) {
+  $status = $this->cache->read('latestStatus');
+ }
+ else { 
+  $this->useStatus();
+  $status = $this->api_call_finish($this->status->getStatus(array('count'=>'1')));
+  $this->cache->add('latestStatus',$status);
+ }
+ return $status;
 }
 
 protected function postStatus($message) {
@@ -546,7 +554,7 @@ public function createUser($login, $options = array()) {
  );
  extract($setup_result = $this->api_call_setup($setup));
  $this->checkRBL($options['remote_ip']);
- if ($options['type']!='user' && $user['type']!='admin') {
+ if ($options['type']!='user' && !in_array('admin',$permassets)) {
   $this->writeLog('Must be admin to create admin users','errorlog');
   throw new Exception('Must be admin to setup non-standard users');
  }
@@ -562,7 +570,7 @@ public function createUser($login, $options = array()) {
   $this->writeLog('Tried to create user, name was already taken. Name: '.$login,'errorlog');
   throw new Exception('Username already taken');
  }
- $this->clearCache();
+ $this->clearCache(array('token'=>$this->getAPIToken()));
  $useroptions = array(
   'login' => $login,
   'pass' => md5($options['pass']),
@@ -599,7 +607,7 @@ public function getUser($value, $options = array()) {
  if (!$user) return FALSE;//throw an exception here?
  $user['email_hash'] = md5($user['email']);
  $user['avatar'] = $this->getAvatarPath($user['email_hash'],$user['service']);
- if ($auth['class']!='internal') {
+ if (!in_array('internal',$permassets)) {//in the future, the current user should be able to recover their own email. The admin should as well
   unset($user['pass']);
   unset($user['email']);
  }
@@ -610,7 +618,7 @@ public function getAuthUser($options = array()) {
  $setup['options'] = $options;
  extract($setup_result = $this->api_call_setup($setup));
  $user = $this->user;
- if ($auth['class']!='internal') {
+ if (!in_array('internal',$permassets)) {
   unset($user['pass']);
   unset($user['email']);
  }
@@ -662,7 +670,10 @@ protected function getAvatarPath($hash, $service) {
 }
 
 protected function setCookie($name, $value, $expire=1893456000) {
- return setcookie($name, $value, $expire, "/");
+ if (!headers_sent()) {
+  return setcookie($name, $value, $expire, "/");
+ }
+ return FALSE;
 }
 
 protected function writeLog($text, $type='log') {
@@ -731,7 +742,7 @@ public function getSetting($setting, $options = array()) {
   $this->writeLog('Setting not found: '.$setting,'errorlog');
   throw new Exception('Setting not found');
  }
- if ($auth['class']!='internal' && !$setting['public']) {
+ if (!in_array('internal',$permassets) && !$setting['public']) {
   $this->writeLog('Insufficent permissions for setting: '.$setting,'errorlog');
   throw new Exception('Unauthorized to access setting', 403);
  }
@@ -778,6 +789,16 @@ public function search($term, $options = array()) {
   'results'=>$results
  );
  return $this->api_call_finish($output);
+}
+
+public function clearCache($options = array()) {
+ $setup['options'] = $options;
+ $setup['perms'] = array(
+  'admin',
+  'internal'
+ );
+ extract($setup_result = $this->api_call_setup($setup));
+ return $this->api_call_finish($this->cache->clear());
 }
 
 /**********************************
@@ -839,29 +860,25 @@ public function getDirectQueryCount() {
  return $this->api_call_finish($this->db->getDirectQueryCount);
 }
 
-public function clearCache() {
- return $this->cache->clear();
-}
-
-
 /**********************************
    Helper Methods
 **********************************/
 
 protected function api_call_setup($setup) {
+ $permassets = array();
+ $user = $this->user;
+ if ($setup['options']['token'] == $this->getAPIToken()) array_push($permassets,'internal');
+ if ($user['id']) array_push($permassets,'user');
+ if ($user['type'] == 'admin') array_push($permassets,'admin');
  if ($setup['perms']) {
-  $permassets = array();
-  $user = $this->user;
-  if ($setup['options']['token'] == $this->getAPIToken()) array_push($permassets,'internal');
-  if ($user['id']) array_push($permassets,'user');
-  if ($user['type'] == 'admin') array_push($permassets,'admin');
   if (!array_intersect($permassets,$setup['perms'])) {
    $this->writeLog('Insufficient permissions for method','errorlog');
-   throw new Exception('Insufficient permissions for method');
+   throw new Exception('Insufficient permissions', 403);
   };
  }
  if ($setup['defaults']) $result['options'] = $this->setOptions($setup['options'],$setup['defaults']);
- $result['auth'] = $this->methodAuth($setup['options']['token']);
+ //$result['auth'] = $this->methodAuth($setup['options']['token']);//this is probably reduntant due to permassets
+ $result['permassets'] = $permassets;
  $result['remote_ip'] = $_SERVER['REMOTE_ADDR'];
  return $result;
 }

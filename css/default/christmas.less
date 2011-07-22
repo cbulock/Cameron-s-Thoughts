@@ -64,6 +64,10 @@ a {
  }
 }
 
+article p{
+ font-size: 120%;
+}
+
 code, pre {
  display: block;
  overflow: auto;
@@ -79,6 +83,10 @@ code, pre {
 fieldset
 {
  width: 10em;
+}
+
+body > header {
+ text-align: center;
 }
 
 h1, h2, h3, h4, h5 {
@@ -216,10 +224,6 @@ height: 120px;
  .border_radius(0 0 5px 0);
 }
 
-#heading {
- text-align: center;
-}
-
 #title {
  font-size: 4.7em;
  margin: 0 0 -0.3em 0;
@@ -244,10 +248,6 @@ height: 120px;
  :after {
   content: " »";
  }
-}
-
-.entry {
- font-size: 120%;
 }
 
 #entry_nav {
@@ -310,16 +310,16 @@ ul,li {
  list-style: none;
 }
 
-ul.main_nav {
+nav > ul {
  margin: 0 auto;
  width: 400px;
 }
 
-ul.main_nav p {
+nav > ul p {
  margin: 0;
 }
 
-ul.main_nav li {
+nav > ul li {
  background-color: @menubgcolor;
  border-right: 1px solid @menuborder;
  float: left;
@@ -327,18 +327,18 @@ ul.main_nav li {
  text-align: center;
 }
 
-ul.main_nav > li:first-child {
+nav > ul > li:first-child {
  -moz-border-radius-topleft: 10px;
  -webkit-border-top-left-radius: 10px;
 }
 
-ul.main_nav > li:last-child {
+nav > ul > li:last-child {
  border: none;
  -moz-border-radius-topright: 10px;
  -webkit-border-top-right-radius: 10px;
 }
 
-ul.main_nav li a, ul.main_nav li p{
+nav > ul li a, nav > ul li p{
  color: @textcolor;
  width: 100px;
  padding: 5px;
@@ -346,22 +346,22 @@ ul.main_nav li a, ul.main_nav li p{
  display: block;
 }
 
-ul.main_nav li a:hover {
+nav > ul li a:hover {
  color: @textcolor;
 }
 
-ul.main_nav li ul.sub_nav {
+nav > ul li ul {
  position: absolute;
  left: 0px;
  top: 100%;
  display: none;      /*initially hide sub menu */
 }
 
-ul.main_nav li:hover > ul {
+nav > ul li:hover > ul {
  display: block;     /*show on hover,javascript disabled */
 }
 
-ul.main_nav li ul.sub_nav li {
+nav > ul li ul li {
  background-color: @menuddbgcolor;
  border-right: none;
  border-top: 1px solid @menuborder;
@@ -369,15 +369,15 @@ ul.main_nav li ul.sub_nav li {
  z-index:1;
 }
 
-ul.main_nav li ul.sub_nav li:first-child {
+nav > ul li ul li:first-child {
  border: none;
 }
 
-ul.main_nav li ul.sub_nav li a:hover {
+nav > ul li ul li a:hover {
  color: @hovercolor;
 }
 
-ul.main_nav li ul.sub_nav li:last-child {
+nav > ul li ul li:last-child {
  -moz-border-radius-bottomright: 10px;
  -moz-border-radius-bottomleft :10px;
  -webkit-border-bottom-right-radius: 10px;

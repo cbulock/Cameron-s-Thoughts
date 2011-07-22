@@ -1,7 +1,7 @@
 $(document).ready(function() {
  /*Menu stuff*/
- $('ul.sub_nav').hide();
- $('ul.main_nav li').hover(function () {
+ $('nav ul li ul').hide();
+ $('nav ul li').hover(function () {
   $(this).find('> ul').stop(true, true).slideDown('slow');
   }, function() {
   $(this).find('> ul').stop(true, true).slideUp('slow'); 	
@@ -103,7 +103,7 @@ show = ({
     $.ct.login_box.dialog({
      title: 'Login',
      height: 260,
-     width: 340,
+     width: 360,
      hide: 'highlight',
      modal: true,
      buttons: {
