@@ -286,6 +286,14 @@ input, textarea, select { padding: 1px; }
 .ui-dialog #login_box { text-align: right; }
 .ui-dialog #signup_form { text-align: right; }
 #login_box a { text-decoration: underline; }
+#searchbox {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  padding: 4px;
+}
+#searchbox input:first-child { width: 150px; }
+#searchbox button { font-size: 60%; }
 #throbber {
   top: 10px;
   right: 75px;

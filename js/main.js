@@ -16,6 +16,7 @@ $(document).ready(function() {
   });
  }
  /*pageStyling*/
+ $('#searchbox button').button({icons:{primary:'ui-icon-search'},text:false});
  autoResize();
  roundedAvatars();
 });

@@ -5,7 +5,7 @@ require_once('pages.inc');
 
 switch($name) {
  case 'search'://Search Form
-  
+  header('Location: '.LOCATION.'/search/'.$_POST['search']);  
  break;
  case 'login'://Login Form
   $tpl->assign('title','Login');
