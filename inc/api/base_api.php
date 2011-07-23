@@ -415,25 +415,6 @@ protected function checkPass($user,$pass) {
  return FALSE;
 }
 
-/*
-protected function methodAuth($token=NULL) {
- if ($token) {
-  switch($token) {
-   case $this->getAPIToken():
-    return array('class'=>'internal');
-   break;
-   default:
-    if (!$this->tokenLogin($token)) {
-     return FALSE;
-    } 
-  }
- }
- if (!$this->user) {
-  return FALSE;
- }
- return array('class'=>'user');
-}*/
-
 public function logout() {
  return $this->api_call_finish($this->db->deleteItem('sessions',$this->getUserToken(),array('field'=>'guid')));
 } 
@@ -877,7 +858,6 @@ protected function api_call_setup($setup) {
   };
  }
  if ($setup['defaults']) $result['options'] = $this->setOptions($setup['options'],$setup['defaults']);
- //$result['auth'] = $this->methodAuth($setup['options']['token']);//this is probably reduntant due to permassets
  $result['permassets'] = $permassets;
  $result['remote_ip'] = $_SERVER['REMOTE_ADDR'];
  return $result;
