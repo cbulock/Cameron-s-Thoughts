@@ -503,6 +503,7 @@ protected function sendMail($options = array()) {
   'to_name' => 'Cameron'
  );
  extract($setup_result = $this->api_call_setup($setup));
+ $options['data']['ip'] = $remote_ip;
  require_once('email.php');
  $mail = new PHPMailer(TRUE);
  $mail->SetFrom($options['from_email'],$options['from_name']);
@@ -534,7 +535,7 @@ public function createUser($login, $options = array()) {
   'service_id' => NULL
  );
  extract($setup_result = $this->api_call_setup($setup));
- $this->checkRBL($options['remote_ip']);
+ $this->checkRBL($remote_ip);
  if ($options['type']!='user' && !in_array('admin',$permassets)) {
   $this->writeLog('Must be admin to create admin users','errorlog');
   throw new Exception('Must be admin to setup non-standard users');
@@ -629,7 +630,7 @@ public function sendMessage($options = array()) {
   'name' => 'Contact Form User'
  );
  extract($setup_result = $this->api_call_setup($setup));
- $this->checkRBL($options['remote_ip']);
+ $this->checkRBL($remote_ip);
  $data['message'] = $options['message'];
  $mailoptions = array(
   'data' => $data,
@@ -637,7 +638,7 @@ public function sendMessage($options = array()) {
   'from_name' => $options['name'],
   'subject' => 'New Contact Form Message',
   'template' => 'contact_form',
-  'token' => $this->getAPIToken()
+  'token' => $this->getAPIToken()//why is this here?
  );
  if ($this->sendMail($mailoptions)) return $this->api_call_finish(TRUE);
  $this->writeLog('Message sending failure','errorlog');
