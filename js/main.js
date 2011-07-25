@@ -149,6 +149,7 @@ show = ({
       };
       if(call('sendMessage',null,opt)) {
        $(this).dialog('close');
+       info.add('Message successfully sent');
       }
      }
     },
@@ -230,7 +231,7 @@ display = ({
   if ($('#'+type+'_box').length==0) {
    snippetLoad(type+'_box', function() {
     $('body').prepend(arguments[0]);
-    $('#'+type+'_box button').button({icons:{primary:'ui-icon-circle-close'},text:false});
+    $('#'+type+'_box button').button({icons:{primary:'ui-icon-circle-close'},text:true});
     list = display.get(type);
     if (list) {
      $('#'+type+'_box p').html(list[0]);
