@@ -243,7 +243,7 @@ notice = ({
     }
     $('#'+type+'_box button').click(function(){
      $('#'+type+'_box').remove();
-     notice.clearList(type);
+     notice.clearList();
     });
     $('#'+type+'_box').slideDown();
    });
@@ -253,8 +253,12 @@ notice = ({
   if (!this.list[type].length) return false;
   return this.list[type];
  },
- clearList : function(type) {
-  this.list[type] = [];
+ clearList : function() {
+  this.list = {
+   error : [],
+   warn : [],
+   info : []
+  };
  }
 });
 
