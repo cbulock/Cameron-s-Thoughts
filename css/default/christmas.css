@@ -221,7 +221,7 @@ input, textarea, select { padding: 1px; }
   top: 2px;
   right: 4px;
 }
-#notice_box {
+#warn_box {
   display: none;
   padding: 4px 0 4px 0;
   margin: 0;
@@ -231,14 +231,14 @@ input, textarea, select { padding: 1px; }
   width: 100%;
   z-index: 5;
 }
-#notice_box h1 {
+#warn_box h1 {
   padding-left: 25%;
   padding-right: 1em;
   font-size: 1.1em;
   display: inline;
 }
-#notice_box p { display: inline; }
-#notice_box button {
+#warn_box p { display: inline; }
+#warn_box button {
   font-size: 68%;
   color: white;
   text-shadow: #111111 1px 1px 3px;
@@ -277,12 +277,12 @@ input, textarea, select { padding: 1px; }
   border-color: red;
 }
 #error_box span { background-color: red; }
-#notice_box { background-color: rgba(255, 255, 0, 0.7); }
-#notice_box button {
+#warn_box { background-color: rgba(255, 255, 0, 0.7); }
+#warn_box button {
   background-color: yellow;
   border-color: yellow;
 }
-#notice_box span { background-color: yellow; }
+#warn_box span { background-color: yellow; }
 #info_box { background-color: rgba(0, 192, 0, 0.7); }
 #info_box button {
   background-color: green;
