@@ -215,11 +215,16 @@ function roundedAvatars() {
  });
 }
 
-display = ({
+notice = ({
  list : {
   error : [],
-  notice : [],
+  warn : [],
   info : []
+ },
+ title : {
+  error : 'Error!',
+  warn : 'Warning:',
+  info : ''
  },
  add : function(message,type) {
   this.list[type].push(message);
@@ -232,13 +237,13 @@ display = ({
    snippetLoad(type+'_box', function() {
     $('body').prepend(arguments[0]);
     $('#'+type+'_box button').button({icons:{primary:'ui-icon-circle-close'},text:true});
-    list = display.get(type);
+    list = notice.get(type);
     if (list) {
      $('#'+type+'_box p').html(list[0]);
     }
     $('#'+type+'_box button').click(function(){
      $('#'+type+'_box').remove();
-     display.clearList(type);
+     notice.clearList(type);
     });
     $('#'+type+'_box').slideDown();
    });
@@ -253,20 +258,20 @@ display = ({
  }
 });
 
-//Aliases to display method
+//Aliases to notice method
 error = ({
  add : function(message) {
-  display.add(message,'error');
+  notice.add(message,'error');
  }
 });
-notice = ({
+warn = ({
  add : function(message) {
-  display.add(message,'notice');
+  notice.add(message,'warn');
  }
 });
 info = ({
  add : function(message) {
-  display.add(message,'info');
+  notice.add(message,'info');
  }
 });
 
