@@ -237,9 +237,9 @@ notice = ({
    snippetLoad(type+'_box', function() {
     $('body').prepend(arguments[0]);
     $('#'+type+'_box button').button({icons:{primary:'ui-icon-circle-close'},text:true});
-    list = notice.get(type);
+    list = notice.get();
     if (list) {
-     $('#'+type+'_box p').html(list[0]);
+     $('#'+type+'_box p').html(list[type][0]);
     }
     $('#'+type+'_box button').click(function(){
      $('#'+type+'_box').remove();
@@ -249,9 +249,18 @@ notice = ({
    });
   }
  },
- get : function(type) {
-  if (!this.list[type].length) return false;
-  return this.list[type];
+ get : function() {
+  return this.list;
+ },
+ getCount : function() {
+  list = this.get();
+  counts = {
+   error : list.error.length,
+   warn : list.warn.length,
+   info : list.info.length
+  };
+  counts.all = counts.error + counts.warn + counts.info;
+  return counts;
  },
  clearList : function() {
   this.list = {
