@@ -226,41 +226,65 @@ notice = ({
   warn : 'Warning:',
   info : ''
  },
+ counter : 0,
  add : function(message,type) {
   this.list[type].push(message);
   if ($('#'+type+'_box').length==0) {
-   this.showBox(type);
+   this.show(type);
   }
  },
- showBox : function(type) {
-  if ($('#'+type+'_box').length==0) {
-   snippetLoad(type+'_box', function() {
+ show : function(type) {
+  if ($('#notice_box').length==0) {
+   snippetLoad('notice_box', function() {
     $('body').prepend(arguments[0]);
-    $('#'+type+'_box button').button({icons:{primary:'ui-icon-circle-close'},text:true});
-    list = notice.get();
-    if (list) {
-     $('#'+type+'_box p').html(list[type][0]);
-    }
+    $('#notice_box button').button({icons:{primary:'ui-icon-circle-close'},text:true});
     $('#'+type+'_box button').click(function(){
-     $('#'+type+'_box').remove();
+     $('#notice_box').remove();
      notice.clearList();
     });
     $('#'+type+'_box').slideDown();
    });
   }
+  this.update();
+ },
+ update : function() {
+  this.counter = 1;
+ },
+ current : function () {
+  list = notice.get();
+  e = list.error;
+  w = list.warn;
+  i = list.info;
+  c = this.counter;
+  if (c <= e.length) {
+   return {
+    type : 'error',
+    message : e[c - 1]
+   };
+  }
+  if ((c > e.length) && (c <= e.length + w.length)) {
+   return {
+    type : 'warn',
+    message : w[c - e.length - 1]
+   };
+  }
+  return {
+   type: 'info',
+    message : i[c - e.length - w.length - 1]
+  };
  },
  get : function() {
   return this.list;
  },
- getCount : function() {
+ counts : function() {
   list = this.get();
-  counts = {
+  lengths = {
    error : list.error.length,
    warn : list.warn.length,
    info : list.info.length
   };
-  counts.all = counts.error + counts.warn + counts.info;
-  return counts;
+  lengths.all = lengths.error + lengths.warn + lengths.info;
+  return lengths;
  },
  clearList : function() {
   this.list = {
