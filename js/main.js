@@ -229,26 +229,34 @@ notice = ({
  counter : 0,
  add : function(message,type) {
   this.list[type].push(message);
-  if ($('#'+type+'_box').length==0) {
-   this.show(type);
-  }
+  this.load();
  },
- show : function(type) {
+ load : function(type) {
   if ($('#notice_box').length==0) {
    snippetLoad('notice_box', function() {
     $('body').prepend(arguments[0]);
     $('#notice_box button').button({icons:{primary:'ui-icon-circle-close'},text:true});
-    $('#'+type+'_box button').click(function(){
+    $('#notice_box button').click(function(){
      $('#notice_box').remove();
      notice.clearList();
     });
-    $('#'+type+'_box').slideDown();
+    $('#notice_box').slideDown();
+    notice.update();
    });
   }
-  this.update();
+  else {
+   this.update();
+  }
  },
  update : function() {
   this.counter = 1;
+  this.display();
+ },
+ display : function() {
+  c = this.current();
+  $('#notice_box').attr('class',c.type);
+  $('#notice_box h1').html(notice.title[c.type]);
+  $('#notice_box p').html(c.message);
  },
  current : function () {
   list = notice.get();

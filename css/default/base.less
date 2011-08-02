@@ -128,7 +128,7 @@ width: 700px;
 height: 120px;
 }
 
-#error_box, #warn_box, #info_box {
+#notice_box {
  display: none;
  padding: 4px 0 4px 0;
  margin: 0;
@@ -156,7 +156,7 @@ height: 120px;
  }
 }
 
-#error_box {
+#notice_box.error {
  background-color: rgba(255,0,0,0.7);
  button {
   background-color:red;
@@ -167,7 +167,7 @@ height: 120px;
  }
 }
 
-#warn_box {
+#notice_box.warn {
  background-color: rgba(255,255,0,0.7);
  button {
   background-color:yellow;
@@ -177,7 +177,7 @@ height: 120px;
   background-color:yellow;
  }
 
-}#info_box {
+}#notice_box.info {
  background-color: rgba(0,192,0,0.7);
  button {
   background-color:green;
