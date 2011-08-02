@@ -235,10 +235,18 @@ notice = ({
   if ($('#notice_box').length==0) {
    snippetLoad('notice_box', function() {
     $('body').prepend(arguments[0]);
-    $('#notice_box button').button({icons:{primary:'ui-icon-circle-close'},text:true});
-    $('#notice_box button').click(function(){
+    $('#notice_close').button({icons:{primary:'ui-icon-circle-close'},text:true});
+    $('#notice_prev').button({icons:{primary:'ui-icon-circle-triangle-w'},text:false});
+    $('#notice_next').button({icons:{primary:'ui-icon-circle-triangle-e'},text:false});
+    $('#notice_close').click(function(){
      $('#notice_box').remove();
      notice.clearList();
+    });
+    $('#notice_prev').click(function(){
+     notice.prev();
+    });
+    $('#notice_next').click(function(){
+     notice.next();
     });
     $('#notice_box').slideDown();
     notice.update();
@@ -254,6 +262,12 @@ notice = ({
  },
  display : function() {
   c = this.current();
+  counts = this.counts();
+  $('#notice_nav').hide();
+  if (counts.all > 1) {
+   $('#notice_nav').show();
+   $('#notice_count').html(this.counter+'/'+counts.all);
+  }
   $('#notice_box').attr('class',c.type);
   $('#notice_box h1').html(notice.title[c.type]);
   $('#notice_box p').html(c.message);
@@ -280,6 +294,19 @@ notice = ({
    type: 'info',
     message : i[c - e.length - w.length - 1]
   };
+ },
+ prev : function() {
+  if (this.counter > 1) {
+   this.counter--;
+   this.display();
+  }
+ },
+ next : function() {
+  counts = this.counts();
+  if (this.counter < counts.all) {
+   this.counter++;
+   this.display();
+  }
  },
  get : function() {
   return this.list;
