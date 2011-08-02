@@ -198,7 +198,7 @@ input, textarea, select { padding: 1px; }
 }
 #notice_box {
   display: none;
-  padding: 4px 0 4px 0;
+  padding: 6px 0 6px 0;
   margin: 0;
   position: fixed;
   top: 0px;
@@ -223,21 +223,29 @@ input, textarea, select { padding: 1px; }
   top: 2px;
   right: 4px;
 }
+#notice_box #notice_nav {
+  position: fixed;
+  top: 2px;
+  right: 75px;
+}
 #notice_box.error { background-color: rgba(255, 0, 0, 0.7); }
 #notice_box.error button {
   background-color: red;
   border-color: red;
 }
+#notice_box.error button span { background-color: red; }
 #notice_box.warn { background-color: rgba(255, 255, 0, 0.7); }
 #notice_box.warn button {
   background-color: yellow;
   border-color: yellow;
 }
+#notice_box.warn button span { background-color: yellow; }
 #notice_box.info { background-color: rgba(0, 192, 0, 0.7); }
 #notice_box.info button {
   background-color: green;
   border-color: green;
 }
+#notice_box.info button span { background-color: green; }
 .ui-dialog #login_box { text-align: right; }
 .ui-dialog #signup_form { text-align: right; }
 #login_box a { text-decoration: underline; }
