@@ -196,32 +196,9 @@ input, textarea, select { padding: 1px; }
   width: 700px;
   height: 120px;
 }
-#error_box {
-  display: none;
-  padding: 4px 0 4px 0;
-  margin: 0;
-  position: fixed;
-  top: 0px;
-  left: 0px;
-  width: 100%;
-  z-index: 5;
-}
-#error_box h1 {
-  padding-left: 25%;
-  padding-right: 1em;
-  font-size: 1.1em;
-  display: inline;
-}
-#error_box p { display: inline; }
-#error_box button {
-  font-size: 60%;
-  position: fixed;
-  top: 3px;
-  right: 4px;
-}
 #notice_box {
   display: none;
-  padding: 4px 0 4px 0;
+  padding: 6px 0 6px 0;
   margin: 0;
   position: fixed;
   top: 0px;
@@ -237,55 +214,49 @@ input, textarea, select { padding: 1px; }
 }
 #notice_box p { display: inline; }
 #notice_box button {
-  font-size: 60%;
+  font-size: 68%;
+  color: white;
+  text-shadow: #111111 1px 1px 3px;
+}
+#notice_box #notice_close {
   position: fixed;
-  top: 3px;
+  top: 2px;
   right: 4px;
 }
-#info_box {
-  display: none;
-  padding: 4px 0 4px 0;
-  margin: 0;
+#notice_box #notice_nav {
   position: fixed;
-  top: 0px;
-  left: 0px;
-  width: 100%;
-  z-index: 5;
+  top: 2px;
+  right: 75px;
 }
-#info_box h1 {
-  padding-left: 25%;
-  padding-right: 1em;
-  font-size: 1.1em;
-  display: inline;
-}
-#info_box p { display: inline; }
-#info_box button {
-  font-size: 60%;
-  position: fixed;
-  top: 3px;
-  right: 4px;
-}
-#error_box { background-color: rgba(255, 0, 0, 0.7); }
-#error_box button {
+#notice_box.error { background-color: rgba(255, 0, 0, 0.7); }
+#notice_box.error button {
   background-color: red;
   border-color: red;
 }
-#error_box span { background-color: red; }
-#notice_box { background-color: rgba(255, 255, 0, 0.7); }
-#notice_box button {
+#notice_box.error button span { background-color: red; }
+#notice_box.warn { background-color: rgba(255, 255, 0, 0.7); }
+#notice_box.warn button {
   background-color: yellow;
   border-color: yellow;
 }
-#notice_box span { background-color: yellow; }
-#info_box { background-color: rgba(0, 192, 0, 0.7); }
-#info_box button {
+#notice_box.warn button span { background-color: yellow; }
+#notice_box.info { background-color: rgba(0, 192, 0, 0.7); }
+#notice_box.info button {
   background-color: green;
   border-color: green;
 }
-#info_box span { background-color: green; }
+#notice_box.info button span { background-color: green; }
 .ui-dialog #login_box { text-align: right; }
 .ui-dialog #signup_form { text-align: right; }
 #login_box a { text-decoration: underline; }
+#searchbox {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  padding: 4px;
+}
+#searchbox input:first-child { width: 150px; }
+#searchbox button { font-size: 60%; }
 #throbber {
   top: 10px;
   right: 75px;

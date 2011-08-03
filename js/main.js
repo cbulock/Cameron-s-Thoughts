@@ -16,6 +16,7 @@ $(document).ready(function() {
   });
  }
  /*pageStyling*/
+ $('#searchbox button').button({icons:{primary:'ui-icon-search'},text:false});
  autoResize();
  roundedAvatars();
 });
@@ -148,6 +149,7 @@ show = ({
       };
       if(call('sendMessage',null,opt)) {
        $(this).dialog('close');
+       info.add('Message successfully sent');
       }
      }
     },
@@ -213,58 +215,135 @@ function roundedAvatars() {
  });
 }
 
-display = ({
+notice = ({
  list : {
   error : [],
-  notice : [],
+  warn : [],
   info : []
  },
+ title : {
+  error : 'Error!',
+  warn : 'Warning:',
+  info : ''
+ },
+ counter : 0,
  add : function(message,type) {
   this.list[type].push(message);
-  if ($('#'+type+'_box').length==0) {
-   this.showBox(type);
-  }
+  this.load();
  },
- showBox : function(type) {
-  if ($('#'+type+'_box').length==0) {
-   snippetLoad(type+'_box', function() {
+ load : function(type) {
+  if ($('#notice_box').length==0) {
+   snippetLoad('notice_box', function() {
     $('body').prepend(arguments[0]);
-    $('#'+type+'_box button').button({icons:{primary:'ui-icon-circle-close'},text:false});
-    list = display.get(type);
-    if (list) {
-     $('#'+type+'_box p').html(list[0]);
-    }
-    $('#'+type+'_box button').click(function(){
-     $('#'+type+'_box').remove();
-     display.clearList(type);
+    $('#notice_close').button({icons:{primary:'ui-icon-circle-close'},text:true});
+    $('#notice_prev').button({icons:{primary:'ui-icon-circle-triangle-w'},text:false});
+    $('#notice_next').button({icons:{primary:'ui-icon-circle-triangle-e'},text:false});
+    $('#notice_close').click(function(){
+     $('#notice_box').remove();
+     notice.clearList();
     });
-    $('#'+type+'_box').slideDown();
+    $('#notice_prev').click(function(){
+     notice.prev();
+    });
+    $('#notice_next').click(function(){
+     notice.next();
+    });
+    $('#notice_box').slideDown();
+    notice.update();
    });
   }
+  else {
+   this.update();
+  }
  },
- get : function(type) {
-  if (!this.list[type].length) return false;
-  return this.list[type];
+ update : function() {
+  this.counter = 1;
+  this.display();
  },
- clearList : function(type) {
-  this.list[type] = [];
+ display : function() {
+  c = this.current();
+  counts = this.counts();
+  $('#notice_nav').hide();
+  if (counts.all > 1) {
+   $('#notice_nav').show();
+   $('#notice_count').html(this.counter+'/'+counts.all);
+  }
+  $('#notice_box').attr('class',c.type);
+  $('#notice_box h1').html(notice.title[c.type]);
+  $('#notice_box p').html(c.message);
+ },
+ current : function () {
+  list = notice.get();
+  e = list.error;
+  w = list.warn;
+  i = list.info;
+  c = this.counter;
+  if (c <= e.length) {
+   return {
+    type : 'error',
+    message : e[c - 1]
+   };
+  }
+  if ((c > e.length) && (c <= e.length + w.length)) {
+   return {
+    type : 'warn',
+    message : w[c - e.length - 1]
+   };
+  }
+  return {
+   type: 'info',
+    message : i[c - e.length - w.length - 1]
+  };
+ },
+ prev : function() {
+  if (this.counter > 1) {
+   this.counter--;
+   this.display();
+  }
+ },
+ next : function() {
+  counts = this.counts();
+  if (this.counter < counts.all) {
+   this.counter++;
+   this.display();
+  }
+ },
+ get : function() {
+  return this.list;
+ },
+ counts : function() {
+  list = this.get();
+  lengths = {
+   error : list.error.length,
+   warn : list.warn.length,
+   info : list.info.length
+  };
+  lengths.all = lengths.error + lengths.warn + lengths.info;
+  return lengths;
+ },
+ clearList : function() {
+  this.list = {
+   error : [],
+   warn : [],
+   info : []
+  };
  }
 });
 
-//Aliases to display method
+//Aliases to notice method
 error = ({
  add : function(message) {
-  display.add(message,'error');
+  notice.add(message,'error');
  }
 });
-notice = ({
+warn = ({
  add : function(message) {
-  display.add(message,'notice');
+  notice.add(message,'warn');
  }
 });
 info = ({
  add : function(message) {
-  display.add(message,'info');
+  notice.add(message,'info');
  }
 });
 

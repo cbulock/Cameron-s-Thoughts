@@ -138,9 +138,9 @@ width: 700px;
 height: 120px;
 }
 
-#error_box, #notice_box, #info_box {
+#notice_box {
  display: none;
- padding: 4px 0 4px 0;
+ padding: 6px 0 6px 0;
  margin: 0;
  position: fixed;
  top: 0px;
@@ -157,44 +157,54 @@ height: 120px;
   display:inline;
  }
  button {
-  font-size: 60%;
+  font-size: 68%;
+  color: white;
+  .text_shadow;
+  }
+ #notice_close {
   position: fixed;
-  top: 3px;
+  top: 2px;
   right:4px;
+ }
+ #notice_nav {
+  position: fixed;
+  top: 2px;
+  right: 75px;
  }
 }
 
-#error_box {
+#notice_box.error {
  background-color: rgba(255,0,0,0.7);
  button {
   background-color:red;
   border-color:red;
- }
- span {
-  background-color:red;
+  span {
+   background-color:red;
+  }
  }
 }
 
-#notice_box {
+#notice_box.warn {
  background-color: rgba(255,255,0,0.7);
  button {
   background-color:yellow;
   border-color:yellow;
+  span {
+   background-color:yellow;
+  }
  }
- span {
-  background-color:yellow;
- }
+}
 
-}#info_box {
+#notice_box.info {
  background-color: rgba(0,192,0,0.7);
  button {
   background-color:green;
   border-color:green;
+  span {
+   background-color:green;
+  }
  }
- span {
-  background-color:green;
- }
-}
+} 
 
 .ui-dialog #login_box, .ui-dialog #signup_form {
  text-align: right;
@@ -202,6 +212,19 @@ height: 120px;
 
 #login_box a{
  text-decoration: underline;
+}
+
+#searchbox {
+ position: absolute;
+ top: 0px;
+ right: 0px;
+ padding: 4px;
+ input:first-child {
+  width: 150px;
+ }
+ button {
+ font-size: 60%;
+ }
 }
 
 #throbber {

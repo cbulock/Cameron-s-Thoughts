@@ -166,6 +166,8 @@ public function getEntry($value, $options = array()) {
    $result['entry_link'] = "/".$year."/".$month."/".$result['entry_basename'].".html";
   }
   $result['comment_count'] = $this->commentCount($result['entry_id'],array('blogid'=>$options['blogid']));
+  $result['prev_entry'] = $this->prevEntry($result['entry_id']);
+  $result['next_entry'] = $this->nextEntry($result['entry_id']);
   return $this->api_call_finish($result);
  }
  $this->writeLog('Entry not found: '.$value,'errorlog');
@@ -415,25 +417,6 @@ protected function checkPass($user,$pass) {
  return FALSE;
 }
 
-/*
-protected function methodAuth($token=NULL) {
- if ($token) {
-  switch($token) {
-   case $this->getAPIToken():
-    return array('class'=>'internal');
-   break;
-   default:
-    if (!$this->tokenLogin($token)) {
-     return FALSE;
-    } 
-  }
- }
- if (!$this->user) {
-  return FALSE;
- }
- return array('class'=>'user');
-}*/
-
 public function logout() {
  return $this->api_call_finish($this->db->deleteItem('sessions',$this->getUserToken(),array('field'=>'guid')));
 } 
@@ -522,6 +505,7 @@ protected function sendMail($options = array()) {
   'to_name' => 'Cameron'
  );
  extract($setup_result = $this->api_call_setup($setup));
+ $options['data']['ip'] = $remote_ip;
  require_once('email.php');
  $mail = new PHPMailer(TRUE);
  $mail->SetFrom($options['from_email'],$options['from_name']);
@@ -553,7 +537,7 @@ public function createUser($login, $options = array()) {
   'service_id' => NULL
  );
  extract($setup_result = $this->api_call_setup($setup));
- $this->checkRBL($options['remote_ip']);
+ $this->checkRBL($remote_ip);
  if ($options['type']!='user' && !in_array('admin',$permassets)) {
   $this->writeLog('Must be admin to create admin users','errorlog');
   throw new Exception('Must be admin to setup non-standard users');
@@ -648,7 +632,7 @@ public function sendMessage($options = array()) {
   'name' => 'Contact Form User'
  );
  extract($setup_result = $this->api_call_setup($setup));
- $this->checkRBL($options['remote_ip']);
+ $this->checkRBL($remote_ip);
  $data['message'] = $options['message'];
  $mailoptions = array(
   'data' => $data,
@@ -656,7 +640,7 @@ public function sendMessage($options = array()) {
   'from_name' => $options['name'],
   'subject' => 'New Contact Form Message',
   'template' => 'contact_form',
-  'token' => $this->getAPIToken()
+  'token' => $this->getAPIToken()//why is this here?
  );
  if ($this->sendMail($mailoptions)) return $this->api_call_finish(TRUE);
  $this->writeLog('Message sending failure','errorlog');
@@ -877,7 +861,6 @@ protected function api_call_setup($setup) {
   };
  }
  if ($setup['defaults']) $result['options'] = $this->setOptions($setup['options'],$setup['defaults']);
- //$result['auth'] = $this->methodAuth($setup['options']['token']);//this is probably reduntant due to permassets
  $result['permassets'] = $permassets;
  $result['remote_ip'] = $_SERVER['REMOTE_ADDR'];
  return $result;
