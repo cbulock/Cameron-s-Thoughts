@@ -166,6 +166,8 @@ public function getEntry($value, $options = array()) {
    $result['entry_link'] = "/".$year."/".$month."/".$result['entry_basename'].".html";
   }
   $result['comment_count'] = $this->commentCount($result['entry_id'],array('blogid'=>$options['blogid']));
+  $result['prev_entry'] = $this->prevEntry($result['entry_id']);
+  $result['next_entry'] = $this->nextEntry($result['entry_id']);
   return $this->api_call_finish($result);
  }
  $this->writeLog('Entry not found: '.$value,'errorlog');

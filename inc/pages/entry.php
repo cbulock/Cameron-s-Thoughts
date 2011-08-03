@@ -3,10 +3,8 @@ $template = 'entry.tpl';
 require_once('pages.inc');
 
 $entry = call('getEntry',$basename);
-$prev_entry_id = call('prevEntry',$entry['entry_id']);
-$next_entry_id = call('nextEntry',$entry['entry_id']);
-if ($prev_entry_id) $prev_entry = call('getEntry',$prev_entry_id,array('callby'=>'id'));
-if ($next_entry_id) $next_entry = call('getEntry',$next_entry_id,array('callby'=>'id'));
+if ($entry['prev_entry']) $prev_entry = call('getEntry',$entry['prev_entry'],array('callby'=>'id'));
+if ($entry['next_entry']) $next_entry = call('getEntry',$entry['next_entry'],array('callby'=>'id'));
 $comments = $ct->getComments($entry['entry_id']);
 $comment_count_text = $ct->commentCountText($entry['comment_count']);
 $catid = $ct->getCatID($entry['entry_id']);
