@@ -19,6 +19,22 @@ $(document).ready(function() {
  $('#searchbox button').button({icons:{primary:'ui-icon-search'},text:false});
  autoResize();
  roundedAvatars();
+ /*Facebook*/
+ FB.init({
+  appId : 121020267940101,
+  status : true,
+  cookie : true,
+  xfbml : true
+ });
+/*
+ FB.getLoginStatus(function(response) {
+  if (response.authResponse) {
+    // logged in and connected user, someone you know
+  } else {
+    // no user session available, someone you dont know
+  }
+ });
+*/
 });
 
 throbber = ({
