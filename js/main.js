@@ -22,19 +22,17 @@ $(document).ready(function() {
  /*Facebook*/
  FB.init({
   appId : 121020267940101,
-  status : true,
   cookie : true,
   xfbml : true
  });
-/*
  FB.getLoginStatus(function(response) {
-  if (response.authResponse) {
-    // logged in and connected user, someone you know
-  } else {
-    // no user session available, someone you dont know
+  if (response.status == 'notConnected') {
+   $('#fb_login').show();
+  }
+  if (response.status == 'connected') {
+   console.log(response.session.uid);
   }
  });
-*/
 });
 
 throbber = ({
@@ -70,6 +68,26 @@ clickListeners = ({
 });
 
 show = ({
+ facebookSignup : function() {
+  if (!$.ct.facebook_signup) {
+   snippetLoad('facebook_signup', function() {
+    $.ct.facebook_signup = $('<div></div>').html(arguments[0]);
+    $.ct.facebook_signup.dialog({
+     title: "Create Account",
+     height: 350,
+     width: 510,
+     hide: 'highlight',
+     modal: true,
+     close: function() {
+      $(this).dialog('destroy');
+      delete $.ct.facebook_signup;
+      $('#facebook_signup').remove();
+     }
+    });
+    FB.XFBML.parse();
+   });
+  }
+ },
  signupForm : function() {
   if (!$.ct.signup_form) {
    snippetLoad('signup', function() {

@@ -2,8 +2,8 @@
 {if isset($authUser)}
 Welcome, <a href='/profile/{$authUser.login}'>{$authUser.name}</a> | <a href='/form/logout' id='logout'>Logout</a>
 {else}
-<a href='/form/login' id='login'>Login</a> | <a href='/form/signup' id='signup'>Sign Up</a> 
-<fb:login-button registration-url="http://developers.facebook.com/docs/plugins/registration" />
+<a href='/form/login' id='login'>Login</a> | <a href='/form/signup' id='signup'>Sign Up</a>
+<span id='fb_login'><fb:login-button on-login="show.facebookSignup()"></fb:login-button></span>
 {/if}
 </div>
 <form id='searchbox' method='post' action='/form/search'>

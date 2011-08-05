@@ -196,6 +196,7 @@ input, textarea, select { padding: 1px; }
   width: 700px;
   height: 120px;
 }
+#fb_login { display: none; }
 #notice_box {
   display: none;
   padding: 6px 0 6px 0;
