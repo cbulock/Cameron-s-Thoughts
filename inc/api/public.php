@@ -28,7 +28,7 @@ $ct->addStat($statdata);
 
 try {
  $result = @call_user_func_array(array($ct,$method),$url_parameters);
- if (!$result) throw new Exception('API Error');
+ if (!$result) throw new Exception('API Error',2000);
 }
 catch(Exception $e) {
  $result = array(

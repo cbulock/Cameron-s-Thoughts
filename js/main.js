@@ -25,14 +25,21 @@ $(document).ready(function() {
   cookie : true,
   xfbml : true
  });
- FB.getLoginStatus(function(response) {
-  if (response.status == 'notConnected') {
-   $('#fb_login').show();
-  }
-  if (response.status == 'connected') {
-   console.log(response.session.uid);
-  }
- });
+ if (!call('getAuthUser')) { 
+  FB.getLoginStatus(function(response) {
+   if (response.status == 'notConnected') {
+    $('#fb_login').show();
+   }
+   if (response.status == 'connected') {
+    FB.api('/me', function(response) {
+     opt = {pass: response.email};
+     if(call('login',['fb_'+response.id],opt)) {
+      location.reload();
+     }
+    });
+   }
+  });
+ }
 });
 
 throbber = ({
@@ -396,7 +403,9 @@ function exception_handler(e) {
  if(!e.message) {
   e = {name:0, message:e};
  }
- error.add(e.message);
+ if (e.name != 2000) {//ignore API errors until the kinks are worked out with FALSE returns
+  error.add(e.message);
+ }
  switch(e.name) {
   case 401: //authentication failure
    show.loginBox();
