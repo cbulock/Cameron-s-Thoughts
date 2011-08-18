@@ -25,12 +25,14 @@ $(document).ready(function() {
   cookie : true,
   xfbml : true
  });
- if (!call('getAuthUser')) { 
-  FB.getLoginStatus(function(response) {
-   if (response.status == 'notConnected') {
-    $('#fb_login').show();
-   }
-   if (response.status == 'connected') {
+ FB.getLoginStatus(function(response) {
+  if (response.status == 'notConnected') {
+   $('#signup').hide();
+   //$('#logout').hide();
+   $('#fb_login').show();
+  }
+  if (response.status == 'connected') {
+   if (!call('getAuthUser')) {
     FB.api('/me', function(response) {
      opt = {pass: response.email};
      if(call('login',['fb_'+response.id],opt)) {
@@ -38,9 +40,23 @@ $(document).ready(function() {
      }
     });
    }
-  });
- }
+   else {
+    $('#fb_login').show();
+    $('#logout').hide();
+    $('#fb_logout').click(function(){
+     FB.logout(function() {
+      if (call('logout')) {
+       location.reload();
+      }
+     });
+    });
+   }
+  }
+ });
+ 
+
 });
+
 
 throbber = ({
  show : function() {
