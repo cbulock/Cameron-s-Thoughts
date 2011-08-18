@@ -6,4 +6,3 @@
 <script src='{$static_location}/js/main.js'></script>
 <script src='//apis.google.com/js/plusone.js'></script>
 <script src='//connect.facebook.net/en_US/all.js#appId={$facebook_app_id}&xfbml=1'></script>
-<div id="fb-root"></div>
