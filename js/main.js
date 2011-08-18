@@ -53,10 +53,7 @@ $(document).ready(function() {
    }
   }
  });
- 
-
 });
-
 
 throbber = ({
  show : function() {
