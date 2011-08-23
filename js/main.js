@@ -28,7 +28,6 @@ $(document).ready(function() {
  FB.getLoginStatus(function(response) {
   if (response.status == 'notConnected') {
    $('#signup').hide();
-   //$('#logout').hide();
    $('#fb_login').show();
   }
   if (response.status == 'connected') {
