@@ -1,3 +1,5 @@
+<div id='fb-root'></div>
+
 <div id='welcome'>
 {if isset($authUser)}
  Welcome, <a href='/profile/{$authUser.login}'>{$authUser.name}</a> 
