@@ -5,7 +5,7 @@ require_once('pages.inc');
 
 switch($name) {
  case 'search'://Search Form
-  header('Location: '.LOCATION.'/search/'.$_POST['search']);  
+  header('Location: http:'.LOCATION.'/search/'.$_POST['search']);  
  break;
  case 'login'://Login Form
   $tpl->assign('title','Login');
@@ -22,7 +22,7 @@ switch($name) {
      header('Location: '.$_POST['referer']);
     }
     else {
-     header('Location: '.LOCATION);
+     header('Location: http:'.LOCATION);
     }
    }
   }
@@ -67,7 +67,7 @@ switch($name) {
     header('Location: '.$_POST['referer']);
    }
    else {
-    header('Location: '.LOCATION);
+    header('Location: http:'.LOCATION);
    }
   }
  break;
@@ -96,7 +96,7 @@ switch($name) {
       header('Location: '.$_POST['referer']);
      }
      else {
-      header('Location: '.LOCATION);
+      header('Location: http:'.LOCATION);
      }
     }
    }
@@ -117,7 +117,7 @@ switch($name) {
      header('Location: '.$_POST['referer']);
     }
     else {
-     header('Location: '.LOCATION);
+     header('Location: http:'.LOCATION);
     }
    }
   }
@@ -133,7 +133,7 @@ switch($name) {
     header('Location: '.$_SERVER['HTTP_REFERER']);
    }
    else {
-    header('Location: '.LOCATION);
+    header('Location: http:'.LOCATION);
    }
   }
  break;
@@ -149,7 +149,7 @@ switch($name) {
     header('Location: '.$_SERVER['HTTP_REFERER']);
    }
    else {
-    header('Location: '.LOCATION);
+    header('Location: http:'.LOCATION);
    }
   }
  break;
