@@ -304,7 +304,7 @@ input, textarea, select { padding: 1px; }
   margin: 0 0.5em 0 0.5em;
   background-image: url(/css/img/arrow.png);
   background-repeat: no-repeat;
-  background-position: 95px 21px;
+  background-position: 115px 21px;
 }
 .comment .avatar {
   float: left;
@@ -324,7 +324,7 @@ input, textarea, select { padding: 1px; }
   -moz-box-shadow: 7px 7px 10px #333333;
   -webkit-box-shadow: 7px 7px 10px #333333;
   margin-top: 0;
-  margin-left: 95px;
+  margin-left: 115px;
   margin-bottom: 1.2em;
 }
 .comment_body textarea {

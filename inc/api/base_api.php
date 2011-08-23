@@ -641,6 +641,9 @@ protected function getAvatarPath($user) {
  if ($user['service'] == '0' || $user['service'] == '1') {
   return 'http://www.gravatar.com/avatar.php?gravatar_id='.$user['email_hash'].'&r=r';
  }
+ if ($user['service'] == '2') {
+  return 'http://graph.facebook.com/'.$user['service_id'].'/picture?type=normal';
+ }
 }
 
 protected function setCookie($name, $value, $expire=1893456000) {
