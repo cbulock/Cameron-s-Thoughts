@@ -21,7 +21,7 @@ $(document).ready(function() {
  roundedAvatars();
  /*Facebook*/
  FB.init({
-  appId : 121020267940101,
+  appId : $('#fb-root').attr('appid'),
   cookie : true,
   xfbml : true
  });

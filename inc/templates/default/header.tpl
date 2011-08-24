@@ -1,4 +1,4 @@
-<div id='fb-root'></div>
+<div id='fb-root' appid='{$facebook_app_id}'></div>
 
 <div id='welcome'>
 {if isset($authUser)}
