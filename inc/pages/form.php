@@ -5,7 +5,7 @@ require_once('pages.inc');
 
 switch($name) {
  case 'search'://Search Form
-  header('Location: '.LOCATION.'/search/'.$_POST['search']);  
+  header('Location: http:'.LOCATION.'/search/'.$_POST['search']);  
  break;
  case 'login'://Login Form
   $tpl->assign('title','Login');
@@ -22,8 +22,52 @@ switch($name) {
      header('Location: '.$_POST['referer']);
     }
     else {
-     header('Location: '.LOCATION);
+     header('Location: http:'.LOCATION);
     }
+   }
+  }
+ break;
+ case 'fbsignup'://Facebook Signup Form
+  //Process signed_request from Facebook
+  function parse_signed_request($signed_request, $secret) {
+   list($encoded_sig, $payload) = explode('.',$signed_request, 2);
+   $sig = base64_url_decode($encoded_sig);
+   $data = json_decode(base64_url_decode($payload), true);
+   if (strtoupper($data['algorithm']) !== 'HMAC-SHA256') {
+    error_log('Unknown algorithm. Expected HMAC-SHA256');
+    return null;
+   }
+   $expected_sig = hash_hmac('sha256', $payload, $secret, $raw = true);
+   if ($sig !== $expected_sig) {
+    error_log('Bad Signed JSON signature!');
+    return null;
+   }
+   return $data;
+  }
+  function base64_url_decode($input) {
+   return base64_decode(strtr($input, '-_', '+/'));
+  }
+  $request = parse_signed_request($_POST['signed_request'], FACEBOOK_SECRET);
+
+  try {
+   $response = call('createUser','fb_'.$request['user_id'],array(
+    'pass' => $request['registration']['email'],
+    'email' => $request['registration']['email'],
+    'name' => $request['registration']['name'],
+    'service' => 2,
+    'service_id' => $request['user_id']
+   ));
+  }
+  catch (exception $e){
+   $tpl->assign('error',$e->getMessage());
+  }
+  if ($response) {
+   call('login','fb_'.$request['user_id'],array('pass'=>$request['registration']['email']));
+   if ($_POST['referer']) {
+    header('Location: '.$_POST['referer']);
+   }
+   else {
+    header('Location: http:'.LOCATION);
    }
   }
  break;
@@ -37,10 +81,10 @@ switch($name) {
    else {
     try {
      $response = call('createUser',$_POST['username'],array(
-      'pass'=>$_POST['pass'],
-      'email'=>$_POST['email'],
-      'name'=>$_POST['fullname'],
-      'url'=>$_POST['url']
+      'pass' => $_POST['pass'],
+      'email' => $_POST['email'],
+      'name' => $_POST['fullname'],
+      'url' => $_POST['url']
      ));
     }
     catch (exception $e){
@@ -52,7 +96,7 @@ switch($name) {
       header('Location: '.$_POST['referer']);
      }
      else {
-      header('Location: '.LOCATION);
+      header('Location: http:'.LOCATION);
      }
     }
    }
@@ -73,7 +117,7 @@ switch($name) {
      header('Location: '.$_POST['referer']);
     }
     else {
-     header('Location: '.LOCATION);
+     header('Location: http:'.LOCATION);
     }
    }
   }
@@ -89,7 +133,7 @@ switch($name) {
     header('Location: '.$_SERVER['HTTP_REFERER']);
    }
    else {
-    header('Location: '.LOCATION);
+    header('Location: http:'.LOCATION);
    }
   }
  break;
@@ -105,7 +149,7 @@ switch($name) {
     header('Location: '.$_SERVER['HTTP_REFERER']);
    }
    else {
-    header('Location: '.LOCATION);
+    header('Location: http:'.LOCATION);
    }
   }
  break;

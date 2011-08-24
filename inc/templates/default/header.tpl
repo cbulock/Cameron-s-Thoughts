@@ -1,8 +1,15 @@
+<div id='fb-root' appid='{$facebook_app_id}'></div>
+
 <div id='welcome'>
 {if isset($authUser)}
-Welcome, <a href='/profile/{$authUser.login}'>{$authUser.name}</a> | <a href='/form/logout' id='logout'>Logout</a>
+ Welcome, <a href='/profile/{$authUser.login}'>{$authUser.name}</a> 
+ | <a href='/form/logout' id='logout'>Logout</a>
+ {if $authUser.service == 2} 
+  <span id='fb_login'><fb:login-button id='fb_logout' autologoutlink="true">Logout</fb:login-button></span>
+ {/if}
 {else}
-<a href='/form/login' id='login'>Login</a> | <a href='/form/signup' id='signup'>Sign Up</a>
+ <a href='/form/login' id='login'>Login</a> | <a href='/form/signup' id='signup'>Sign Up</a>
+ <span id='fb_login'><fb:login-button on-login="show.facebookSignup()">Register with Facebook</fb:login-button></span>
 {/if}
 </div>
 <form id='searchbox' method='post' action='/form/search'>

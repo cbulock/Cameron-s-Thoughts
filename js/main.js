@@ -19,6 +19,39 @@ $(document).ready(function() {
  $('#searchbox button').button({icons:{primary:'ui-icon-search'},text:false});
  autoResize();
  roundedAvatars();
+ /*Facebook*/
+ FB.init({
+  appId : $('#fb-root').attr('appid'),
+  cookie : true,
+  xfbml : true
+ });
+ FB.getLoginStatus(function(response) {
+  if (response.status == 'notConnected') {
+   $('#signup').hide();
+   $('#fb_login').show();
+  }
+  if (response.status == 'connected') {
+   if (!call('getAuthUser')) {
+    FB.api('/me', function(response) {
+     opt = {pass: response.email};
+     if(call('login',['fb_'+response.id],opt)) {
+      location.reload();
+     }
+    });
+   }
+   else {
+    $('#fb_login').show();
+    $('#logout').hide();
+    $('#fb_logout').click(function(){
+     FB.logout(function() {
+      if (call('logout')) {
+       location.reload();
+      }
+     });
+    });
+   }
+  }
+ });
 });
 
 throbber = ({
@@ -54,6 +87,26 @@ clickListeners = ({
 });
 
 show = ({
+ facebookSignup : function() {
+  if (!$.ct.facebook_signup) {
+   snippetLoad('facebook_signup', function() {
+    $.ct.facebook_signup = $('<div></div>').html(arguments[0]);
+    $.ct.facebook_signup.dialog({
+     title: "Create Account",
+     height: 350,
+     width: 510,
+     hide: 'highlight',
+     modal: true,
+     close: function() {
+      $(this).dialog('destroy');
+      delete $.ct.facebook_signup;
+      $('#facebook_signup').remove();
+     }
+    });
+    FB.XFBML.parse();
+   });
+  }
+ },
  signupForm : function() {
   if (!$.ct.signup_form) {
    snippetLoad('signup', function() {
@@ -362,7 +415,9 @@ function exception_handler(e) {
  if(!e.message) {
   e = {name:0, message:e};
  }
- error.add(e.message);
+ if (e.name != 2000) {//ignore API errors until the kinks are worked out with FALSE returns
+  error.add(e.message);
+ }
  switch(e.name) {
   case 401: //authentication failure
    show.loginBox();

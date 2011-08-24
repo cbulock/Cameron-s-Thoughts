@@ -245,19 +245,21 @@ public function getComment($id, $options = array()) {
    $result['url'] = $user['url'];
    $result['email'] = $user['email'];
    $result['service'] = $user['service'];
+   $result['email_hash'] = $user['email_hash'];
+   $result['avatar'] = $user['avatar'];
   }
-  $result['email_hash'] = md5($result['email']);
+  if (!$result['email_hash']) $result['email_hash'] = md5($result['email']);
+  if (!$result['avatar']) $result['avatar'] = $this->getAvatarPath(array('email_hash' => $result['email_hash'],'service' => $result['service']));
   if (!in_array('internal',$permassets)) {
    unset($result['email']);
   }
-  $result['avatar'] = $this->getAvatarPath($result['email_hash'],$result['service']);
  return $this->api_call_finish($result);
  }
  $this->writeLog('Comment not found: '.$id,'errorlog');
  throw new UnexpectedValueException('Comment not found');
 }
 
-public function getComments($postid, $options = array()) {//this should be rewritten to use getComment
+public function getComments($postid, $options = array()) {
  $setup['options'] = $options;
  $setup['defaults'] = array(
   'blogid' => '2',
@@ -272,22 +274,10 @@ public function getComments($postid, $options = array()) {//this should be rewri
  $results = $this->db->getTable('comments', $tableoptions);
  if ($results) {
   foreach ($results as $key=>$result) {
-   $results[$key]['service'] = 0;
-   if ($result['user']) {
-    $user = $this->getUser($result['user'],array('callby'=>'id','token'=>$this->getAPIToken()));
-    $results[$key]['author'] = $user['name'];
-    $results[$key]['url'] = $user['url'];
-    $results[$key]['email'] = $user['email'];
-    $results[$key]['service'] = $user['service'];
-   }
-   $results[$key]['email_hash'] = md5($results[$key]['email']);
-   if (!in_array('internal',$permassets)) {
-    unset($results[$key]['email']);
-   }
-   $results[$key]['avatar'] = $this->getAvatarPath($results[$key]['email_hash'],$results[$key]['service']);
+   $comments[$key] = $this->getComment($result['id']);
   }
  }
- return $this->api_call_finish($results);
+ return $this->api_call_finish($comments);
 }
 
 public function postComment($postid, $options = array()) {
@@ -590,11 +580,11 @@ public function getUser($value, $options = array()) {
  $user = $this->db->getItem('users',$value,array('field'=>$options['callby']));
  if (!$user) return FALSE;//throw an exception here?
  $user['email_hash'] = md5($user['email']);
- $user['avatar'] = $this->getAvatarPath($user['email_hash'],$user['service']);
  if (!in_array('internal',$permassets)) {//in the future, the current user should be able to recover their own email. The admin should as well
   unset($user['pass']);
   unset($user['email']);
  }
+ $user['avatar'] = $this->getAvatarPath($user);
  return $this->api_call_finish($user);
 }
 
@@ -647,9 +637,12 @@ public function sendMessage($options = array()) {
  throw new Exception('Message failed to send',1002); 
 }
 
-protected function getAvatarPath($hash, $service) {
- if ($service == '0' || $service == '1') {
-  return 'http://www.gravatar.com/avatar.php?gravatar_id='.$hash.'&r=r';
+protected function getAvatarPath($user) {
+ if ($user['service'] == '0' || $user['service'] == '1') {
+  return 'http://www.gravatar.com/avatar.php?gravatar_id='.$user['email_hash'].'&r=r';
+ }
+ if ($user['service'] == '2') {
+  return 'http://graph.facebook.com/'.$user['service_id'].'/picture?type=normal';
  }
 }
 
