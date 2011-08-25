@@ -3,7 +3,7 @@ $(document).ready(function() {
  $('nav ul li ul').hide();
  $('nav ul li').hover(function () {
   $(this).find('> ul').stop(true, true).slideDown('slow');
-  }, function() {
+ }, function() {
   $(this).find('> ul').stop(true, true).slideUp('slow'); 	
  });
  /*other listeners*/
@@ -56,7 +56,7 @@ $(document).ready(function() {
 
 throbber = ({
  show : function() {
-  if ($('#throbber').length==0) {
+  if ($('#throbber').length===0) {
    $('body').prepend('<div id="throbber"></div>');
    $.ct.spinner("throbber", 18, 30, 8, 8, "#fff");
   }
@@ -125,7 +125,7 @@ show = ({
          name : $('#fullname').attr('value'),
          email : $('#email').attr('value'),
          url : $('#url').attr('value')
-        }
+        };
         if(call('createUser',[$('#username').val()],opt)) {
          if(call('login',[$('#username').val()],opt)) {
           location.reload();
@@ -221,8 +221,8 @@ function postCommentListener() {
  $('#comment_form').submit(function(event) {
   event.preventDefault();
   $('#comment_submit').attr('disabled','disabled');
-  opt = {text: $('#comment_text').val()}
-  comment = call('postComment',[$('#postid').val()],opt)
+  opt = {text: $('#comment_text').val()};
+  comment = call('postComment',[$('#postid').val()],opt);
   if(comment) {
    $('#comment_submit').fadeOut();
    $('#leave_comment').slideUp();
@@ -285,7 +285,7 @@ notice = ({
   this.load();
  },
  load : function(type) {
-  if ($('#notice_box').length==0) {
+  if ($('#notice_box').length===0) {
    snippetLoad('notice_box', function() {
     $('body').prepend(arguments[0]);
     $('#notice_close').button({icons:{primary:'ui-icon-circle-close'},text:true});
