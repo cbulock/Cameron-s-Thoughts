@@ -453,7 +453,7 @@ protected function newEntryStatus($id,$options = array()) {
  );
  extract($setup_result = $this->api_call_setup($setup));
  $entry = $this->getEntry($id,array('callby'=>'id'));
- $url = LOCATION.$entry['entry_link'];
+ $url = 'http:'.LOCATION.$entry['entry_link'];
  $shorturl = $this->getShortURL($url);
  $message = $options['message'].$entry['entry_title'];
  if ((strlen($message) > $options['message_max_length'])) {
@@ -463,9 +463,10 @@ protected function newEntryStatus($id,$options = array()) {
  return $this->postStatus($message);
 }
 
-protected function getShortURL($url) {
+public function getShortURL($url) {
  $apiurl = 'http://api.bit.ly/v3/shorten?login=cbulock&apiKey='.BITLY_API_KEY.'&longUrl='.urlencode($url);
  $result = json_decode($this->callURL($apiurl));
+ $this->writeLog('Bit.ly URL recieved. LongURL: '.$url.' ShortURL: '.$result->data->url);
  return $result->data->url;
 }
 
