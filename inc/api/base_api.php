@@ -463,7 +463,7 @@ protected function newEntryStatus($id,$options = array()) {
  return $this->postStatus($message);
 }
 
-public function getShortURL($url) {
+protected function getShortURL($url) {
  $apiurl = 'http://api.bit.ly/v3/shorten?login=cbulock&apiKey='.BITLY_API_KEY.'&longUrl='.urlencode($url);
  $result = json_decode($this->callURL($apiurl));
  $this->writeLog('Bit.ly URL recieved. LongURL: '.$url.' ShortURL: '.$result->data->url);

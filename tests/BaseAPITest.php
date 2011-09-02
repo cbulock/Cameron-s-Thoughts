@@ -5,6 +5,8 @@ require_once(API_DIR.'base_api.php');
 class BaseAPITest extends PHPUnit_Framework_TestCase {
  
  protected $api;
+ protected $user;
+ protected $admin;
  protected function setUp(){
   $this->api = new BaseAPI();
  }
@@ -12,6 +14,8 @@ class BaseAPITest extends PHPUnit_Framework_TestCase {
   unset($this->api);
  }
  
+ /**** postEntry ****/
+
  /**** getEntry ****/
  public function test_getEntry_title() {
   $entry = $this->api->getEntry('1',array('callby'=>'id'));
@@ -79,6 +83,8 @@ class BaseAPITest extends PHPUnit_Framework_TestCase {
 
  /**** getComments ****/
 
+ /**** postComment ****/
+
  /**** getCatID ****/
  public function test_getCatID_success() {
   $cat = (int)$this->api->getCatID('2');
@@ -138,6 +144,90 @@ class BaseAPITest extends PHPUnit_Framework_TestCase {
   $this->assertObjectHasAttribute('text',$status[0]);
  }
 
+ /**** createUser ****/
+ public function test_createUser_success() {
+  $user = $this->api->createUser(
+   '_test_'.md5(date('U')),
+   array(
+    'pass'	=>	md5(date('c')),
+    'email'	=>	'test@example.com',
+    'name'	=>	'Unit Test User',
+    'url'		=>	'http://www.cbulock.com'
+   )
+  );
+  $this->assertInternalType('integer',$user) ;
+ }
+ public function test_createUser_passwordfail() {
+  try {
+   $user = $this->api->createUser(
+    '_test_'.md5(date('U')),
+    array(
+     'email' =>  'test@example.com',
+     'name'  =>  'Unit Test User',
+     'url'   =>  'http://www.cbulock.com'
+    )
+   );
+  }
+  catch (Exception $e) {
+   return;
+  }
+  $this->fail('An expected exception has not been raised.');
+ }
+ public function test_createUser_emailfail() {
+  try {
+   $user = $this->api->createUser(
+    '_test_'.md5(date('U')),
+    array(
+     'pass'  =>  md5(date('c')),
+     'name'  =>  'Unit Test User',
+     'url'   =>  'http://www.cbulock.com'
+    )
+   );
+  }
+  catch (Exception $e) {
+   return;
+  }
+  $this->fail('An expected exception has not been raised.');
+ }
+ /* This should thrown an exception, currently a known bug
+ public function test_createUser_loginfail() {
+  try {
+   $user = $this->api->createUser(
+    '',
+    array(
+     'pass'		=>	md5(date('c')),
+     'email'	=>	'test@example.com',
+     'name'		=>	'Unit Test User',
+     'url'		=>	'http://www.cbulock.com'
+    )
+   );
+  }
+  catch (Exception $e) {
+   return;
+  }
+  $this->fail('An expected exception has not been raised.');
+ }*/
+ public function test_createUser_adminfail() {
+  try {
+   $user = $this->api->createUser(
+    '_test_'.md5(date('U')),
+    array(
+     'pass'		=>	md5(date('c')),
+     'email'	=>	'test@example.com',
+     'name'		=>	'Unit Test User',
+     'url'		=>	'http://www.cbulock.com',
+     'type'		=>	'admin'
+    )
+   );
+  }
+  catch (Exception $e) {
+   return;
+  }
+  $this->fail('An expected exception has not been raised.');
+ }
+ 
+
+
  /***nameFree***/
  public function test_nameFree_notfree() {
   $result = $this->api->nameFree('testuser');
@@ -162,7 +252,7 @@ class BaseAPITest extends PHPUnit_Framework_TestCase {
   $this->assertFalse($user);
  }
 
- /***getAuthUser***/ /***tokenLogin***/
+ /***getAuthUser***/
  public function test_getAuthUser_loggedin() {
   $login = 'testuser';
   $token = $this->api->login($login,array('pass'=>'!test!'));
@@ -173,6 +263,10 @@ class BaseAPITest extends PHPUnit_Framework_TestCase {
   $user = $this->api->getAuthUser();
   $this->assertFalse($user);
  }
+
+ /**** sendMessage ****/
+
+ /**** addStat ****/
 
  /***getSetting***/
  public function test_getSetting_exists() {
@@ -216,7 +310,7 @@ class BaseAPITest extends PHPUnit_Framework_TestCase {
  }
 
  /***clearCache***/
- public function test_clearCache() {
+ public function test_clearCache_fail() {
   try {
    $this->api->clearCache();
   }
@@ -225,6 +319,11 @@ class BaseAPITest extends PHPUnit_Framework_TestCase {
    return;
   }
   $this->fail('An expected exception has not been raised.');
+ }
+ public function test_clearCache_admin() {
+  $admin = $this->api->login('testadmin',array('pass'=>'!test!'));
+  $result = $this->api->clearCache(array('token'=>$admin));
+  $this->assertContains(TRUE,$result);
  }
  
 }
