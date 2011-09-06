@@ -2,6 +2,7 @@
 //Requires PHPUnit
 require_once('../var.inc');
 require_once(API_DIR.'base_api.php');
+define(TYPE,'default');
 class BaseAPITest extends PHPUnit_Framework_TestCase {
  
  protected $api;
@@ -82,8 +83,44 @@ class BaseAPITest extends PHPUnit_Framework_TestCase {
  }
 
  /**** getComments ****/
+ public function test_getComments_text() {
+  $comments = $this->api->getComments('9');
+  $this->assertArrayHasKey('text',$comments[1]);
+ }
+ public function test_getComments_email() {
+  $comments = $this->api->getComments('9');
+  $this->assertArrayNotHasKey('email',$comments[1]);
+ }
+ public function test_getComments_nocomments() {
+  $comments = $this->api->getComments('1');//has no comments
+  $this->assertNull($comments);
+ }
 
  /**** postComment ****/
+ public function test_postComment_success() {
+  $token = $this->api->login('testuser',array('pass'=>'!test!'));
+  $comment = $this->api->postComment('9',array('token'=>$token,'text'=>'Test comment: '.date('c')));
+  $this->assertInternalType('integer',$comment['id']);
+ }
+ public function test_postComment_nouser() {
+  try {
+   $comment = $this->api->postComment('9',array('text'=>'Test comment: '.date('c')));
+  }
+  catch (Exception $e) {
+   return;
+  }
+  $this->fail('An expected exception has not been raised.');
+ }
+ public function test_postComment_notext() {
+  $token = $this->api->login('testuser',array('pass'=>'!test!'));
+  try {
+   $comment = $this->api->postComment('9',array('token'=>$token));
+  }
+  catch (Exception $e) {
+   return;
+  }
+  $this->fail('An expected exception has not been raised.');
+ }
 
  /**** getCatID ****/
  public function test_getCatID_success() {
