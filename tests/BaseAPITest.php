@@ -263,8 +263,6 @@ class BaseAPITest extends PHPUnit_Framework_TestCase {
   $this->fail('An expected exception has not been raised.');
  }
  
-
-
  /***nameFree***/
  public function test_nameFree_notfree() {
   $result = $this->api->nameFree('testuser');
@@ -302,7 +300,20 @@ class BaseAPITest extends PHPUnit_Framework_TestCase {
  }
 
  /**** sendMessage ****/
-
+ public function test_sendMessage_success() {
+  $result = $this->api->sendMessage(array('name'=>'Test Sender','message'=>'This is sent from unit tester.'));
+  $this->assertTrue($result);
+ } 
+ public function test_sendMessage_fail() {
+  try {
+   $result = $this->api->sendMessage(array('email'=>'test@','name'=>'Test Sender','message'=>'This is sent from unit tester.'));//bad email
+  }
+  catch (Exception $e){
+   return;
+  }
+  $this->fail('An expected exception has not been raised.');
+ }
+ 
  /**** addStat ****/
 
  /***getSetting***/
