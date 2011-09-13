@@ -506,8 +506,9 @@ protected function sendMail($options = array()) {
  }
  $mail->Body = $this->getMailTemplate($options['template'],$options['data']);
  try {
- $result = $mail->Send();
- } catch (phpmailerException $e) {
+  $result = $mail->Send();
+ } 
+ catch (phpmailerException $e) {
   $this->writeLog('PHPMailer encountered an error','errorlog');
   throw new Exception($e);
  }
@@ -630,8 +631,7 @@ public function sendMessage($options = array()) {
   'from_email' => $options['email'],
   'from_name' => $options['name'],
   'subject' => 'New Contact Form Message',
-  'template' => 'contact_form',
-  'token' => $this->getAPIToken()//why is this here?
+  'template' => 'contact_form'
  );
  if ($this->sendMail($mailoptions)) return $this->api_call_finish(TRUE);
  $this->writeLog('Message sending failure','errorlog');
