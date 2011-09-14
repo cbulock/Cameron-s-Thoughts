@@ -6,8 +6,6 @@ define(TYPE,'default');
 class BaseAPITest extends PHPUnit_Framework_TestCase {
  
  protected $api;
- protected $user;
- protected $admin;
  protected function setUp(){
   $this->api = new BaseAPI();
  }
@@ -222,7 +220,7 @@ class BaseAPITest extends PHPUnit_Framework_TestCase {
   $this->assertTrue($this->api->logout());
  }
 
- //***getLatestStatus***/
+ /***getLatestStatus***/
  public function test_getLatestStatus() {
   $status = $this->api->getLatestStatus();
   $this->assertObjectHasAttribute('text',$status[0]);
