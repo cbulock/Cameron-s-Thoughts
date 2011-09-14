@@ -16,6 +16,53 @@ class BaseAPITest extends PHPUnit_Framework_TestCase {
  }
  
  /**** postEntry ****/
+ public function test_postEntry_success() {
+  $admin = $this->api->login('testadmin',array('pass'=>'!test!'));
+  $result = $this->api->postEntry(array(
+   'title'	=>	'Test post: '.date('c'),
+   'text'		=>	'This is a post from a unit test',
+   'token'	=>	$admin
+  ));
+  $this->assertTrue($result);
+ }
+ public function test_postEntry_noadmin() {
+  try {
+   $result = $this->api->postEntry(array(
+    'title'  =>  'Test post: '.date('c'),
+    'text'   =>  'This is a post from a unit test'
+   ));
+  }
+  catch (Exception $e) {
+   return;
+  }
+  $this->fail('An expected exception has not been raised.');
+ }
+ public function test_postEntry_notext() {
+  $admin = $this->api->login('testadmin',array('pass'=>'!test!'));
+  try {
+   $result = $this->api->postEntry(array(
+    'title'	=>	'Test post: '.date('c'),
+   'token'	=>	$admin
+   ));
+  }
+  catch (Exception $e) {
+   return;
+  }
+  $this->fail('An expected exception has not been raised.');
+ }
+ function test_postEntry_notitle() {
+  $admin = $this->api->login('testadmin',array('pass'=>'!test!'));
+  try {
+   $result = $this->api->postEntry(array(
+    'text'  =>  'This is a post from a unit test',
+   'token'  =>  $admin
+   ));
+  }
+  catch (Exception $e) {
+   return;
+  }
+  $this->fail('An expected exception has not been raised.');
+ }
 
  /**** getEntry ****/
  public function test_getEntry_title() {
@@ -175,7 +222,7 @@ class BaseAPITest extends PHPUnit_Framework_TestCase {
   $this->assertTrue($this->api->logout());
  }
 
- /***getLatestStatus***/
+ //***getLatestStatus***/
  public function test_getLatestStatus() {
   $status = $this->api->getLatestStatus();
   $this->assertObjectHasAttribute('text',$status[0]);
@@ -315,6 +362,10 @@ class BaseAPITest extends PHPUnit_Framework_TestCase {
  }
  
  /**** addStat ****/
+ public function test_addStat() {
+  $result = $this->api->addStat(array('type'=>'test'));
+  $this->assertInternalType('integer',$result);
+ }
 
  /***getSetting***/
  public function test_getSetting_exists() {
