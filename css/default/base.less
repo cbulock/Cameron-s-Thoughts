@@ -25,6 +25,7 @@ body
  .font;
  font-size: 0.9em;
  background-color: @bgcolor;
+ background-image: @bgimage;
  .text_shadow;
  color: @textcolor;
  margin: 0;
@@ -36,7 +37,7 @@ html
  margin:0 auto;
  padding:0;
  width:780px;
- background-image: @bgimage;
+ background-image: @outbgimage;
 }
 
 a {
@@ -236,6 +237,7 @@ input, textarea, select
  top: 0;
  left: 0;
  background-color: @bgcolor;
+ background-image: @bgimage;
  color: @textcolor;
  font-size:0.85em;
  .border_radius(0 0 5px 0);
@@ -252,16 +254,18 @@ input, textarea, select
 }
 
 #prev_entry {
- display:inline;
- margin:0 1em 0 0;
+ display: block;
+ float: left;
+ margin: 1em;
  :before {
   content: '« ';
  }
 }
 
 #next_entry {
- display:inline;
- margin:0 0 0 1em;
+ display: block;
+ float: right;
+ margin: 1em;
  :after {
   content: " »";
  }

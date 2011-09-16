@@ -65,6 +65,7 @@ body {
   font-family: "Ubuntu", "Trebuchet MS", Trebuchet, Verdana, Tahoma, Arial, Sans-Serif;
   font-size: 0.9em;
   background-color: #cb3131;
+  background-image: url('/css/img/concrete_wall.png');
   text-shadow: #111111 1px 1px 3px;
   color: #ffffff;
   margin: 0;
@@ -272,6 +273,7 @@ input, textarea, select { padding: 1px; }
   top: 0;
   left: 0;
   background-color: #cb3131;
+  background-image: url('/css/img/concrete_wall.png');
   color: #ffffff;
   font-size: 0.85em;
   border-radius: 0 0 5px 0;
@@ -287,13 +289,15 @@ input, textarea, select { padding: 1px; }
   color: #ffffff;
 }
 #prev_entry {
-  display: inline;
-  margin: 0 1em 0 0;
+  display: block;
+  float: left;
+  margin: 1em;
 }
 #prev_entry:before { content: '« '; }
 #next_entry {
-  display: inline;
-  margin: 0 0 0 1em;
+  display: block;
+  float: right;
+  margin: 1em;
 }
 #next_entry:after { content: " »"; }
 #entry_nav { clear: left; }
