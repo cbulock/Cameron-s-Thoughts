@@ -65,7 +65,7 @@ body {
   font-family: "Ubuntu", "Trebuchet MS", Trebuchet, Verdana, Tahoma, Arial, Sans-Serif;
   font-size: 0.9em;
   background-color: #777777;
-  background-image: none;
+  background-image: url('/css/img/concrete_wall.png');
   text-shadow: #111111 1px 1px 3px;
   color: #ffffff;
   margin: 0;
@@ -75,7 +75,7 @@ html {
   margin: 0 auto;
   padding: 0;
   width: 780px;
-  background-image: url('/css/img/black_tile.jpg');
+  background-image: url('/css/img/random_grey_variations.png');
 }
 a {
   color: #ffffff;
@@ -273,7 +273,7 @@ input, textarea, select { padding: 1px; }
   top: 0;
   left: 0;
   background-color: #777777;
-  background-image: none;
+  background-image: url('/css/img/concrete_wall.png');
   color: #ffffff;
   font-size: 0.85em;
   border-radius: 0 0 5px 0;
