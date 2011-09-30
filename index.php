@@ -51,6 +51,9 @@ switch($_GET['type']) {
   $name = $_POST['name'];
   include(INCLUDE_DIR.'pages/form.php');
  break;
+ case 'admin':
+  include(INCLUDE_DIR.'pages/admin/'.$_GET['page'].'.php');
+ break;
  default:
   include(INCLUDE_DIR.'pages/home.php');
 }
