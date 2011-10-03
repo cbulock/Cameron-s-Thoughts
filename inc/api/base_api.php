@@ -228,7 +228,7 @@ function commentCount($postid, $options = array()) {
 }
 
 public function getComment($id, $options = array()) {
- $setup['ptions'] = $options;
+ $setup['options'] = $options;
  $setup['defaults'] = array(
   'expires' => '0.2'
  );
