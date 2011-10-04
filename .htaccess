@@ -63,6 +63,7 @@ RewriteRule ^process$ index.php?type=process [L]
 #Admin Pages
 RewriteRule ^admin$ index.php?type=admin&page=home [L]
 RewriteRule ^admin/$ index.php?type=admin&page=home [L]
+RewriteRule ^admin/(.*)/(.*)$ index.php?type=admin&page=$1$option=$2 [L]
 RewriteRule ^admin/(.*)$ index.php?type=admin&page=$1 [L]
 
 ################## Page Specific Redirects

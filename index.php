@@ -52,6 +52,7 @@ switch($_GET['type']) {
   include(INCLUDE_DIR.'pages/form.php');
  break;
  case 'admin':
+  if($_GET['option']) $option = $_GET['option'];
   include(INCLUDE_DIR.'pages/admin/'.$_GET['page'].'.php');
  break;
  default:
