@@ -431,6 +431,7 @@ protected function checkPass($user,$pass) {
 }
 
 public function logout() {
+ unset($this->user);
  return $this->api_call_finish($this->db->deleteItem('sessions',$this->getUserToken(),array('field'=>'guid')));
 } 
 
