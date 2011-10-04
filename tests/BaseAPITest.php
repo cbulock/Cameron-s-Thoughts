@@ -216,6 +216,25 @@ class BaseAPITest extends PHPUnit_Framework_TestCase {
   $this->fail('An expected exception has not been raised.');
  }
 
+ /**** deleteComment ****/
+ public function test_deleteComment_success() {
+  $token = $this->api->login('testuser',array('pass'=>'!test!'));
+  $comment = $this->api->postComment('9',array('token'=>$token,'text'=>'Test comment: '.date('c')));
+  $admin = $this->api->login('testadmin',array('pass'=>'!test!'));
+  $this->assertTrue($this->api->deleteComment($comment['id'],array('token'=>$admin)));
+ }
+ public function test_deleteComment_nonadmin() {
+  try {
+   $this->api->login('testuser',array('pass'=>'!test!'));
+   $comment = $this->api->postComment('9',array('text'=>'Test comment: '.date('c')));
+   $this->api->deleteComment($comment['id']);
+  }
+  catch (Exception $e) {
+   return;
+  }
+  $this->fail('An expected exception has not been raised.');
+ } 
+
  /**** getCatID ****/
  public function test_getCatID_success() {
   $cat = (int)$this->api->getCatID('2');

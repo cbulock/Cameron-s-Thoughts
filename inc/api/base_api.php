@@ -353,6 +353,15 @@ public function editComment($id, $options = array()) {
  throw new Exception('There was an error saving the comment');
 }
 
+public function deleteComment($id, $options = array()) {
+ $setup['options'] = $options;
+ $setup['perms'] = array(
+  'admin'
+ );
+ extract($setup_result = $this->api_call_setup($setup));
+ return $this->api_call_finish($this->db->deleteItem('comments',$id));
+}
+
 /**********************************
    Category Methods
 **********************************/
