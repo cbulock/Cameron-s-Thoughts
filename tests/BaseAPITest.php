@@ -167,6 +167,55 @@ class BaseAPITest extends PHPUnit_Framework_TestCase {
   $this->fail('An expected exception has not been raised.');
  }
 
+ /**** editComment ****/
+ public function test_editComment_admin() {
+  $token = $this->api->login('testuser',array('pass'=>'!test!'));
+  $comment = $this->api->postComment('9',array('token'=>$token,'text'=>'Test comment: '.date('c')));
+  $admin = $this->api->login('testadmin',array('pass'=>'!test!'));
+  $this->assertTrue($this->api->editComment($comment['id'],array('token'=>$admin,'text'=>'Edited comment')));
+ }
+ public function test_editComment_user() {
+  $this->api->login('testuser',array('pass'=>'!test!'));
+  $comment = $this->api->postComment('9',array('text'=>'Test comment: '.date('c')));
+  $this->assertTrue($this->api->editComment($comment['id'],array('text'=>'Edited comment')));
+ }
+ public function test_editComment_nologin() {
+  try {
+   $this->api->login('testuser',array('pass'=>'!test!'));
+   $comment = $this->api->postComment('9',array('text'=>'Test comment: '.date('c')));
+   $this->api->logout();
+   print_r($this->api->getAuthUser());
+   $this->api->editComment($comment['id'],array('text'=>'Edited comment'));
+  }
+  catch (Exception $e) {
+   return;
+  }
+  $this->fail('An expected exception has not been raised.');
+ }
+ public function test_editComment_wronguser() {
+  try {
+   $token = $this->api->login('testuser',array('pass'=>'!test!'));
+   $comment = $this->api->postComment('9',array('token'=>$token,'text'=>'Test comment: '.date('c')));
+   $token2 = $this->api->login('testuser2',array('pass'=>'!test!'));
+   $this->api->editComment($comment['id'],array('token'=>$token2,'text'=>'Edited comment'));
+  }
+  catch (Exception $e) {
+   return; 
+  }
+  $this->fail('An expected exception has not been raised.');
+ }
+ public function test_editComment_notext() {
+  try {
+   $this->api->login('testuser',array('pass'=>'!test!'));
+   $comment = $this->api->postComment('9',array('text'=>'Test comment: '.date('c')));
+   $this->api->editComment($comment['id']);
+  }
+  catch (Exception $e) {
+   return;
+  }
+  $this->fail('An expected exception has not been raised.');
+ }
+
  /**** getCatID ****/
  public function test_getCatID_success() {
   $cat = (int)$this->api->getCatID('2');

@@ -330,6 +330,29 @@ public function postComment($postid, $options = array()) {
  return $this->api_call_finish($result);
 }
 
+public function editComment($id, $options = array()) {
+ $setup['options'] = $options;
+ $setup['perms'] = array(
+  'user'
+ );
+ extract($setup_result = $this->api_call_setup($setup));
+ if (!$options['text']) {
+  $this->writeLog('Text missing from comment','errorlog');
+  throw new Exception('Must enter text into comment box',1001);
+ }
+ $comment = $this->getComment($id);
+ $user = $this->getAuthUser();
+ if (!in_array('admin',$permassets) && ($user['id'] != $comment['user'])) {
+  $this->writeLog('Non permitted user attempting to edit comment','errorlog');
+  throw new Exception('Insufficent permissions to edit comment',403);   
+ }
+ if ($this->db->updateItem('comments',$id,array('text'=>$options['text']))) {
+  return $this->api_call_finish(TRUE);
+ }
+ $this->writeLog('Comment edit failed for comment '.$id,'errorlog');
+ throw new Exception('There was an error saving the comment');
+}
+
 /**********************************
    Category Methods
 **********************************/
