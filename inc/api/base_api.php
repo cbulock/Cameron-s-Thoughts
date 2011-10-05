@@ -156,7 +156,6 @@ public function getEntry($value, $options = array()) {
     );
    }
   }
-  
   if ($result['entry_convert_breaks']) {
    $result['entry_text'] = nl2br($result['entry_text']);
   } 
@@ -165,6 +164,7 @@ public function getEntry($value, $options = array()) {
    $month = date('m',strtotime($result['entry_created_on']));
    $result['entry_link'] = "/".$year."/".$month."/".$result['entry_basename'].".html";
   }
+  $result['entry_category_id'] = $this->getCatID($result['entry_id']);
   $result['comment_count'] = $this->commentCount($result['entry_id'],array('blogid'=>$options['blogid']));
   $result['prev_entry'] = $this->prevEntry($result['entry_id']);
   $result['next_entry'] = $this->nextEntry($result['entry_id']);

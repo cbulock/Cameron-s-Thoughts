@@ -1,6 +1,6 @@
-{include file='head.tpl' title_append='New Post'}
+{include file='head.tpl' title_append='New Entry'}
 
-<h2>New Post</h2>
+<h2>New Entry</h2>
 
 <form>
 
