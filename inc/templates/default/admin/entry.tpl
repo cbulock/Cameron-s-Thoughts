@@ -11,12 +11,10 @@ Title:<br />
 
 <p>
 Category:<br />
-<select id='postCategory'><!-- magic with the cat still needs to be done-->
+<select id='postCategory'>
  <option value=''>(None)</option>
  {foreach from=$cats item=cat}
-  <option value='{$cat.category_id}'
-  {if $cat.category_id == $entry.entry_category_id} selected='selected'{/if}
-  >{$cat.category_label}</option>
+  <option value='{$cat.category_id}'{if $cat.category_id == $entry.entry_category_id} selected='selected'{/if}>{$cat.category_label}</option>
  {/foreach}
 </select>
 </p>
@@ -37,5 +35,14 @@ Keywords:<br />
 </p>
 
 <input type='submit' id='postEntry' value='Save Post' />
+
+<h3>Comments</h3>
+
+{foreach from=$comments item=comment}
+<div id='c{$comment.id}' class='comment'>
+<p class='comment_body'>{$comment.text}</p>
+<p class='comment_footer'>Comment by: <a href='{$comment.url}'>{$comment.author}</a> on {$comment.created|date_format:"F d, Y h:i A"}</p>
+</div>
+{/foreach}
 
 {include file='footer.tpl'}

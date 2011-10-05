@@ -184,7 +184,8 @@ img { border: none; }
 input:focus { padding: 1px; }
 textarea:focus { padding: 1px; }
 input, textarea, select { padding: 1px; }
-textarea#postText, textarea#postExcerpt, input#postTitle, input#postKeywords { width: 400px; }
+textarea#postText, textarea#postExcerpt, input#postKeywords { width: 650px; }
+input#postTitle { width: 400px; }
 nav {
   float: left;
   width: 150px;
@@ -253,3 +254,14 @@ footer { clear: both; }
   position: fixed;
   z-index: 10;
 }
+.comment {
+  padding: 5px;
+  margin: 4px;
+  border-radius: 8px;
+  -moz-border-radius: 8px;
+  -webkit-border-radius: 8px;
+  border-style: solid;
+  border-width: 2px;
+  border-color: black;
+}
+.comment_footer { font-size: 70%; }

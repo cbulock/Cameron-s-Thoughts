@@ -25,7 +25,12 @@ adminClickListeners = ({
 });
 
 function autoResize() {
- $('textarea').autoResize({
-  extraSpace : 0
+ $('textarea#postExcerpt').autoResize({
+  extraSpace : 0,
+  minHeight: 100
+ });
+  $('textarea#postText').autoResize({
+  extraSpace : 0,
+  minHeight: 200
  });
 }
