@@ -21,12 +21,12 @@ Category:<br />
 
 <p>
 Text:<br />
-<textarea id='postText'></textarea>
+<textarea id='postText' class='largeSpace'></textarea>
 </p>
 
 <p>
 Excerpt:<br />
-<textarea id='postExcerpt'></textarea>
+<textarea id='postExcerpt' class='smallSpace'></textarea>
 </p>
 
 <p>
@@ -34,6 +34,7 @@ Keywords:<br />
 <input id='postKeywords' />
 </p>
 
-<input type='submit' id='postEntry' value='Submit Post' />
+<button type='submit' id='postEntry'>Submit Post</button>
+</form>
 
 {include file='footer.tpl'}

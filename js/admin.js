@@ -19,17 +19,25 @@ adminClickListeners = ({
   };
   if (call('postEntry',[],entryData)) info.add('Entry Posted');
  },
- test : function() {
-  console.log('test');
+ editComment : function() {
+  commentData = {
+   text : $('#commentText').attr('value')
+  };
+  if (call('editComment',[$('#commentId').attr('value')],commentData)) info.add('Comment Saved');
+ },
+ deleteComment : function() {
+  if (confirm("Delete comment?")) {
+   if (call('deleteComment',[$('#commentId').attr('value')])) info.add('Comment Deleted');
+  }
  }
 });
 
 function autoResize() {
- $('textarea#postExcerpt').autoResize({
+ $('textarea.smallSpace').autoResize({
   extraSpace : 0,
   minHeight: 100
  });
-  $('textarea#postText').autoResize({
+  $('textarea.largeSpace').autoResize({
   extraSpace : 0,
   minHeight: 200
  });

@@ -184,7 +184,7 @@ img { border: none; }
 input:focus { padding: 1px; }
 textarea:focus { padding: 1px; }
 input, textarea, select { padding: 1px; }
-textarea#postText, textarea#postExcerpt, input#postKeywords { width: 650px; }
+textarea#postText, textarea#postExcerpt, textarea#commentText, input#postKeywords { width: 650px; }
 input#postTitle { width: 400px; }
 nav {
   float: left;

@@ -21,12 +21,12 @@ Category:<br />
 
 <p>
 Text:<br />
-<textarea id='postText'>{$entry.entry_text}</textarea>
+<textarea id='postText' class='largeSpace'>{$entry.entry_text}</textarea>
 </p>
 
 <p>
 Excerpt:<br />
-<textarea id='postExcerpt'>{$entry.entry_excerpt}</textarea>
+<textarea id='postExcerpt' class='smallSpace'>{$entry.entry_excerpt}</textarea>
 </p>
 
 <p>
@@ -34,14 +34,15 @@ Keywords:<br />
 <input id='postKeywords' value='{$entry.entry_title}' />
 </p>
 
-<input type='submit' id='postEntry' value='Save Post' />
+<input type='submit' id='editEntry' value='Save Post' />
+</form>
 
 <h3>Comments</h3>
 
 {foreach from=$comments item=comment}
 <div id='c{$comment.id}' class='comment'>
 <p class='comment_body'>{$comment.text}</p>
-<p class='comment_footer'>Comment by: <a href='{$comment.url}'>{$comment.author}</a> on {$comment.created|date_format:"F d, Y h:i A"}</p>
+<p class='comment_footer'>Comment by: <a href='{$comment.url}'>{$comment.author}</a> on {$comment.created|date_format:"F d, Y h:i A"} [<a href='/admin/comment/{$comment.id}'>Edit Comment</a>] [Delete Comment]</p>
 </div>
 {/foreach}
 
