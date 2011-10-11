@@ -312,6 +312,10 @@ public function postComment($postid, $options = array()) {
  //Admin Email
  $data['username'] = $user['login'];
  $data['fullname'] = $user['name'];
+ $data['userid'] = $user['id'];
+ $data['postid'] = $postid;
+ $data['id'] = $comment;
+ $data['location'] = 'http:'.LOCATION;
  $site_name = $this->getSetting('site_name');
  $mailoptions = array(
   'data' => $data,
