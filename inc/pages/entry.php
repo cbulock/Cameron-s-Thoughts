@@ -7,8 +7,7 @@ if ($entry['prev_entry']) $prev_entry = call('getEntry',$entry['prev_entry'],arr
 if ($entry['next_entry']) $next_entry = call('getEntry',$entry['next_entry'],array('callby'=>'id'));
 $comments = $ct->getComments($entry['entry_id']);
 $comment_count_text = $ct->commentCountText($entry['comment_count']);
-$catid = $ct->getCatID($entry['entry_id']);
-if ($catid) $cat = $ct->getCat($catid);
+if ($entry['entry_category_id']) $cat = $ct->getCat($entry['entry_category_id']);
 $create_date = strtotime($entry['entry_created_on']);
 $create['dateiso'] = date('c',$create_date);
 $create['date'] = date('M j, Y g:ia',$create_date);

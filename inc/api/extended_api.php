@@ -19,7 +19,7 @@ public function getNewEntries($options = array()) {
  for($i = 0; $i < $options['count']; $i++) {
   $entries[$current_entry] = $this->getEntry($current_entry,array('callby'=>'id'));
   if ($i < $options['count']-1) {
-   $current_entry = $this->prevEntry($current_entry,array('blogid'=>$options['blogid']));
+   $current_entry = $this->prevEntry($current_entry,array('blogid'=>$options['blogid']));//need to catch the expection for prevEntry in case it hits the first one
   }
  }
  return $this->api_call_finish($entries);

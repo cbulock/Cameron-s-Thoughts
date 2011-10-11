@@ -156,7 +156,6 @@ public function getEntry($value, $options = array()) {
     );
    }
   }
-  
   if ($result['entry_convert_breaks']) {
    $result['entry_text'] = nl2br($result['entry_text']);
   } 
@@ -165,6 +164,7 @@ public function getEntry($value, $options = array()) {
    $month = date('m',strtotime($result['entry_created_on']));
    $result['entry_link'] = "/".$year."/".$month."/".$result['entry_basename'].".html";
   }
+  $result['entry_category_id'] = $this->getCatID($result['entry_id']);
   $result['comment_count'] = $this->commentCount($result['entry_id'],array('blogid'=>$options['blogid']));
   $result['prev_entry'] = $this->prevEntry($result['entry_id']);
   $result['next_entry'] = $this->nextEntry($result['entry_id']);
@@ -312,6 +312,10 @@ public function postComment($postid, $options = array()) {
  //Admin Email
  $data['username'] = $user['login'];
  $data['fullname'] = $user['name'];
+ $data['userid'] = $user['id'];
+ $data['postid'] = $postid;
+ $data['id'] = $comment;
+ $data['location'] = 'http:'.LOCATION;
  $site_name = $this->getSetting('site_name');
  $mailoptions = array(
   'data' => $data,
@@ -328,6 +332,38 @@ public function postComment($postid, $options = array()) {
   'count' => $this->commentCount($postid,array('cache'=>FALSE))
  ); 
  return $this->api_call_finish($result);
+}
+
+public function editComment($id, $options = array()) {
+ $setup['options'] = $options;
+ $setup['perms'] = array(
+  'user'
+ );
+ extract($setup_result = $this->api_call_setup($setup));
+ if (!$options['text']) {
+  $this->writeLog('Text missing from comment','errorlog');
+  throw new Exception('Must enter text into comment box',1001);
+ }
+ $comment = $this->getComment($id);
+ $user = $this->getAuthUser();
+ if (!in_array('admin',$permassets) && ($user['id'] != $comment['user'])) {
+  $this->writeLog('Non permitted user attempting to edit comment','errorlog');
+  throw new Exception('Insufficent permissions to edit comment',403);   
+ }
+ if ($this->db->updateItem('comments',$id,array('text'=>$options['text']))) {
+  return $this->api_call_finish(TRUE);
+ }
+ $this->writeLog('Comment edit failed for comment '.$id,'errorlog');
+ throw new Exception('There was an error saving the comment');
+}
+
+public function deleteComment($id, $options = array()) {
+ $setup['options'] = $options;
+ $setup['perms'] = array(
+  'admin'
+ );
+ extract($setup_result = $this->api_call_setup($setup));
+ return $this->api_call_finish($this->db->deleteItem('comments',$id));
 }
 
 /**********************************
@@ -408,6 +444,7 @@ protected function checkPass($user,$pass) {
 }
 
 public function logout() {
+ unset($this->user);
  return $this->api_call_finish($this->db->deleteItem('sessions',$this->getUserToken(),array('field'=>'guid')));
 } 
 

@@ -60,6 +60,12 @@ RewriteRule ^error/(.*)$ index.php?type=error&errornum=$1 [L]
 RewriteRule ^form/(.*)$ index.php?type=form&name=$1 [L]
 RewriteRule ^process$ index.php?type=process [L]
 
+#Admin Pages
+RewriteRule ^admin$ index.php?type=admin&page=home [L]
+RewriteRule ^admin/$ index.php?type=admin&page=home [L]
+RewriteRule ^admin/(.*)/(.*)$ index.php?type=admin&page=$1&option=$2 [L]
+RewriteRule ^admin/(.*)$ index.php?type=admin&page=$1 [L]
+
 ################## Page Specific Redirects
 #About me 
 Redirect 301 /about_me.html http://www.cbulock.com/about/me/
