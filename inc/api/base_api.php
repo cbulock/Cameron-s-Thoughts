@@ -627,6 +627,21 @@ public function getUser($value, $options = array()) {
  return $this->api_call_finish($user);
 }
 
+public function getUserList($options = array()) {
+ $setup['options'] = $options;
+ $setup['perms'] = array(
+  'admin'
+ );
+ extract($setup_result = $this->api_call_setup($setup));
+ $results = $this->db->getTable('users');
+ if ($results) {
+  foreach ($results as $key=>$result) {
+   $users[$key] = $this->getUser($result['id'],array('callby'=>'id'));
+  }
+ }
+ return $this->api_call_finish($users);
+}
+
 public function getAuthUser($options = array()) {
  $setup['options'] = $options;
  extract($setup_result = $this->api_call_setup($setup));
