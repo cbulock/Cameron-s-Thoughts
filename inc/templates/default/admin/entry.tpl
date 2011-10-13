@@ -42,7 +42,7 @@ Keywords:<br />
 {foreach from=$comments item=comment}
 <div id='c{$comment.id}' class='comment'>
 <p class='comment_body'>{$comment.text}</p>
-<p class='comment_footer'>Comment by: <a href='/admin/user/{$comment.user}'>{$comment.author}</a> on {$comment.created|date_format:"F d, Y h:i A"} [<a href='/admin/comment/{$comment.id}'>Edit Comment</a></p>
+<p class='comment_footer'>Comment by: <a href='/admin/user/{$comment.user}'>{$comment.author}</a> on {$comment.created|date_format:"F d, Y h:i A"} [<a href='/admin/comment/{$comment.id}'>Edit Comment</a>]</p>
 </div>
 {/foreach}
 
