@@ -619,7 +619,8 @@ public function getUser($value, $options = array()) {
  $user = $this->db->getItem('users',$value,array('field'=>$options['callby']));
  if (!$user) return FALSE;//throw an exception here?
  $user['email_hash'] = md5($user['email']);
- if (!in_array('internal',$permassets)) {//in the future, the current user should be able to recover their own email. The admin should as well
+ $authuser = $this->getAuthUser();
+ if (!in_array('internal',$permassets) && !in_array('admin',$permassets) && ($authuser['id'] != $user['id'])) {
   unset($user['pass']);
   unset($user['email']);
  }

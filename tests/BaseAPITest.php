@@ -395,10 +395,31 @@ class BaseAPITest extends PHPUnit_Framework_TestCase {
   $user = $this->api->getUser('cbulock');
   $this->assertArrayNotHasKey('email',$user);
  }
+ public function test_getUser_pass() {
+  $user = $this->api->getUser('cbulock');
+  $this->assertArrayNotHasKey('pass',$user);
+ }
  public function test_getUser_notexist() {
   $user = $this->api->getUser('qqqWWW');//a user that likely shouldn't exist
   $this->assertFalse($user);
  }
+ public function test_getUser_emailadmin() {
+  $admin = $this->api->login('testadmin',array('pass'=>'!test!'));
+  $user = $this->api->getUser('cbulock',array('token'=>$admin));
+  $this->assertArrayHasKey('email',$user);
+ }
+ public function test_getUser_emailsameuser() {
+  $token = $this->api->login('testuser',array('pass'=>'!test!'));
+  $user = $this->api->getUser('testuser',array('token'=>$token));
+  $this->assertArrayHasKey('email',$user);
+ }
+ public function test_getUser_emailotheruser() {
+  $token = $this->api->login('testuser',array('pass'=>'!test!'));
+  $user = $this->api->getUser('cbulock',array('token'=>$token));
+  $this->assertArrayNotHasKey('email',$user);
+ }
+
+ /***getUserList***/
 
  /***getAuthUser***/
  public function test_getAuthUser_loggedin() {
