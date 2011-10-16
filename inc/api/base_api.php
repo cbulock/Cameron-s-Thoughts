@@ -773,11 +773,26 @@ public function getSetting($setting, $options = array()) {
   $this->writeLog('Setting not found: '.$setting,'errorlog');
   throw new Exception('Setting not found');
  }
- if (!in_array('internal',$permassets) && !$setting['public']) {
+ if ((!in_array('internal',$permassets) && !in_array('admin',$permassets)) && !$setting['public']) {
   $this->writeLog('Insufficent permissions for setting: '.$setting,'errorlog');
   throw new Exception('Unauthorized to access setting', 403);
  }
  return $this->api_call_finish($setting);
+}
+
+public function getSettingList($options = array()) {
+ $setup['options'] = $options;
+ $setup['perms'] = array(
+  'admin'
+ );
+ extract($setup_result = $this->api_call_setup($setup));
+ $results = $this->db->getTable('settings');
+ if ($results) {
+  foreach ($results as $key=>$result) {
+   $settings[$key] = $this->getSetting($result['name']);
+  }
+ }
+ return $this->api_call_finish($settings);
 }
 
 protected function getFilters($options = array()) {

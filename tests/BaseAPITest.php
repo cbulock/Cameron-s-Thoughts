@@ -468,9 +468,14 @@ class BaseAPITest extends PHPUnit_Framework_TestCase {
   }
   $this->fail('An expected exception has not been raised.');
  }
+ public function test_getSetting_admin() {
+  $admin = $this->api->login('testadmin',array('pass'=>'!test!'));  
+  $setting = $this->api->getSetting('internal_test');
+  $this->assertEquals('1',$setting['value']);
+ }
  public function test_getSetting_internal() {
   try {
-   $this->api->getSetting('admin_email');
+   $this->api->getSetting('internal_test');
   }
   catch (Exception $e){
    if ($e->getCode() != '403') $this->fail('An exception was raised, but it was not the correct one.');
