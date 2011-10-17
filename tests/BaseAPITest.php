@@ -235,17 +235,6 @@ class BaseAPITest extends PHPUnit_Framework_TestCase {
   $this->fail('An expected exception has not been raised.');
  } 
 
- /**** getCatID ****/
- public function test_getCatID_success() {
-  $cat = (int)$this->api->getCatID('2');
-  if ($cat === 0) unset($cat);
-  $this->assertInternalType('integer',$cat);
- }
- public function test_getCatID_fail() {
-  $cat = $this->api->getCatID('1');
-  $this->assertFalse($cat);
- }
-
  /**** getCat ****/
  public function test_getCat_basename() {
   $cat = $this->api->getCat('1');
@@ -395,10 +384,31 @@ class BaseAPITest extends PHPUnit_Framework_TestCase {
   $user = $this->api->getUser('cbulock');
   $this->assertArrayNotHasKey('email',$user);
  }
+ public function test_getUser_pass() {
+  $user = $this->api->getUser('cbulock');
+  $this->assertArrayNotHasKey('pass',$user);
+ }
  public function test_getUser_notexist() {
   $user = $this->api->getUser('qqqWWW');//a user that likely shouldn't exist
   $this->assertFalse($user);
  }
+ public function test_getUser_emailadmin() {
+  $admin = $this->api->login('testadmin',array('pass'=>'!test!'));
+  $user = $this->api->getUser('cbulock',array('token'=>$admin));
+  $this->assertArrayHasKey('email',$user);
+ }
+ public function test_getUser_emailsameuser() {
+  $token = $this->api->login('testuser',array('pass'=>'!test!'));
+  $user = $this->api->getUser('testuser',array('token'=>$token));
+  $this->assertArrayHasKey('email',$user);
+ }
+ public function test_getUser_emailotheruser() {
+  $token = $this->api->login('testuser',array('pass'=>'!test!'));
+  $user = $this->api->getUser('cbulock',array('token'=>$token));
+  $this->assertArrayNotHasKey('email',$user);
+ }
+
+ /***getUserList***/
 
  /***getAuthUser***/
  public function test_getAuthUser_loggedin() {
@@ -447,9 +457,14 @@ class BaseAPITest extends PHPUnit_Framework_TestCase {
   }
   $this->fail('An expected exception has not been raised.');
  }
+ public function test_getSetting_admin() {
+  $admin = $this->api->login('testadmin',array('pass'=>'!test!'));  
+  $setting = $this->api->getSetting('internal_test');
+  $this->assertEquals('1',$setting['value']);
+ }
  public function test_getSetting_internal() {
   try {
-   $this->api->getSetting('admin_email');
+   $this->api->getSetting('internal_test');
   }
   catch (Exception $e){
    if ($e->getCode() != '403') $this->fail('An exception was raised, but it was not the correct one.');
