@@ -10,7 +10,7 @@ require_once('../var.inc');
 require_once('../inc/api/mysql.php');
 require_once('../inc/api/cache.php');
 $cache = new Cache;
-$db = new DB($settings['db']['host'],$settings['db']['user'],$settings['db']['pass'],array('prefix'=>DB_PREFIX,'cache'=>$cache));
+$db = new DB(DB_HOST,DB_USER,DB_PASS,array('prefix'=>DB_PREFIX,'cache'=>$cache));
 
 $placements = $db->getTable('mt_placement',array('orderBy'=>"`placement_id`",'key'=>'placement_id','cache'=>FALSE));
 
