@@ -235,17 +235,6 @@ class BaseAPITest extends PHPUnit_Framework_TestCase {
   $this->fail('An expected exception has not been raised.');
  } 
 
- /**** getCatID ****/
- public function test_getCatID_success() {
-  $cat = (int)$this->api->getCatID('2');
-  if ($cat === 0) unset($cat);
-  $this->assertInternalType('integer',$cat);
- }
- public function test_getCatID_fail() {
-  $cat = $this->api->getCatID('1');
-  $this->assertFalse($cat);
- }
-
  /**** getCat ****/
  public function test_getCat_basename() {
   $cat = $this->api->getCat('1');
