@@ -31,7 +31,7 @@ Excerpt:<br />
 
 <p>
 Keywords:<br />
-<input id='postKeywords' value='{$entry.entry_title}' />
+<input id='postKeywords' value='{$entry.entry_keywords}' />
 </p>
 
 <input type='submit' id='editEntry' value='Save Post' />

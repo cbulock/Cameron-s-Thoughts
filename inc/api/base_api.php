@@ -12,18 +12,6 @@ protected $user;	//authenticated user
 protected $status;      //external status object
 protected $cache;	//cache
 
-/*API Method Template
-public function nameName($options = array()) {
- $setup['options'] = $options;
- $setup['defaults'] = array(
-  'setting' => 'value',
- );
- extract($setup_result = $this->api_call_setup($setup));
- <code goes here>
- return $this->api_call_finish($result);
-}
-*/
-
 /**********************************
    Entry Methods
 **********************************/
@@ -105,6 +93,39 @@ public function postEntry($options = array()) {
  }
  $this->writeLog('Basename conflict: '.$basename,'errorlog');
  throw new Exception('Basename conflict');
+}
+
+public function editEntry($value, $options = array()) {
+ $setup['options'] = $options;
+ $setup['perms'] = array(
+  'admin'
+ );
+ extract($setup_result = $this->api_call_setup($setup));
+ $allowedoptions = array(
+  'entry_title',
+  'entry_category_id',
+  'entry_text',
+  'entry_excerpt',
+  'entry_keywords',
+  'convert_breaks'
+ );
+ foreach($allowedoptions as $o) {
+  if (isset($options[$o])) {
+   $updatedata[$o] = $options[$o];
+  }
+ }
+ if (!$this->db->updateItem('mt_entry',$value,$updatedata,array('field'=>'entry_id'))) {
+  $this->writeLog('Edit Entry failed to update. ID:'.$value,'errorlog');
+  throw new Exception('Entry edit failed');
+ }
+ if (isset($options['entry_category_id'])) {
+  
+  if (!$this->db->updateItem('mt_placement',$value,array('placement_category_id'=>$options['entry_category_id']),array('field'=>'placement_entry_id'))) {
+   $this->writeLog('Edit Entry failed to update category placement table. ID:'.$value,'errorlog');
+   throw new Exception('Entry edit failed to update category data');
+  }
+ }
+ return $this->api_call_finish(TRUE);
 }
 
 public function getEntry($value, $options = array()) {
