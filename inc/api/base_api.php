@@ -50,18 +50,7 @@ public function postEntry($options = array()) {
      $this->writeLog('Entry failed to save: '.$options['title'],'errorlog');
      throw new Exception('Entry failed to save');
     }
-
     $atomid = 'tag:www.cbulock.com,'.date('Y').'://'.$options['blogid'].'.'.$thisentry;
-    if (isset($options['category'])) {//I think this still posts when not existing
-     $catoptions = array(
-      'placement_entry_id' => $thisentry,
-      'placement_blog_id' => $options['blogid'],
-      'placement_category_id' => $options['category'],
-      'placement_is_primary' => '1'
-     );
-     $this->db->insertItem('mt_placement',$catoptions);
-    };
-
     $entrydata = array(
      'entry_blog_id' => $options['blogid'],
      'entry_status' => '2',
@@ -73,6 +62,7 @@ public function postEntry($options = array()) {
      'entry_excerpt' => $options['excerpt'],
      'entry_text' => $options['text'],
      'entry_keywords' => $options['keywords'],
+     'entry_category_id' => $options['category'],
      'entry_created_on' => date('Y-m-d H:i:s'),
      'entry_basename' => $basename,
      'entry_atom_id' => $atomid,
@@ -82,7 +72,6 @@ public function postEntry($options = array()) {
      $this->writeLog('[WARNING] Entry save did not complete and was left in bad state ID:'.$thisentry,'errorlog');
      throw new Exception('Entry save did not complete, in bad state');
     }
-
     $this->clearCache(array('token'=>$this->getAPIToken()));//there are random issues if cache isn't cleared
     $this->newEntryStatus($thisentry);
     $this->writeLog('New entry posted. ID:'.$thisentry.' Title: '.$options['title']);
@@ -117,13 +106,6 @@ public function editEntry($value, $options = array()) {
  if (!$this->db->updateItem('mt_entry',$value,$updatedata,array('field'=>'entry_id'))) {
   $this->writeLog('Edit Entry failed to update. ID:'.$value,'errorlog');
   throw new Exception('Entry edit failed');
- }
- if (isset($options['entry_category_id'])) {
-  
-  if (!$this->db->updateItem('mt_placement',$value,array('placement_category_id'=>$options['entry_category_id']),array('field'=>'placement_entry_id'))) {
-   $this->writeLog('Edit Entry failed to update category placement table. ID:'.$value,'errorlog');
-   throw new Exception('Entry edit failed to update category data');
-  }
  }
  return $this->api_call_finish(TRUE);
 }
@@ -185,7 +167,6 @@ public function getEntry($value, $options = array()) {
    $month = date('m',strtotime($result['entry_created_on']));
    $result['entry_link'] = "/".$year."/".$month."/".$result['entry_basename'].".html";
   }
-  $result['entry_category_id'] = $this->getCatID($result['entry_id']);
   $result['comment_count'] = $this->commentCount($result['entry_id'],array('blogid'=>$options['blogid']));
   $result['prev_entry'] = $this->prevEntry($result['entry_id']);
   $result['next_entry'] = $this->nextEntry($result['entry_id']);
@@ -390,16 +371,6 @@ public function deleteComment($id, $options = array()) {
 /**********************************
    Category Methods
 **********************************/
-
-public function getCatID($entryid, $options = array()) {
- $setup['options'] = $options;
- $options = array(
-  'field' => 'placement_entry_id'
- ); 
- $item = $this->db->getItem('mt_placement',$entryid,$options);
- if ($item) return $this->api_call_finish($item['placement_category_id']);
- return $this->api_call_finish(FALSE);
-}
 
 public function getCat($catid, $options = array()) {
  $setup['options'] = $options;
