@@ -61,6 +61,8 @@ class BaseAPITest extends PHPUnit_Framework_TestCase {
   }
   $this->fail('An expected exception has not been raised.');
  }
+ 
+ /**** editEntry ****/
 
  /**** getEntry ****/
  public function test_getEntry_title() {
