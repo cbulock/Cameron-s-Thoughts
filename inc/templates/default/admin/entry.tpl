@@ -34,7 +34,8 @@ Keywords:<br />
 <input id='postKeywords' value='{$entry.entry_keywords}' />
 </p>
 
-<input type='submit' id='editEntry' value='Save Post' />
+<input type='hidden' id='entryId' value='{$entry.entry_id}' />
+<input type='submit' id='editEntry' value='Save Entry' />
 </form>
 
 <h3>Comments</h3>
