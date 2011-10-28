@@ -798,9 +798,10 @@ public function editSetting($name, $options = array()) {
 
  $settingdata = array();
  if (isset($options['value'])) $settingdata['value'] = $options['value'];
- if (isset($options['public'])) $settingdata['value'] = $options['public']; 
+ if (isset($options['public'])) $settingdata['public'] = $options['public']; 
  
  if ($this->db->updateItem('settings',$setting[id],$settingdata)) {
+  $this->clearCache(array('token'=>$this->getAPIToken()));
   return $this->api_call_finish(TRUE);
  }
  $this->writeLog('Setting edit failed for setting '.$name,'errorlog');
