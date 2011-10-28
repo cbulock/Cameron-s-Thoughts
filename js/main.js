@@ -19,6 +19,7 @@ $(document).ready(function() {
  $('#searchbox button').button({icons:{primary:'ui-icon-search'},text:false});
  autoResize();
  roundedAvatars();
+ HTMLNotices();
  /*Facebook*/
  FB.init({
   appId : $('#fb-root').attr('appid'),
@@ -408,6 +409,16 @@ function call(method,req,opt) {
  }
  catch(e) {
   exception_handler(e);
+ }
+}
+
+function HTMLNotices() {
+ types = (['error', 'warn', 'info']);
+ for (i in types) {
+  $('.'+types[i]).each(function () {
+   $(this).hide();
+   notice.add($(this).html(),types[i]);
+  });
  }
 }
 
