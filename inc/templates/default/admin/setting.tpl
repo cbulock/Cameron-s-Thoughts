@@ -15,13 +15,14 @@ Value:<br />
 </p>
 
 <p>
-Visablity:<br />
+Visibility:<br />
 <select id='settingPublic'>
  <option value='1'{if $setting.public == '1'} selected='selected'{/if}>Public</option>
  <option value='0'{if $setting.public == '0'} selected='selected'{/if}>Internal</option>
 </select>
 </p>
 
+<input type='hidden' id='settingName' value='{$setting.name}' />
 <input type='submit' id='editSetting' value='Save Setting' />
 </form>
 

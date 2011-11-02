@@ -39,6 +39,13 @@ adminClickListeners = ({
   if (confirm("Delete comment?")) {
    if (call('deleteComment',[$('#commentId').attr('value')])) info.add('Comment deleted');
   }
+ },
+ editSetting : function() {
+  settingData = {
+   value : $('#settingValue').attr('value'),
+   public : $('#settingPublic').attr('value')
+  };
+  if (call('editSetting',[$('#settingName').attr('value')],settingData)) info.add('Setting saved');
  }
 });
 
