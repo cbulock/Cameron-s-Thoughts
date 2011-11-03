@@ -281,9 +281,16 @@ notice = ({
   info : ''
  },
  counter : 0,
+ showing : false,
  add : function(message,type) {
   this.list[type].push(message);
-  this.load();
+  if (!this.showing) {
+   this.showing = true;
+   this.load();
+  }
+  else {
+   this.update();
+  }
  },
  load : function(type) {
   if ($('#notice_box').length===0) {
@@ -294,6 +301,7 @@ notice = ({
     $('#notice_next').button({icons:{primary:'ui-icon-circle-triangle-e'},text:false});
     $('#notice_close').click(function(){
      $('#notice_box').remove();
+     notice.showing = false;
      notice.clearList();
     });
     $('#notice_prev').click(function(){
