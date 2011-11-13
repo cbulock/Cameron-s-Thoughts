@@ -27,60 +27,10 @@ RewriteCond %{HTTP_HOST} ^cbulock\.com
 RewriteCond %{HTTPS} !=on
 RewriteRule .* http://www.%{SERVER_NAME}%{REQUEST_URI} [R]
 
-################## Main Redirects
-#Monthly archives
-RewriteRule ^20*(.*)/(.*)/$ index.php?type=month&year=$1&month=$2 [L]
 
-#Indivdual archives
-RewriteRule ^20*(.*)/(.*)/(.*).html?$ index.php?type=entry&basename=$3 [L]
-
-#Category archives
-RewriteRule ^cat/(.*)/$ index.php?type=cat&basename=$1 [L]
-
-#General Static Pages
-RewriteRule ^page/(.*)/$ index.php?type=static&basename=$1 [L]
-
-#Page Snippets
-RewriteRule ^snip/(.*)/(.*)$ index.php?type=snip&snip=$1&option=$2 [L]
-RewriteRule ^snip/(.*)$ index.php?type=snip&snip=$1 [L]
-
-#API Access
-RewriteRule ^api/(.*)$ index.php?type=api&request=$1 [L]
-
-#Seach Page
-RewriteRule ^search/(.*)$ index.php?type=search&term=$1 [L]
-
-#Profile Pages
-RewriteRule ^profile/(.*)$ index.php?type=profile&user=$1 [L]
-
-#Error Pages
-RewriteRule ^error/(.*)$ index.php?type=error&errornum=$1 [L]
-
-#Form Pages
-RewriteRule ^form/(.*)$ index.php?type=form&name=$1 [L]
-RewriteRule ^process$ index.php?type=process [L]
-
-#Admin Pages
-RewriteRule ^admin$ index.php?type=admin&page=home [L]
-RewriteRule ^admin/$ index.php?type=admin&page=home [L]
-RewriteRule ^admin/(.*)/(.*)$ index.php?type=admin&page=$1&option=$2 [L]
-RewriteRule ^admin/(.*)$ index.php?type=admin&page=$1 [L]
-
-################## Page Specific Redirects
-#About me 
-Redirect 301 /about_me.html http://www.cbulock.com/about/me/
-RewriteRule ^about/me/$ index.php?type=static&basename=about_me [L]
-#About Cameron's Thoughts
-Redirect 301 /about_this_site.html http://www.cbulock.com/about/ct/
-RewriteRule ^about/ct/$ index.php?type=static&basename=about_this_site [L]
-#RSS
-Redirect 301 /xml/full.xml http://www.cbulock.com/rss
-RewriteRule ^rss index.php?pagetype=rss [L]
-#OpenSearch
-RewriteRule ^opensearch index.php?pagetype=opensearch [L]
-#Specific old pages
-RewriteRule ^archives/000016.html http://www.cbulock.com/2003/07/divx_playback_for_clies.html
-RewriteRule ^archives/000061.html http://www.cbulock.com/2003/11/free_palm_software_on_sd_cards.html
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule . index.php
 
 ErrorDocument 400 /error/400
 ErrorDocument 401 /error/401
