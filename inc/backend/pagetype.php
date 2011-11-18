@@ -2,6 +2,9 @@
 if ($_REQUEST['pagetype']) {
  define(TYPE,$_REQUEST['pagetype']);
 }
+elseif ($pagetype){
+ define(TYPE,$pagetype);
+}
 else {
  define(TYPE,'default');
 }
