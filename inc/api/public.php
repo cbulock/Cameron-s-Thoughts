@@ -9,7 +9,7 @@ $method = explode('.',$request);
 $method = explode('/',$method[0]);
 $method = $method[0];
 
-$url_parameters[] = $_POST;
+$url_parameters[] = $_REQUEST;
 
 $statdata = array(
  'ip' => $_SERVER['REMOTE_ADDR'],
