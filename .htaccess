@@ -27,6 +27,9 @@ RewriteCond %{HTTP_HOST} ^cbulock\.com
 RewriteCond %{HTTPS} !=on
 RewriteRule .* http://www.%{SERVER_NAME}%{REQUEST_URI} [R]
 
+#Specific old pages
+RewriteRule ^archives/000016.html http://www.cbulock.com/2003/07/divx_playback_for_clies.html
+RewriteRule ^archives/000061.html http://www.cbulock.com/2003/11/free_palm_software_on_sd_cards.html
 
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d

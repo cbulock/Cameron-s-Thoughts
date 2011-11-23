@@ -229,23 +229,18 @@ function postCommentListener() {
    $('#leave_comment').slideUp();
    snippetLoad('comment_footer',function() {
     $('#new_comment .comment_body').after(arguments[0]);
-   },comment.id);
+   },{'comment':comment.id});
    $('#comments').html(call('commentCountText',comment.count));
    info.add('Comment saved');
   }
  });
 }
 
-function snippetLoad(snip, callback, option) {
+function snippetLoad(snip, callback, options) {
  throbber.show();
- if (option) {
-  url =  '/snip/'+snip+'/'+option;
- }
- else {
-  url =  '/snip/'+snip;
- }
  $.ajax({
-  url: url,
+  url: '/snip/'+snip,
+  data: options,
   dataType: 'html',
   success: function(data) {
    callback(data);
