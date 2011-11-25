@@ -92,7 +92,7 @@ private function sqlQuery($sql, $options = array()) {
  $this->queryLog[] = $sql;
  $result = mysql_query($sql);
  if ($result) return $result;
- throw new Exception('MySQL Error occured: '. mysql_error());
+ throw new Exception('MySQL Error occured: '. mysql_error().' Query: '.$sql);
 }
 
 /**********************************
