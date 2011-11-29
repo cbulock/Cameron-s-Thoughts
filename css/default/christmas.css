@@ -65,7 +65,7 @@ body {
   font-family: "Ubuntu", "Trebuchet MS", Trebuchet, Verdana, Tahoma, Arial, Sans-Serif;
   font-size: 0.9em;
   background-color: #cb3131;
-  background-image: url('/css/img/concrete_wall.png');
+  background-image: none;
   text-shadow: #111111 1px 1px 3px;
   color: #ffffff;
   margin: 0;
@@ -273,7 +273,7 @@ input, textarea, select { padding: 1px; }
   top: 0;
   left: 0;
   background-color: #cb3131;
-  background-image: url('/css/img/concrete_wall.png');
+  background-image: none;
   color: #ffffff;
   font-size: 0.85em;
   border-radius: 0 0 5px 0;
