@@ -900,8 +900,37 @@ public function getQueryLog($options = array()) {
  return $this->api_call_finish($this->db->getQueryLog());
 }
 
+public function getQueryCount() {
+ return $this->api_call_finish($this->db->getQueryCount());
+}
+
+public function getDirectQueryCount() {
+ return $this->api_call_finish($this->db->getDirectQueryCount);
+}
+
+/**********************************
+   API Management Methods
+**********************************/
+
+public function getAPIMethod($method, $options = array()) {
+ $dboptions = array(
+  'field' => 'value'
+ );
+ $method = $this->db->getItem('api_methods',$method,$dboptions);
+ $method['params'] = $this->getMethodParameters($method['id']);
+ return $this->api_call_finish($method);
+}
+
 public function getAPIMethods($options = array()) {
- return $this->api_call_finish($this->db->getTable('api_methods',array('orderBy'=>'value','key'=>'value')));
+ $setup['options'] = $options;
+ extract($setup_result = $this->api_call_setup($setup));
+ $results = $this->db->getTable('api_methods',array('orderBy'=>'value','key'=>'value'));
+ if ($results) {
+  foreach ($results as $key=>$result) {
+   $methods[$key] = $this->getAPIMethod($result['value']);
+  }
+ }
+ return $this->api_call_finish($methods);
 }
 
 public function getMethodParameters($methodid, $options = array()) {
@@ -911,12 +940,8 @@ public function getMethodParameters($methodid, $options = array()) {
  return $this->api_call_finish($this->db->getTable('api_parameters',$options));
 }
 
-public function getQueryCount() {
- return $this->api_call_finish($this->db->getQueryCount());
-}
-
-public function getDirectQueryCount() {
- return $this->api_call_finish($this->db->getDirectQueryCount);
+public function getMethodCategories($options = array()) {
+ return $this->api_call_finish($this->db->getTable('api_method_category'));
 }
 
 /**********************************
