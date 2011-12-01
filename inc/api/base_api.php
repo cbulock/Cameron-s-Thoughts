@@ -933,11 +933,21 @@ public function getAPIMethods($options = array()) {
  return $this->api_call_finish($methods);
 }
 
+public function getMethodParameter($paramid, $options = array()) {
+ return $this->api_call_finish($this->db->getItem('api_parameters',$paramid));
+}
+
 public function getMethodParameters($methodid, $options = array()) {
  $options = array(
   'where' => 'method = '.$this->db->sqlClean($methodid)
  );
- return $this->api_call_finish($this->db->getTable('api_parameters',$options));
+ $results = $this->db->getTable('api_parameters',$options);
+ if ($results) {
+  foreach ($results as $key=>$result) {
+   $params[$key] = $this->getMethodParameter($result['id']);
+  }
+ }
+ return $this->api_call_finish($params);
 }
 
 public function getMethodCategories($options = array()) {
