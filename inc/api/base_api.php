@@ -913,8 +913,13 @@ public function getDirectQueryCount() {
 **********************************/
 
 public function getAPIMethod($method, $options = array()) {
+ $setup['options'] = $options;
+ $setup['defaults'] = array(
+  'callby' => 'value'
+ );
+ extract($setup_result = $this->api_call_setup($setup));
  $dboptions = array(
-  'field' => 'value'
+  'field' => $options['callby']
  );
  $method = $this->db->getItem('api_methods',$method,$dboptions);
  $method['params'] = $this->getMethodParameters($method['id']);
