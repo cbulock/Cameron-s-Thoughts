@@ -106,8 +106,7 @@ private function selectDatabase($table, $db=NULL) {
 private function determineDatabase($table, $db=NULL) { //$table can be overloaded with $db value
  if ($db) return $db;
  $databases[$this->dbprefix.'accesslog'] = array($this->dbprefix.'accesslog','referers','sessions');
- $databases[$this->dbprefix.'cbulock'] = array($this->dbprefix.'cbulock','ads','ads_cat','blockedips','filters','guid_admins','images','quotes','settings','styles','users','comments','api_methods','api_parameters','mt_category','mt_entry');
- $databases[$this->dbprefix.'mt2'] = array($this->dbprefix.'mt2');
+ $databases[$this->dbprefix.'cbulock'] = array($this->dbprefix.'cbulock','ads','ads_cat','blockedips','filters','guid_admins','images','quotes','settings','styles','users','comments','api_methods','api_parameters','category','entry');
  $databases[$this->dbprefix.'ct3'] = array($this->dbprefix.'ct3','settings');
  foreach ($databases as $dbname => $database) {
   foreach ($database as $tablename) {

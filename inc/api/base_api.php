@@ -45,7 +45,7 @@ public function postEntry($options = array()) {
  catch (UnexpectedValueException $e) {
   switch ($e->getCode()) {
    case 1000:
-    $thisentry = $this->db->insertItem('mt_entry',array());
+    $thisentry = $this->db->insertItem('entry',array());
     if (!$thisentry) {
      $this->writeLog('Entry failed to save: '.$options['title'],'errorlog');
      throw new Exception('Entry failed to save');
@@ -68,7 +68,7 @@ public function postEntry($options = array()) {
      'entry_atom_id' => $atomid,
      'entry_week_number' => date('YW'),
     );
-    if (!$this->db->updateItem('mt_entry',$thisentry,$entrydata,array('field'=>'entry_id'))) {
+    if (!$this->db->updateItem('entry',$thisentry,$entrydata,array('field'=>'entry_id'))) {
      $this->writeLog('[WARNING] Entry save did not complete and was left in bad state ID:'.$thisentry,'errorlog');
      throw new Exception('Entry save did not complete, in bad state');
     }
@@ -103,10 +103,12 @@ public function editEntry($value, $options = array()) {
    $updatedata[$o] = $options[$o];
   }
  }
- if (!$this->db->updateItem('mt_entry',$value,$updatedata,array('field'=>'entry_id'))) {
+ if (!$this->db->updateItem('entry',$value,$updatedata,array('field'=>'entry_id'))) {
   $this->writeLog('Edit Entry failed to update. ID:'.$value,'errorlog');
   throw new Exception('Entry edit failed');
  }
+}
+ $this->clearCache(array('token'=>$this->getAPIToken()));
  return $this->api_call_finish(TRUE);
 }
 
@@ -120,13 +122,13 @@ public function getEntry($value, $options = array()) {
  extract($setup_result = $this->api_call_setup($setup));
  switch($options['callby']) {//seems like these sql calls could use getTable for the time being
   case 'basename':
-   $sql = "SELECT * FROM `mt_entry` WHERE entry_blog_id='".$this->db->sqlClean($options['blogid'])."' AND entry_basename='".$this->db->sqlClean($value)."'";
+   $sql = "SELECT * FROM `entry` WHERE entry_blog_id='".$this->db->sqlClean($options['blogid'])."' AND entry_basename='".$this->db->sqlClean($value)."'";
   break;
   case 'id':
-   $sql = "SELECT * FROM `mt_entry` WHERE entry_blog_id='".$this->db->sqlClean($options['blogid'])."' AND entry_id='".$this->db->sqlClean($value)."'";
+   $sql = "SELECT * FROM `entry` WHERE entry_blog_id='".$this->db->sqlClean($options['blogid'])."' AND entry_id='".$this->db->sqlClean($value)."'";
   break;
  }
- $result = $this->db->directProcessQuery($sql,'mt_entry',array('cache'=>$options['cache'],'htmlParse'=>FALSE));
+ $result = $this->db->directProcessQuery($sql,'entry',array('cache'=>$options['cache'],'htmlParse'=>FALSE));
  if ($result) {
   $result['entry_raw'] = $result['entry_text'];
   //hack to use current image tags to display images
@@ -178,8 +180,8 @@ public function prevEntry($id, $options = array()) {//where is very open
   'where' => '1'
  );
  extract($setup_result = $this->api_call_setup($setup));
- $sql = "select max(entry_id) FROM `mt_entry` WHERE (entry_id < ".$this->db->sqlClean($id)." AND entry_blog_id =".$this->db->sqlClean($options['blogid'])." AND ".$options['where'].")";
- $result = $this->db->directProcessQuery($sql,'mt_entry',array('return'=>'single','cache'=>TRUE));
+ $sql = "select max(entry_id) FROM `entry` WHERE (entry_id < ".$this->db->sqlClean($id)." AND entry_blog_id =".$this->db->sqlClean($options['blogid'])." AND ".$options['where'].")";
+ $result = $this->db->directProcessQuery($sql,'entry',array('return'=>'single','cache'=>TRUE));
  return $this->api_call_finish($result);
 }
 
@@ -190,8 +192,8 @@ public function nextEntry($id, $options = array()) {//where is very open
   'where' => '1'
  );
  extract($setup_result = $this->api_call_setup($setup));
- $sql = "select min(entry_id) FROM `mt_entry` WHERE (entry_id > ".$this->db->sqlClean($id)." AND entry_blog_id = ".$this->db->sqlClean($options['blogid'])." AND ".$options['where'].")";
- $result = $this->db->directProcessQuery($sql,'mt_entry',array('return'=>'single','cache'=>TRUE));
+ $sql = "select min(entry_id) FROM `entry` WHERE (entry_id > ".$this->db->sqlClean($id)." AND entry_blog_id = ".$this->db->sqlClean($options['blogid'])." AND ".$options['where'].")";
+ $result = $this->db->directProcessQuery($sql,'entry',array('return'=>'single','cache'=>TRUE));
  return $this->api_call_finish($result);
 }
 
@@ -202,8 +204,8 @@ public function lastEntry($options = array()) {//where is very open
   'where' => '1'
  );
  extract($setup_result = $this->api_call_setup($setup));
- $sql = "select max(entry_id) FROM `mt_entry` WHERE (entry_blog_id = ".$this->db->sqlClean($options['blogid'])." AND ".$options['where'].")";
- $result = $this->db->directProcessQuery($sql,'mt_entry',array('return'=>'single','cache'=>TRUE));
+ $sql = "select max(entry_id) FROM `entry` WHERE (entry_blog_id = ".$this->db->sqlClean($options['blogid'])." AND ".$options['where'].")";
+ $result = $this->db->directProcessQuery($sql,'entry',array('return'=>'single','cache'=>TRUE));
  return $this->api_call_finish($result);
 }
 
@@ -376,7 +378,7 @@ public function getCat($catid, $options = array()) {
  $dboptions = array(
   'field' => $options['field']
  );
- $cat = $this->db->getItem('mt_category',$catid,$dboptions);
+ $cat = $this->db->getItem('category',$catid,$dboptions);
  if ($cat) return $this->api_call_finish($cat);
  $this->writeLog('Category not found: '.$catid,'errorlog');
  throw new UnexpectedValueException('Category not found',1000);
@@ -389,7 +391,7 @@ public function getCatList($options = array()) {
   'key' => 'category_id',
   'orderBy' => '`category_id`'
  );
- return $this->api_call_finish($this->db->getTable('mt_category',$dboptions));
+ return $this->api_call_finish($this->db->getTable('category',$dboptions));
 }
 
 /**********************************
@@ -815,8 +817,8 @@ public function search($term, $options = array()) {
   'blogid' => '2'
  );
  extract($setup_result = $this->api_call_setup($setup));
- $sql = 'SELECT entry_id FROM `mt_entry` WHERE entry_blog_id = "'.$this->db->sqlClean($options['blogid']).'" AND MATCH (entry_keywords,entry_title,entry_excerpt) AGAINST ("'.$this->db->sqlClean($term).'");';
- $sqlresults = $this->db->directProcessMultiQuery($sql,'mt_entry',array('sortkey'=>'entry_id'));
+ $sql = 'SELECT entry_id FROM `entry` WHERE entry_blog_id = "'.$this->db->sqlClean($options['blogid']).'" AND MATCH (entry_keywords,entry_title,entry_excerpt) AGAINST ("'.$this->db->sqlClean($term).'");';
+ $sqlresults = $this->db->directProcessMultiQuery($sql,'entry',array('sortkey'=>'entry_id'));
  $count = 0;
  if ($sqlresults) {
   foreach($sqlresults as $sqlresult) {
