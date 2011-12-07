@@ -107,7 +107,6 @@ public function editEntry($value, $options = array()) {
   $this->writeLog('Edit Entry failed to update. ID:'.$value,'errorlog');
   throw new Exception('Entry edit failed');
  }
->>>>>>> stable
  $this->clearCache(array('token'=>$this->getAPIToken()));
  return $this->api_call_finish(TRUE);
 }
