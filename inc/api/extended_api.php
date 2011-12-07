@@ -58,7 +58,7 @@ public function getMonthlyEntries($month, $year, $options = array()) {
   'orderBy' => 'entry_id DESC',
   'key' => 'entry_id'
  );
- $entry_list = $this->db->getTable('mt_entry',$dboptions);
+ $entry_list = $this->db->getTable('entry',$dboptions);
  if (!$entry_list) throw new Exception('Month not found',1000);
  foreach ($entry_list as $entry) {
   $entries[$entry['entry_id']] = $this->getEntry($entry['entry_id'],array('callby'=>'id'));
