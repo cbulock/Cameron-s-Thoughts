@@ -24,7 +24,6 @@ public function getTable($table, $options = array()) {
   'htmlParse' => TRUE
  );
  $options = $this->setOptions($options,$defaults);
- $this->selectDatabase($table, $options['database']);
  $sql = 'SELECT * FROM `'.$table.'` WHERE '.$options['where'].' ORDER BY '.$options['orderBy'].' LIMIT '.$options['limit'];
  return $this->sqlProcessMulti($sql,array('sortkey'=>$options['key'],'cache'=>$options['cache'],'expires'=>$options['expires'],'htmlParse'=>$options['htmlParse']));
 }
@@ -36,7 +35,6 @@ public function getItem($table, $value, $options = array()) {
   'expires' => DEFAULT_CACHE_EXPIRES
  );
  $options = $this->setOptions($options,$defaults);
- $this->selectDatabase($table, $options['database']);
  $sql = 'SELECT * FROM `'.$table.'` WHERE `'.$this->sqlClean($options['field']).'` = \''.$this->sqlClean($value).'\'';
  return $this->sqlProcess($sql,$options);
 }
@@ -44,7 +42,6 @@ public function getItem($table, $value, $options = array()) {
 public function insertItem($table, $data, $options = array()) {
  $defaults = array();
  $options = $this->setOptions($options,$defaults);
- $this->selectDatabase($table, $options['database']);
  foreach($data as $key => $val)
  {
   $keys .= '`'.$key.'`,';
@@ -67,7 +64,6 @@ public function updateItem($table, $value, $data, $options = array()) {
   'field' => 'id'
  );
  $options = $this->setOptions($options,$defaults);
- $this->selectDatabase($table, $options['database']);
  $sql = 'UPDATE `'.$table.'` SET ';
  foreach($data as $key => $val) {
   $sql .= '`'.$key.'`=\''.$this->sqlclean($val).'\', ';
@@ -82,7 +78,6 @@ public function deleteItem($table, $value, $options = array()) {
   'field' => 'id'
  );
  $options = $this->setOptions($options,$defaults);
- $this->selectDatabase($table, $options['database']);
  $sql = 'DELETE FROM `'.$table.'` WHERE `'.$this->sqlClean($options['field']).'` = \''.$this->sqlclean($value) . '\'';
  return $this->sqlQuery($sql); //investigate if more should be returned
 }
@@ -98,23 +93,6 @@ private function sqlQuery($sql, $options = array()) {
 /**********************************
    Helper Functions
 **********************************/
-
-private function selectDatabase($table, $db=NULL) {
- mysql_select_db($this->determineDatabase($table, $db),$this->link);
-}
-
-private function determineDatabase($table, $db=NULL) { //$table can be overloaded with $db value
- if ($db) return $db;
- $databases[$this->dbprefix.'accesslog'] = array($this->dbprefix.'accesslog','referers','sessions');
- $databases[$this->dbprefix.'cbulock'] = array($this->dbprefix.'cbulock','ads','ads_cat','blockedips','filters','guid_admins','images','quotes','settings','styles','users','comments','api_methods','api_parameters','api_method_category');
- $databases[$this->dbprefix.'mt2'] = array($this->dbprefix.'mt2','mt_blog','mt_entry','mt_category','mt_placement');
- $databases[$this->dbprefix.'ct3'] = array($this->dbprefix.'ct3','settings');
- foreach ($databases as $dbname => $database) {
-  foreach ($database as $tablename) {
-   if ($tablename == $table) return $dbname;
-  }
- }
-}
 
 private function setOptions($options, $defaults) {
  foreach($defaults as $option => $value)
@@ -221,15 +199,14 @@ public function sqlClean($str) {
    Core Functions
 **********************************/
 
-public function __construct($host,$user,$pass,$options = array()) {
+public function __construct($host,$user,$pass,$name,$options = array()) {
  $defaults = array(
-  'prefix' => 'cbulock_',
   'cache' => NULL
  );
  $options = $this->setOptions($options, $defaults);
  if ($options['cache']) $this->cache = $options['cache'];
  $this->link = mysql_connect($host,$user,$pass);
- $this->dbprefix = $options['prefix'];
+ mysql_select_db($name,$this->link);
 }
 
 public function __destruct() {
@@ -255,21 +232,18 @@ public function getQueryLog() {
  return $this->queryLog;
 }
 
-public function directQuery($sql,$db) { //this should rarely be used
+public function directQuery($sql) { //this should rarely be used
  $this->directQueryCount++; 
- $this->selectDatabase($db);
  return $this->sqlQuery($sql);
 }
 
-public function directProcessQuery($sql,$db,$options = array()) {
+public function directProcessQuery($sql,$options = array()) {
  $this->directQueryCount++;
- $this->selectDatabase($db);
  return $this->sqlProcess($sql,$options);
 }
 
-public function directProcessMultiQuery($sql,$db,$options = array()) {
+public function directProcessMultiQuery($sql,$options = array()) {
  $this->directQueryCount++;
- $this->selectDatabase($db);
  return $this->sqlProcessMulti($sql,$options);
 }
 
