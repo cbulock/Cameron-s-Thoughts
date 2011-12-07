@@ -129,11 +129,6 @@ public function getEntry($value, $options = array()) {
  $result = $this->db->directProcessQuery($sql,'mt_entry',array('cache'=>$options['cache'],'htmlParse'=>FALSE));
  if ($result) {
   $result['entry_raw'] = $result['entry_text'];
-  //process text
-  $filters = $this->getFilters();
-  foreach ($filters as $filter) {
-    if ($filter['enabled'] == '1') $result['entry_text'] = preg_replace(html_entity_decode($filter['filter']),html_entity_decode($filter['replacement']),$result['entry_text']);
-  }
   //hack to use current image tags to display images
    if (preg_match_all("/\<\?php echo image\(\"(.*?)\"\)\;\?\>/",$result['entry_text'],$images)) {
    foreach($images[1] as $i => $image) {
@@ -787,17 +782,24 @@ public function getSettingList($options = array()) {
  return $this->api_call_finish($settings);
 }
 
-protected function getFilters($options = array()) {
+public function editSetting($name, $options = array()) {
  $setup['options'] = $options;
- $setup['defaults'] = array(
-  'expires' => 1440
+ $setup['perms'] = array(
+  'admin'
  );
  extract($setup_result = $this->api_call_setup($setup));
- $dboptions = array(
-  'htmlParse' => FALSE
- );
- $filters = $this->db->getTable('filters',$dboptions);
- return $this->api_call_finish($filters);
+ $setting = $this->getSetting($name);
+
+ $settingdata = array();
+ if (isset($options['value'])) $settingdata['value'] = $options['value'];
+ if (isset($options['public'])) $settingdata['public'] = $options['public']; 
+ 
+ if ($this->db->updateItem('settings',$setting[id],$settingdata)) {
+  $this->clearCache(array('token'=>$this->getAPIToken()));
+  return $this->api_call_finish(TRUE);
+ }
+ $this->writeLog('Setting edit failed for setting '.$name,'errorlog');
+ throw new Exception('There was an error saving the setting');
 }
 
 public function getImageDetails($name, $options = array()) {
