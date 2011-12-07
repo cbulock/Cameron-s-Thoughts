@@ -127,7 +127,7 @@ public function getEntry($value, $options = array()) {
    $sql = "SELECT * FROM `entry` WHERE entry_blog_id='".$this->db->sqlClean($options['blogid'])."' AND entry_id='".$this->db->sqlClean($value)."'";
   break;
  }
- $result = $this->db->directProcessQuery($sql,'entry',array('cache'=>$options['cache'],'htmlParse'=>FALSE));
+ $result = $this->db->directProcessQuery($sql,array('cache'=>$options['cache'],'htmlParse'=>FALSE));
  if ($result) {
   $result['entry_raw'] = $result['entry_text'];
   //hack to use current image tags to display images
@@ -180,7 +180,7 @@ public function prevEntry($id, $options = array()) {//where is very open
  );
  extract($setup_result = $this->api_call_setup($setup));
  $sql = "select max(entry_id) FROM `entry` WHERE (entry_id < ".$this->db->sqlClean($id)." AND entry_blog_id =".$this->db->sqlClean($options['blogid'])." AND ".$options['where'].")";
- $result = $this->db->directProcessQuery($sql,'entry',array('return'=>'single','cache'=>TRUE));
+ $result = $this->db->directProcessQuery($sql,array('return'=>'single','cache'=>TRUE));
  return $this->api_call_finish($result);
 }
 
@@ -192,7 +192,7 @@ public function nextEntry($id, $options = array()) {//where is very open
  );
  extract($setup_result = $this->api_call_setup($setup));
  $sql = "select min(entry_id) FROM `entry` WHERE (entry_id > ".$this->db->sqlClean($id)." AND entry_blog_id = ".$this->db->sqlClean($options['blogid'])." AND ".$options['where'].")";
- $result = $this->db->directProcessQuery($sql,'entry',array('return'=>'single','cache'=>TRUE));
+ $result = $this->db->directProcessQuery($sql,array('return'=>'single','cache'=>TRUE));
  return $this->api_call_finish($result);
 }
 
@@ -204,7 +204,7 @@ public function lastEntry($options = array()) {//where is very open
  );
  extract($setup_result = $this->api_call_setup($setup));
  $sql = "select max(entry_id) FROM `entry` WHERE (entry_blog_id = ".$this->db->sqlClean($options['blogid'])." AND ".$options['where'].")";
- $result = $this->db->directProcessQuery($sql,'entry',array('return'=>'single','cache'=>TRUE));
+ $result = $this->db->directProcessQuery($sql,array('return'=>'single','cache'=>TRUE));
  return $this->api_call_finish($result);
 }
 
@@ -221,7 +221,7 @@ function commentCount($postid, $options = array()) {
  );
  extract($setup_result = $this->api_call_setup($setup));
  $sql = "SELECT COUNT(*) FROM `comments` WHERE blogid = '".$this->db->sqlClean($options['blogid'])."' AND postid = '".$this->db->sqlClean($postid)."'";
- $result = $this->db->directProcessQuery($sql,'comments',array('return'=>'single','cache'=>$options['cache'],'expires'=>$options['expires']));
+ $result = $this->db->directProcessQuery($sql,array('return'=>'single','cache'=>$options['cache'],'expires'=>$options['expires']));
  return $this->api_call_finish($result);
 }
 
@@ -817,7 +817,7 @@ public function search($term, $options = array()) {
  );
  extract($setup_result = $this->api_call_setup($setup));
  $sql = 'SELECT entry_id FROM `entry` WHERE entry_blog_id = "'.$this->db->sqlClean($options['blogid']).'" AND MATCH (entry_keywords,entry_title,entry_excerpt) AGAINST ("'.$this->db->sqlClean($term).'");';
- $sqlresults = $this->db->directProcessMultiQuery($sql,'entry',array('sortkey'=>'entry_id'));
+ $sqlresults = $this->db->directProcessMultiQuery($sql,array('sortkey'=>'entry_id'));
  $count = 0;
  if ($sqlresults) {
   foreach($sqlresults as $sqlresult) {
@@ -948,7 +948,7 @@ public function __construct() {
  $this->cache = new Cache;
  //connect to database
  require_once('db.php');
- $this->db = new DB(DB_HOST,DB_USER,DB_PASS,array('prefix'=>DB_PREFIX,'cache'=>$this->cache));
+ $this->db = new DB(DB_HOST,DB_USER,DB_PASS,DB_NAME,array('cache'=>$this->cache));
  //setup user token/login
  if ($_COOKIE['guid']) {
   $this->tokenLogin($_COOKIE['guid']);
