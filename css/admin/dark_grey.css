@@ -194,12 +194,15 @@ textarea#postText, textarea#postExcerpt, textarea#commentText, input#postKeyword
 input#postTitle { width: 400px; }
 nav {
   float: left;
-  width: 140px;
+  width: 120px;
 }
-nav li { list-style: none; }
+nav ul {
+  list-style: none;
+  padding: 0;
+}
 article {
   float: right;
-  width: 930px;
+  width: 950px;
 }
 footer { clear: both; }
 #notice_box {
