@@ -32,7 +32,7 @@ function loadArgs() {
 	$('.args').remove();
 	args = $.ct.call('getMethodParameters',[$('#method option:selected').attr('method')]);
 	for (i in args) {
-		addArgs(args[i].value,args[i].required);
+		addArgs(args[i].value,args[i].url_param);
 	} 
 }
 

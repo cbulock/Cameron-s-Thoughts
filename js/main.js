@@ -27,11 +27,11 @@ $(document).ready(function() {
   xfbml : true
  });
  FB.getLoginStatus(function(response) {
-  if (response.status == 'notConnected') {
+  if (response.status === 'notConnected') {
    $('#signup').hide();
    $('#fb_login').show();
   }
-  if (response.status == 'connected') {
+  if (response.status === 'connected') {
    if (!call('getAuthUser')) {
     FB.api('/me', function(response) {
      opt = {pass: response.email};
@@ -120,7 +120,7 @@ show = ({
      modal: true,
      buttons: {
       'Sign Up': function() {
-       if ($('#pass').attr('value')==$('#pass2').attr('value')){
+       if ($('#pass').attr('value')===$('#pass2').attr('value')){
         opt = {
          pass : $('#pass').attr('value'),
          name : $('#fullname').attr('value'),

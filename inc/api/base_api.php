@@ -45,7 +45,7 @@ public function postEntry($options = array()) {
  catch (UnexpectedValueException $e) {
   switch ($e->getCode()) {
    case 1000:
-    $thisentry = $this->db->insertItem('mt_entry',array());
+    $thisentry = $this->db->insertItem('entry',array());
     if (!$thisentry) {
      $this->writeLog('Entry failed to save: '.$options['title'],'errorlog');
      throw new Exception('Entry failed to save');
@@ -68,7 +68,7 @@ public function postEntry($options = array()) {
      'entry_atom_id' => $atomid,
      'entry_week_number' => date('YW'),
     );
-    if (!$this->db->updateItem('mt_entry',$thisentry,$entrydata,array('field'=>'entry_id'))) {
+    if (!$this->db->updateItem('entry',$thisentry,$entrydata,array('field'=>'entry_id'))) {
      $this->writeLog('[WARNING] Entry save did not complete and was left in bad state ID:'.$thisentry,'errorlog');
      throw new Exception('Entry save did not complete, in bad state');
     }
@@ -103,7 +103,7 @@ public function editEntry($value, $options = array()) {
    $updatedata[$o] = $options[$o];
   }
  }
- if (!$this->db->updateItem('mt_entry',$value,$updatedata,array('field'=>'entry_id'))) {
+ if (!$this->db->updateItem('entry',$value,$updatedata,array('field'=>'entry_id'))) {
   $this->writeLog('Edit Entry failed to update. ID:'.$value,'errorlog');
   throw new Exception('Entry edit failed');
  }
@@ -121,20 +121,15 @@ public function getEntry($value, $options = array()) {
  extract($setup_result = $this->api_call_setup($setup));
  switch($options['callby']) {//seems like these sql calls could use getTable for the time being
   case 'basename':
-   $sql = "SELECT * FROM `mt_entry` WHERE entry_blog_id='".$this->db->sqlClean($options['blogid'])."' AND entry_basename='".$this->db->sqlClean($value)."'";
+   $sql = "SELECT * FROM `entry` WHERE entry_blog_id='".$this->db->sqlClean($options['blogid'])."' AND entry_basename='".$this->db->sqlClean($value)."'";
   break;
   case 'id':
-   $sql = "SELECT * FROM `mt_entry` WHERE entry_blog_id='".$this->db->sqlClean($options['blogid'])."' AND entry_id='".$this->db->sqlClean($value)."'";
+   $sql = "SELECT * FROM `entry` WHERE entry_blog_id='".$this->db->sqlClean($options['blogid'])."' AND entry_id='".$this->db->sqlClean($value)."'";
   break;
  }
- $result = $this->db->directProcessQuery($sql,'mt_entry',array('cache'=>$options['cache'],'htmlParse'=>FALSE));
+ $result = $this->db->directProcessQuery($sql,array('cache'=>$options['cache'],'htmlParse'=>FALSE));
  if ($result) {
   $result['entry_raw'] = $result['entry_text'];
-  //process text
-  $filters = $this->getFilters();
-  foreach ($filters as $filter) {
-    if ($filter['enabled'] == '1') $result['entry_text'] = preg_replace(html_entity_decode($filter['filter']),html_entity_decode($filter['replacement']),$result['entry_text']);
-  }
   //hack to use current image tags to display images
    if (preg_match_all("/\<\?php echo image\(\"(.*?)\"\)\;\?\>/",$result['entry_text'],$images)) {
    foreach($images[1] as $i => $image) {
@@ -184,8 +179,8 @@ public function prevEntry($id, $options = array()) {//where is very open
   'where' => '1'
  );
  extract($setup_result = $this->api_call_setup($setup));
- $sql = "select max(entry_id) FROM `mt_entry` WHERE (entry_id < ".$this->db->sqlClean($id)." AND entry_blog_id =".$this->db->sqlClean($options['blogid'])." AND ".$options['where'].")";
- $result = $this->db->directProcessQuery($sql,'mt_entry',array('return'=>'single','cache'=>TRUE));
+ $sql = "select max(entry_id) FROM `entry` WHERE (entry_id < ".$this->db->sqlClean($id)." AND entry_blog_id =".$this->db->sqlClean($options['blogid'])." AND ".$options['where'].")";
+ $result = $this->db->directProcessQuery($sql,array('return'=>'single','cache'=>TRUE));
  return $this->api_call_finish($result);
 }
 
@@ -196,8 +191,8 @@ public function nextEntry($id, $options = array()) {//where is very open
   'where' => '1'
  );
  extract($setup_result = $this->api_call_setup($setup));
- $sql = "select min(entry_id) FROM `mt_entry` WHERE (entry_id > ".$this->db->sqlClean($id)." AND entry_blog_id = ".$this->db->sqlClean($options['blogid'])." AND ".$options['where'].")";
- $result = $this->db->directProcessQuery($sql,'mt_entry',array('return'=>'single','cache'=>TRUE));
+ $sql = "select min(entry_id) FROM `entry` WHERE (entry_id > ".$this->db->sqlClean($id)." AND entry_blog_id = ".$this->db->sqlClean($options['blogid'])." AND ".$options['where'].")";
+ $result = $this->db->directProcessQuery($sql,array('return'=>'single','cache'=>TRUE));
  return $this->api_call_finish($result);
 }
 
@@ -208,8 +203,8 @@ public function lastEntry($options = array()) {//where is very open
   'where' => '1'
  );
  extract($setup_result = $this->api_call_setup($setup));
- $sql = "select max(entry_id) FROM `mt_entry` WHERE (entry_blog_id = ".$this->db->sqlClean($options['blogid'])." AND ".$options['where'].")";
- $result = $this->db->directProcessQuery($sql,'mt_entry',array('return'=>'single','cache'=>TRUE));
+ $sql = "select max(entry_id) FROM `entry` WHERE (entry_blog_id = ".$this->db->sqlClean($options['blogid'])." AND ".$options['where'].")";
+ $result = $this->db->directProcessQuery($sql,array('return'=>'single','cache'=>TRUE));
  return $this->api_call_finish($result);
 }
 
@@ -226,7 +221,7 @@ function commentCount($postid, $options = array()) {
  );
  extract($setup_result = $this->api_call_setup($setup));
  $sql = "SELECT COUNT(*) FROM `comments` WHERE blogid = '".$this->db->sqlClean($options['blogid'])."' AND postid = '".$this->db->sqlClean($postid)."'";
- $result = $this->db->directProcessQuery($sql,'comments',array('return'=>'single','cache'=>$options['cache'],'expires'=>$options['expires']));
+ $result = $this->db->directProcessQuery($sql,array('return'=>'single','cache'=>$options['cache'],'expires'=>$options['expires']));
  return $this->api_call_finish($result);
 }
 
@@ -382,7 +377,7 @@ public function getCat($catid, $options = array()) {
  $dboptions = array(
   'field' => $options['field']
  );
- $cat = $this->db->getItem('mt_category',$catid,$dboptions);
+ $cat = $this->db->getItem('category',$catid,$dboptions);
  if ($cat) return $this->api_call_finish($cat);
  $this->writeLog('Category not found: '.$catid,'errorlog');
  throw new UnexpectedValueException('Category not found',1000);
@@ -395,7 +390,7 @@ public function getCatList($options = array()) {
   'key' => 'category_id',
   'orderBy' => '`category_id`'
  );
- return $this->api_call_finish($this->db->getTable('mt_category',$dboptions));
+ return $this->api_call_finish($this->db->getTable('category',$dboptions));
 }
 
 /**********************************
@@ -808,19 +803,6 @@ public function editSetting($name, $options = array()) {
  throw new Exception('There was an error saving the setting');
 }
 
-protected function getFilters($options = array()) {
- $setup['options'] = $options;
- $setup['defaults'] = array(
-  'expires' => 1440
- );
- extract($setup_result = $this->api_call_setup($setup));
- $dboptions = array(
-  'htmlParse' => FALSE
- );
- $filters = $this->db->getTable('filters',$dboptions);
- return $this->api_call_finish($filters);
-}
-
 public function getImageDetails($name, $options = array()) {
  $setup['options'] = $options;
  extract($setup_result = $this->api_call_setup($setup));
@@ -834,8 +816,8 @@ public function search($term, $options = array()) {
   'blogid' => '2'
  );
  extract($setup_result = $this->api_call_setup($setup));
- $sql = 'SELECT entry_id FROM `mt_entry` WHERE entry_blog_id = "'.$this->db->sqlClean($options['blogid']).'" AND MATCH (entry_keywords,entry_title,entry_excerpt) AGAINST ("'.$this->db->sqlClean($term).'");';
- $sqlresults = $this->db->directProcessMultiQuery($sql,'mt_entry',array('sortkey'=>'entry_id'));
+ $sql = 'SELECT entry_id FROM `entry` WHERE entry_blog_id = "'.$this->db->sqlClean($options['blogid']).'" AND MATCH (entry_keywords,entry_title,entry_excerpt) AGAINST ("'.$this->db->sqlClean($term).'");';
+ $sqlresults = $this->db->directProcessMultiQuery($sql,array('sortkey'=>'entry_id'));
  $count = 0;
  if ($sqlresults) {
   foreach($sqlresults as $sqlresult) {
@@ -900,23 +882,63 @@ public function getQueryLog($options = array()) {
  return $this->api_call_finish($this->db->getQueryLog());
 }
 
-public function getAPIMethods($options = array()) {
- return $this->api_call_finish($this->db->getTable('api_methods',array('orderBy'=>'value','key'=>'value')));
-}
-
-public function getMethodParameters($methodid, $options = array()) {
- $options = array(
-  'where' => 'method = '.$this->db->sqlClean($methodid)
- );
- return $this->api_call_finish($this->db->getTable('api_parameters',$options));
-}
-
 public function getQueryCount() {
  return $this->api_call_finish($this->db->getQueryCount());
 }
 
 public function getDirectQueryCount() {
  return $this->api_call_finish($this->db->getDirectQueryCount);
+}
+
+/**********************************
+   API Management Methods
+**********************************/
+
+public function getAPIMethod($method, $options = array()) {
+ $setup['options'] = $options;
+ $setup['defaults'] = array(
+  'callby' => 'value'
+ );
+ extract($setup_result = $this->api_call_setup($setup));
+ $dboptions = array(
+  'field' => $options['callby']
+ );
+ $method = $this->db->getItem('api_methods',$method,$dboptions);
+ $method['params'] = $this->getMethodParameters($method['id']);
+ return $this->api_call_finish($method);
+}
+
+public function getAPIMethods($options = array()) {
+ $setup['options'] = $options;
+ extract($setup_result = $this->api_call_setup($setup));
+ $results = $this->db->getTable('api_methods',array('orderBy'=>'value','key'=>'value'));
+ if ($results) {
+  foreach ($results as $key=>$result) {
+   $methods[$key] = $this->getAPIMethod($result['value']);
+  }
+ }
+ return $this->api_call_finish($methods);
+}
+
+public function getMethodParameter($paramid, $options = array()) {
+ return $this->api_call_finish($this->db->getItem('api_parameters',$paramid));
+}
+
+public function getMethodParameters($methodid, $options = array()) {
+ $options = array(
+  'where' => 'method = '.$this->db->sqlClean($methodid)
+ );
+ $results = $this->db->getTable('api_parameters',$options);
+ if ($results) {
+  foreach ($results as $key=>$result) {
+   $params[$key] = $this->getMethodParameter($result['id']);
+  }
+ }
+ return $this->api_call_finish($params);
+}
+
+public function getMethodCategories($options = array()) {
+ return $this->api_call_finish($this->db->getTable('api_method_category'));
 }
 
 /**********************************
@@ -966,7 +988,7 @@ public function __construct() {
  $this->cache = new Cache;
  //connect to database
  require_once('db.php');
- $this->db = new DB(DB_HOST,DB_USER,DB_PASS,array('prefix'=>DB_PREFIX,'cache'=>$this->cache));
+ $this->db = new DB(DB_HOST,DB_USER,DB_PASS,DB_NAME,array('cache'=>$this->cache));
  //setup user token/login
  if ($_COOKIE['guid']) {
   $this->tokenLogin($_COOKIE['guid']);
