@@ -1,4 +1,4 @@
-{include file='head.tpl' title_append='New Post'}
+{include file='head.tpl' title_append='Admin Home'}
 
 <h2>Home</h2>
 
