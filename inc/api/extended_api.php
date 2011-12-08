@@ -34,13 +34,13 @@ public function getCatEntries($catid, $options = array()) {
  );
  extract($setup_result = $this->api_call_setup($setup));
  $dboptions = array(
-  'where' => 'placement_category_id = "'.$this->db->sqlClean($catid).'" AND placement_blog_id= "'.$this->db->sqlClean($options['blogid']).'"',
-  'orderBy' => 'placement_entry_id DESC',
-  'key' => 'placement_entry_id'
+  'where' => 'entry_category_id = "'.$this->db->sqlClean($catid).'" AND entry_blog_id= "'.$this->db->sqlClean($options['blogid']).'"',
+  'orderBy' => 'entry_id DESC',
+  'key' => 'entry_id'
  );
- $entry_list = $this->db->getTable('mt_placement',$dboptions);
+ $entry_list = $this->db->getTable('entry',$dboptions);
  foreach ($entry_list as $entry) {
-  $entries[$entry['placement_entry_id']] = $this->getEntry($entry['placement_entry_id'],array('callby'=>'id'));
+  $entries[$entry['entry_id']] = $this->getEntry($entry['entry_id'],array('callby'=>'id'));
  }
  return $this->api_call_finish($entries);
 }
