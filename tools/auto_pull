@@ -1,0 +1,6 @@
+#! /bin/bash
+
+cd ~/public_html
+/usr/bin/git --git-dir /home/cbulock/public_html/.git checkout stable -f
+/usr/bin/git --git-dir /home/cbulock/public_html/.git reset --hard HEAD
+/usr/bin/git --git-dir /home/cbulock/public_html/.git pull

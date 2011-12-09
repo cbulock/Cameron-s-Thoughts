@@ -2,6 +2,6 @@
 
 {include file='header.tpl'}
 
-{include file='entry_body.tpl'}
+{include file='entry_body.tpl'}</article>
 {include file='comments.tpl'}
 {include file='footer.tpl'}

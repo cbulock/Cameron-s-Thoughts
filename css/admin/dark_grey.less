@@ -1,0 +1,258 @@
+@textcolor: #FFF;
+@hovercolor: #FF9900;
+@bgcolor: #777;
+@outbgimage: url('/css/img/random_grey_variations.png');
+@bgimage: url('/css/img/concrete_wall.png');
+@codecolor: #222;
+@commenttextcolor: #000;
+@commentbgcolor: #DCDCDC;
+@menubgcolor: #384246;
+@menuddbgcolor: #483D41;
+@menuborder: #BCBCBC;
+@import '../fonts.css';
+
+.border_radius (@size: 8px) {
+ border-radius: @size;
+ -moz-border-radius: @size;
+ -webkit-border-radius: @size;
+}
+
+.box_shadow (@hoffset: 10px, @voffset: 10px, @blur: 10px,  @color: #333) {
+ box-shadow: @hoffset @voffset @blur @color;
+ -moz-box-shadow: @hoffset @voffset @blur @color;
+ -webkit-box-shadow: @hoffset @voffset @blur @color;
+}
+
+.font (){
+ font-family: "Ubuntu", "Trebuchet MS", Trebuchet, Verdana, Tahoma, Arial, Sans-Serif;
+}
+
+.text_shadow (@color: #111, @hoffset: 1px, @voffset: 1px, @blur: 3px) {
+ text-shadow: @color @hoffset @voffset @blur;
+}
+
+body
+{
+ .font;
+ font-size: 0.9em;
+ background-color: @bgcolor;
+ background-image: @bgimage;
+ .text_shadow;
+ color: @textcolor;
+ margin: 0;
+ padding: 1em;
+}
+
+html
+{
+ margin:0 auto;
+ padding:0;
+ width:1100px;
+ background-image: @outbgimage;
+}
+
+a {
+ color: @textcolor;
+ text-decoration: none;
+ :hover {
+  text-decoration: underline;
+  color: @hovercolor;
+ }
+ :visited {
+  color: @textcolor;
+  :hover {
+   color: @hovercolor;
+  }
+ }
+}
+
+code, pre {
+ display: block;
+ overflow: auto;
+ font-family: AndaleMonoRegular, 'Lucida Console', 'Bitstream Vera Sans Mono', 'Courier New', Monaco, Courier, monospace;
+ color: @textcolor;
+ background-color: @codecolor;
+ .border_radius;
+ .box_shadow;
+ padding: 0.8em;
+ margin: 0.3em 0.1em 0.3em 0.1em;
+}
+
+fieldset
+{
+ width: 10em;
+}
+
+body > header {
+ text-align: center;
+}
+
+h1 {
+ text-align: center;
+}
+
+h1, h2, h3, h4, h5 {
+ font-family: UbuntuBold, Arial, sans-serif;
+ font-weight: bold;
+ clear:both;
+ a {
+  text-decoration: none;
+  color: @textcolor;
+  .text_shadow(#111, 2px, 2px, 4px);
+  :hover {
+   text-decoration: underline;
+   color: @textcolor;
+  }
+  :visited {
+   color: @textcolor;
+  }
+ }
+}
+
+img
+{
+ border:none;
+}
+
+input:focus, textarea:focus 
+{
+ padding: 1px;
+}
+
+input, textarea, select
+{
+ padding: 1px;
+}
+
+table {
+ border-collapse:collapse;
+}
+
+td, th {
+ padding: 4px;
+ border: 1px solid white;
+}
+
+th {
+ background-color:#384246;
+}
+
+textarea#postText, textarea#postExcerpt, textarea#commentText, input#postKeywords {
+ width: 650px;
+}
+
+input#postTitle {
+ width: 400px;
+}
+
+nav {
+ float:left;
+ width: 120px;
+}
+
+nav ul {
+ list-style: none;
+ padding: 0;
+}
+
+article {
+ float:right;
+ width: 950px;
+}
+
+footer {
+ clear:both;
+}
+
+#notice_box {
+ display: none;
+ padding: 6px 0 6px 0;
+ margin: 0;
+ position: fixed;
+ top: 0px;
+ left: 0px;
+ width: 100%;
+ z-index:5;
+ h1 {
+  padding-left:25%;
+  padding-right:1em;
+  font-size: 1.1em;
+  display:inline;
+ }
+ p {
+  display:inline;
+ }
+ button {
+  font-size: 68%;
+  color: white;
+  .text_shadow;
+  }
+ #notice_close {
+  position: fixed;
+  top: 2px;
+  right:4px;
+ }
+ #notice_nav {
+  position: fixed;
+  top: 2px;
+  right: 75px;
+ }
+}
+
+#notice_box.error {
+ background-color: rgba(255,0,0,0.7);
+ button {
+  background-color:red;
+  border-color:red;
+  span {
+   background-color:red;
+  }
+ }
+}
+
+#notice_box.warn {
+ background-color: rgba(255,255,0,0.7);
+ button {
+  background-color:yellow;
+  border-color:yellow;
+  span {
+   background-color:yellow;
+  }
+ }
+}
+
+#notice_box.info {
+ background-color: rgba(0,192,0,0.7);
+ button {
+  background-color:green;
+  border-color:green;
+  span {
+   background-color:green;
+  }
+ }
+} 
+
+.ui-dialog #login_box {
+ text-align: right;
+}
+
+#throbber {
+ top: 10px;
+ right: 75px;
+ width: 30px;
+ position: fixed;
+ z-index:10;
+}
+
+.comment {
+ padding: 5px;
+ margin: 4px;
+ .border_radius;
+ border-style:solid;
+ border-width: 2px;
+ border-color: black;
+}
+
+.comment_footer {
+ font-size: 70%;
+}

@@ -1,5 +1,5 @@
 <?php
-
+$template = 'static.tpl';
 require_once('pages.inc');
 
 $entry = $ct->getEntry($basename,array('blogid'=>3));
@@ -14,6 +14,6 @@ $tpl->assign('comment_count_text',$comment_count_text);
 $tpl->assign('query_count',$ct->getQueryCount());
 $tpl->assign('cache_count',$ct->getCacheCount());
 
-$tpl->display('static.tpl');
+require_once('display.inc');
 ?>
 

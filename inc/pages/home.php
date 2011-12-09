@@ -1,5 +1,5 @@
 <?php
-
+$template = 'home.tpl';
 require_once('pages.inc');
 
 $mainpage_count = $ct->getSetting('mainpage_count');
@@ -11,5 +11,5 @@ $tpl->assign('entries',$entries);
 $tpl->assign('query_count',$ct->getQueryCount());
 $tpl->assign('cache_count',$ct->getCacheCount());
 
-$tpl->display('home.tpl');
+require_once('display.inc');
 ?>

@@ -1,0 +1,3 @@
+<?php
+$tpl->display($template);
+?>

@@ -1,5 +1,5 @@
 <?php
-
+$template = 'error.tpl';
 require_once('pages.inc');
 
 header("HTTP/1.0 ".$errornum);
@@ -14,5 +14,5 @@ include('stats.inc');
 $tpl->assign('errornum',$errornum);
 $tpl->assign('message',$message[$errornum]);
 
-$tpl->display('error.tpl');
+require_once('display.inc');
 ?>

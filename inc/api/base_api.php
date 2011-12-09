@@ -7,21 +7,10 @@ protected $db;		//database connection
 protected $guid;	//user token
 protected $token;	//internal token
 protected $log;		//log file
+protected $errorlog;	//error log file
 protected $user;	//authenticated user
 protected $status;      //external status object
 protected $cache;	//cache
-
-/*API Method Template
-public function nameName($options = array()) {
- $setup['options'] = $options;
- $setup['defaults'] = array(
-  'setting' => 'value',
- );
- extract($setup_result = $this->api_call_setup($setup));
- <code goes here>
- return $this->api_call_finish($result);
-}
-*/
 
 /**********************************
    Entry Methods
@@ -35,34 +24,33 @@ public function postEntry($options = array()) {
   'excerpt' => '',
   'keywords' => ''
  );
+ $setup['perms'] = array(
+  'admin'
+ );
  extract($setup_result = $this->api_call_setup($setup));
- $user = $this->getAuthUser();
- if ($user['type'] != 'admin') throw new Exception('Must be Admin to do this',403);
- if (!$options['title']) throw new Exception('Missing Title');
- if (!$options['text']) throw new Exception('Missing Text');
+ if (!$options['title']) {
+  $this->writeLog('Missing title when posting entry','errorlog');
+  throw new Exception('Missing Title');
+ }
+ if (!$options['text']) {
+  $this->writeLog('Missing text when posting entry','errorlog');
+  throw new Exception('Missing Text');
+ }
  $basename = strtolower(trim($options['title']));
  $basename = ereg_replace("[^ A-Za-z0-9_]", "", $basename);
  $basename = str_replace(" ", "_", $basename);
  try {//need to verify basename doesn't already exist
   $this->getEntry($basename,array('blogid'=>$options['blogid'],'cache'=>FALSE));
  }
- catch (exception $e) {
+ catch (UnexpectedValueException $e) {
   switch ($e->getCode()) {
    case 1000:
-    $thisentry = $this->db->insertItem('mt_entry',array());
-    if (!$thisentry) throw new Exception('Entry failed to save');
-
+    $thisentry = $this->db->insertItem('entry',array());
+    if (!$thisentry) {
+     $this->writeLog('Entry failed to save: '.$options['title'],'errorlog');
+     throw new Exception('Entry failed to save');
+    }
     $atomid = 'tag:www.cbulock.com,'.date('Y').'://'.$options['blogid'].'.'.$thisentry;
-    if ($options['category']) {//I think this still posts when not existing
-     $catoptions = array(
-      'placement_entry_id' => $thisentry,
-      'placement_blog_id' => $options['blogid'],
-      'placement_category_id' => $options['category'],
-      'placement_is_primary' => '1'
-     );
-     $this->db->insertItem('mt_placement',$catoptions);
-    };
-
     $entrydata = array(
      'entry_blog_id' => $options['blogid'],
      'entry_status' => '2',
@@ -74,21 +62,53 @@ public function postEntry($options = array()) {
      'entry_excerpt' => $options['excerpt'],
      'entry_text' => $options['text'],
      'entry_keywords' => $options['keywords'],
+     'entry_category_id' => $options['category'],
      'entry_created_on' => date('Y-m-d H:i:s'),
      'entry_basename' => $basename,
      'entry_atom_id' => $atomid,
      'entry_week_number' => date('YW'),
     );
-    if (!$this->db->updateItem('mt_entry',$thisentry,$entrydata,array('field'=>'entry_id'))) throw new Exception('Entry save did not complete, in bad state');
-
-    $this->clearCache();//there are random issues if cache isn't cleared
+    if (!$this->db->updateItem('entry',$thisentry,$entrydata,array('field'=>'entry_id'))) {
+     $this->writeLog('[WARNING] Entry save did not complete and was left in bad state ID:'.$thisentry,'errorlog');
+     throw new Exception('Entry save did not complete, in bad state');
+    }
+    $this->clearCache(array('token'=>$this->getAPIToken()));//there are random issues if cache isn't cleared
     $this->newEntryStatus($thisentry);
+    $this->writeLog('New entry posted. ID:'.$thisentry.' Title: '.$options['title']);
     return $this->api_call_finish(TRUE); //i'd like to return an array of useful data, like entryid for instance
    default:
     throw new Exception($e);
   }
  }
+ $this->writeLog('Basename conflict: '.$basename,'errorlog');
  throw new Exception('Basename conflict');
+}
+
+public function editEntry($value, $options = array()) {
+ $setup['options'] = $options;
+ $setup['perms'] = array(
+  'admin'
+ );
+ extract($setup_result = $this->api_call_setup($setup));
+ $allowedoptions = array(
+  'entry_title',
+  'entry_category_id',
+  'entry_text',
+  'entry_excerpt',
+  'entry_keywords',
+  'convert_breaks'
+ );
+ foreach($allowedoptions as $o) {
+  if (isset($options[$o])) {
+   $updatedata[$o] = $options[$o];
+  }
+ }
+ if (!$this->db->updateItem('entry',$value,$updatedata,array('field'=>'entry_id'))) {
+  $this->writeLog('Edit Entry failed to update. ID:'.$value,'errorlog');
+  throw new Exception('Entry edit failed');
+ }
+ $this->clearCache(array('token'=>$this->getAPIToken()));
+ return $this->api_call_finish(TRUE);
 }
 
 public function getEntry($value, $options = array()) {
@@ -101,20 +121,15 @@ public function getEntry($value, $options = array()) {
  extract($setup_result = $this->api_call_setup($setup));
  switch($options['callby']) {//seems like these sql calls could use getTable for the time being
   case 'basename':
-   $sql = "SELECT * FROM `mt_entry` WHERE entry_blog_id='".$this->db->sqlClean($options['blogid'])."' AND entry_basename='".$this->db->sqlClean($value)."'";
+   $sql = "SELECT * FROM `entry` WHERE entry_blog_id='".$this->db->sqlClean($options['blogid'])."' AND entry_basename='".$this->db->sqlClean($value)."'";
   break;
   case 'id':
-   $sql = "SELECT * FROM `mt_entry` WHERE entry_blog_id='".$this->db->sqlClean($options['blogid'])."' AND entry_id='".$this->db->sqlClean($value)."'";
+   $sql = "SELECT * FROM `entry` WHERE entry_blog_id='".$this->db->sqlClean($options['blogid'])."' AND entry_id='".$this->db->sqlClean($value)."'";
   break;
  }
- $result = $this->db->directProcessQuery($sql,'mt_entry',array('cache'=>$options['cache'],'htmlParse'=>FALSE));
+ $result = $this->db->directProcessQuery($sql,array('cache'=>$options['cache'],'htmlParse'=>FALSE));
  if ($result) {
   $result['entry_raw'] = $result['entry_text'];
-  //process text
-  $filters = $this->getFilters();
-  foreach ($filters as $filter) {
-    if ($filter['enabled'] == '1') $result['entry_text'] = preg_replace(html_entity_decode($filter['filter']),html_entity_decode($filter['replacement']),$result['entry_text']);
-  }
   //hack to use current image tags to display images
    if (preg_match_all("/\<\?php echo image\(\"(.*?)\"\)\;\?\>/",$result['entry_text'],$images)) {
    foreach($images[1] as $i => $image) {
@@ -140,7 +155,6 @@ public function getEntry($value, $options = array()) {
     );
    }
   }
-  
   if ($result['entry_convert_breaks']) {
    $result['entry_text'] = nl2br($result['entry_text']);
   } 
@@ -150,9 +164,12 @@ public function getEntry($value, $options = array()) {
    $result['entry_link'] = "/".$year."/".$month."/".$result['entry_basename'].".html";
   }
   $result['comment_count'] = $this->commentCount($result['entry_id'],array('blogid'=>$options['blogid']));
+  $result['prev_entry'] = $this->prevEntry($result['entry_id']);
+  $result['next_entry'] = $this->nextEntry($result['entry_id']);
   return $this->api_call_finish($result);
  }
- throw new Exception('Entry not found',1000);
+ $this->writeLog('Entry not found: '.$value,'errorlog');
+ throw new UnexpectedValueException('Entry not found',1000);
 }
 
 public function prevEntry($id, $options = array()) {//where is very open
@@ -162,8 +179,8 @@ public function prevEntry($id, $options = array()) {//where is very open
   'where' => '1'
  );
  extract($setup_result = $this->api_call_setup($setup));
- $sql = "select max(entry_id) FROM `mt_entry` WHERE (entry_id < ".$this->db->sqlClean($id)." AND entry_blog_id =".$this->db->sqlClean($options['blogid'])." AND ".$options['where'].")";
- $result = $this->db->directProcessQuery($sql,'mt_entry',array('return'=>'single','cache'=>TRUE));//going to disable caching as I believe this can be off when new entries are created (turning on now as cache is cleared during postEntry)
+ $sql = "select max(entry_id) FROM `entry` WHERE (entry_id < ".$this->db->sqlClean($id)." AND entry_blog_id =".$this->db->sqlClean($options['blogid'])." AND ".$options['where'].")";
+ $result = $this->db->directProcessQuery($sql,array('return'=>'single','cache'=>TRUE));
  return $this->api_call_finish($result);
 }
 
@@ -174,8 +191,8 @@ public function nextEntry($id, $options = array()) {//where is very open
   'where' => '1'
  );
  extract($setup_result = $this->api_call_setup($setup));
- $sql = "select min(entry_id) FROM `mt_entry` WHERE (entry_id > ".$this->db->sqlClean($id)." AND entry_blog_id = ".$this->db->sqlClean($options['blogid'])." AND ".$options['where'].")";
- $result = $this->db->directProcessQuery($sql,'mt_entry',array('return'=>'single','cache'=>TRUE));//going to disable caching as I believe this can be off when new entries are created (turning on now as cache is cleared during postEntry)
+ $sql = "select min(entry_id) FROM `entry` WHERE (entry_id > ".$this->db->sqlClean($id)." AND entry_blog_id = ".$this->db->sqlClean($options['blogid'])." AND ".$options['where'].")";
+ $result = $this->db->directProcessQuery($sql,array('return'=>'single','cache'=>TRUE));
  return $this->api_call_finish($result);
 }
 
@@ -186,8 +203,8 @@ public function lastEntry($options = array()) {//where is very open
   'where' => '1'
  );
  extract($setup_result = $this->api_call_setup($setup));
- $sql = "select max(entry_id) FROM `mt_entry` WHERE (entry_blog_id = ".$this->db->sqlClean($options['blogid'])." AND ".$options['where'].")";
- $result = $this->db->directProcessQuery($sql,'mt_entry',array('return'=>'single','cache'=>TRUE));//going to disable caching as I believe this can be off when new entries are created (turning on now as cache is cleared during postEntry)
+ $sql = "select max(entry_id) FROM `entry` WHERE (entry_blog_id = ".$this->db->sqlClean($options['blogid'])." AND ".$options['where'].")";
+ $result = $this->db->directProcessQuery($sql,array('return'=>'single','cache'=>TRUE));
  return $this->api_call_finish($result);
 }
 
@@ -204,7 +221,7 @@ function commentCount($postid, $options = array()) {
  );
  extract($setup_result = $this->api_call_setup($setup));
  $sql = "SELECT COUNT(*) FROM `comments` WHERE blogid = '".$this->db->sqlClean($options['blogid'])."' AND postid = '".$this->db->sqlClean($postid)."'";
- $result = $this->db->directProcessQuery($sql,'cbulock_cbulock',array('return'=>'single','cache'=>$options['cache'],'expires'=>$options['expires']));
+ $result = $this->db->directProcessQuery($sql,array('return'=>'single','cache'=>$options['cache'],'expires'=>$options['expires']));
  return $this->api_call_finish($result);
 }
 
@@ -226,18 +243,21 @@ public function getComment($id, $options = array()) {
    $result['url'] = $user['url'];
    $result['email'] = $user['email'];
    $result['service'] = $user['service'];
+   $result['email_hash'] = $user['email_hash'];
+   $result['avatar'] = $user['avatar'];
   }
-  $result['email_hash'] = md5($result['email']);
-  if ($auth['class']!='internal') {
+  if (!$result['email_hash']) $result['email_hash'] = md5($result['email']);
+  if (!$result['avatar']) $result['avatar'] = $this->getAvatarPath(array('email_hash' => $result['email_hash'],'service' => $result['service']));
+  if (!in_array('internal',$permassets)) {
    unset($result['email']);
   }
-  $result['avatar'] = $this->getAvatarPath($result['email_hash'],$result['service']);
  return $this->api_call_finish($result);
  }
- throw new Exception('Comment not found');
+ $this->writeLog('Comment not found: '.$id,'errorlog');
+ throw new UnexpectedValueException('Comment not found');
 }
 
-public function getComments($postid, $options = array()) {//this should be rewritten to use getComment
+public function getComments($postid, $options = array()) {
  $setup['options'] = $options;
  $setup['defaults'] = array(
   'blogid' => '2',
@@ -252,22 +272,10 @@ public function getComments($postid, $options = array()) {//this should be rewri
  $results = $this->db->getTable('comments', $tableoptions);
  if ($results) {
   foreach ($results as $key=>$result) {
-   $results[$key]['service'] = 0;
-   if ($result['user']) {
-    $user = $this->getUser($result['user'],array('callby'=>'id','token'=>$this->getAPIToken()));
-    $results[$key]['author'] = $user['name'];
-    $results[$key]['url'] = $user['url'];
-    $results[$key]['email'] = $user['email'];
-    $results[$key]['service'] = $user['service'];
-   }
-   $results[$key]['email_hash'] = md5($results[$key]['email']);
-   if ($auth['class']!='internal') {
-    unset($results[$key]['email']);
-   }
-   $results[$key]['avatar'] = $this->getAvatarPath($results[$key]['email_hash'],$results[$key]['service']);
+   $comments[$key] = $this->getComment($result['id']);
   }
  }
- return $this->api_call_finish($results);
+ return $this->api_call_finish($comments);
 }
 
 public function postComment($postid, $options = array()) {
@@ -275,10 +283,15 @@ public function postComment($postid, $options = array()) {
  $setup['defaults'] = array(
   'blogid' => '2'
  );
+ $setup['perms'] = array(
+  'user'
+ );
  extract($setup_result = $this->api_call_setup($setup));
+ if (!$options['text']) {
+  $this->writeLog('Text missing from comment','errorlog');
+  throw new Exception('Must enter text into comment box',1001);
+ }
  $user = $this->getAuthUser();
- if (!$user) throw new Exception('Must be logged in to post comment',401);
- if (!$options['text']) throw new Exception('Must enter text into comment box',1001);
  $data = array(
   'blogid' => $options['blogid'],
   'postid' => $postid,//this needs to be sanitized better
@@ -287,11 +300,20 @@ public function postComment($postid, $options = array()) {
   'text' => $options['text']
  );
  $comment = $this->db->insertItem('comments',$data);
- if (!$comment) throw new Exception('Error saving comment');
+ if (!$comment) {
+  $this->writeLog('Error saving comment','errorlog');
+  throw new Exception('Error saving comment');
+ }
+
+ $this->writeLog('New comment on entry '.$postid);
  
  //Admin Email
  $data['username'] = $user['login'];
  $data['fullname'] = $user['name'];
+ $data['userid'] = $user['id'];
+ $data['postid'] = $postid;
+ $data['id'] = $comment;
+ $data['location'] = 'http:'.LOCATION;
  $site_name = $this->getSetting('site_name');
  $mailoptions = array(
   'data' => $data,
@@ -310,19 +332,41 @@ public function postComment($postid, $options = array()) {
  return $this->api_call_finish($result);
 }
 
+public function editComment($id, $options = array()) {
+ $setup['options'] = $options;
+ $setup['perms'] = array(
+  'user'
+ );
+ extract($setup_result = $this->api_call_setup($setup));
+ if (!$options['text']) {
+  $this->writeLog('Text missing from comment','errorlog');
+  throw new Exception('Must enter text into comment box',1001);
+ }
+ $comment = $this->getComment($id);
+ $user = $this->getAuthUser();
+ if (!in_array('admin',$permassets) && ($user['id'] != $comment['user'])) {
+  $this->writeLog('Non permitted user attempting to edit comment','errorlog');
+  throw new Exception('Insufficent permissions to edit comment',403);   
+ }
+ if ($this->db->updateItem('comments',$id,array('text'=>$options['text']))) {
+  return $this->api_call_finish(TRUE);
+ }
+ $this->writeLog('Comment edit failed for comment '.$id,'errorlog');
+ throw new Exception('There was an error saving the comment');
+}
+
+public function deleteComment($id, $options = array()) {
+ $setup['options'] = $options;
+ $setup['perms'] = array(
+  'admin'
+ );
+ extract($setup_result = $this->api_call_setup($setup));
+ return $this->api_call_finish($this->db->deleteItem('comments',$id));
+}
+
 /**********************************
    Category Methods
 **********************************/
-
-public function getCatID($entryid, $options = array()) {
- $setup['options'] = $options;
- $options = array(
-  'field' => 'placement_entry_id'
- ); 
- $item = $this->db->getItem('mt_placement',$entryid,$options);
- if ($item) return $this->api_call_finish($item['placement_category_id']);
- return $this->api_call_finish(FALSE);
-}
 
 public function getCat($catid, $options = array()) {
  $setup['options'] = $options;
@@ -333,9 +377,10 @@ public function getCat($catid, $options = array()) {
  $dboptions = array(
   'field' => $options['field']
  );
- $cat = $this->db->getItem('mt_category',$catid,$dboptions);
+ $cat = $this->db->getItem('category',$catid,$dboptions);
  if ($cat) return $this->api_call_finish($cat);
- throw new Exception('Category not found',1000);
+ $this->writeLog('Category not found: '.$catid,'errorlog');
+ throw new UnexpectedValueException('Category not found',1000);
 }
 
 public function getCatList($options = array()) {
@@ -345,7 +390,7 @@ public function getCatList($options = array()) {
   'key' => 'category_id',
   'orderBy' => '`category_id`'
  );
- return $this->api_call_finish($this->db->getTable('mt_category',$dboptions));
+ return $this->api_call_finish($this->db->getTable('category',$dboptions));
 }
 
 /**********************************
@@ -357,7 +402,10 @@ public function login($user, $options = array()) {
  extract($setup_result = $this->api_call_setup($setup));
 
  $id = $this->checkPass($user,$options['pass']);
- if (!$id) throw new Exception('Authentication Failure',401);
+ if (!$id) {
+  $this->writeLog('[AUTH] Login failure: '.$user,'errorlog');
+  throw new Exception('Authentication Failure',401);
+ }
  $data = array(
   'user'=>$id,
   'guid'=>$this->getUserToken()
@@ -383,27 +431,10 @@ protected function checkPass($user,$pass) {
  return FALSE;
 }
 
-protected function methodAuth($token=NULL) {
- if ($token) {
-  switch($token) {
-   case $this->getAPIToken():
-    return array('class'=>'internal');
-   break;
-   default:
-    if (!$this->tokenLogin($token)) {
-     return FALSE;
-    } 
-  }
- }
- if (!$this->user) {
-  return FALSE;
- }
- return array('class'=>'user');
-}
-
 public function logout() {
+ unset($this->user);
  return $this->api_call_finish($this->db->deleteItem('sessions',$this->getUserToken(),array('field'=>'guid')));
-}
+} 
 
 /**********************************
    Status Methods
@@ -416,9 +447,22 @@ protected function useStatus() {
  }
 }
 
-public function getLatestStatus() {
- $this->useStatus();
- return $this->api_call_finish($this->status->getStatus(array('count'=>'1')));
+public function getLatestStatus($options = array()) {
+ $setup['options'] = $options;
+ $setup['defaults'] = array(
+  'cache' => TRUE,
+  'expires' => 180
+ );
+ extract($setup_result = $this->api_call_setup($setup));
+ if($this->cache->exists('latestStatus',$options['expires']) && $options['cache']) {
+  $status = $this->cache->read('latestStatus');
+ }
+ else { 
+  $this->useStatus();
+  $status = $this->api_call_finish($this->status->getStatus(array('count'=>'1')));
+  $this->cache->add('latestStatus',$status);
+ }
+ return $status;
 }
 
 protected function postStatus($message) {
@@ -434,7 +478,7 @@ protected function newEntryStatus($id,$options = array()) {
  );
  extract($setup_result = $this->api_call_setup($setup));
  $entry = $this->getEntry($id,array('callby'=>'id'));
- $url = 'http://www.cbulock.com'.$entry['entry_link'];//need to have the url be dynamic
+ $url = 'http:'.LOCATION.$entry['entry_link'];
  $shorturl = $this->getShortURL($url);
  $message = $options['message'].$entry['entry_title'];
  if ((strlen($message) > $options['message_max_length'])) {
@@ -447,6 +491,7 @@ protected function newEntryStatus($id,$options = array()) {
 protected function getShortURL($url) {
  $apiurl = 'http://api.bit.ly/v3/shorten?login=cbulock&apiKey='.BITLY_API_KEY.'&longUrl='.urlencode($url);
  $result = json_decode($this->callURL($apiurl));
+ $this->writeLog('Bit.ly URL recieved. LongURL: '.$url.' ShortURL: '.$result->data->url);
  return $result->data->url;
 }
 
@@ -476,6 +521,7 @@ protected function sendMail($options = array()) {
   'to_name' => 'Cameron'
  );
  extract($setup_result = $this->api_call_setup($setup));
+ $options['data']['ip'] = $remote_ip;
  require_once('email.php');
  $mail = new PHPMailer(TRUE);
  $mail->SetFrom($options['from_email'],$options['from_name']);
@@ -485,8 +531,10 @@ protected function sendMail($options = array()) {
  }
  $mail->Body = $this->getMailTemplate($options['template'],$options['data']);
  try {
- $result = $mail->Send();
- } catch (phpmailerException $e) {
+  $result = $mail->Send();
+ } 
+ catch (phpmailerException $e) {
+  $this->writeLog('PHPMailer encountered an error','errorlog');
   throw new Exception($e);
  }
  return $result;
@@ -506,12 +554,24 @@ public function createUser($login, $options = array()) {
   'service_id' => NULL
  );
  extract($setup_result = $this->api_call_setup($setup));
- if ($this->checkRBL($options['remote_ip'])) throw new Exception('IP listed on RBL, spam account rejected');
- if ($options['type']!='user' && $user['type']!='admin') throw new Exception('Must be admin to setup non-standard users');
- if (!$options['pass']) throw new Exception('Password required');
- if (!$options['email']) throw new Exception('Email required');
- if (!$this->nameFree($login)) throw new Exception('Username already taken');
- $this->clearCache();
+ $this->checkRBL($remote_ip);
+ if ($options['type']!='user' && !in_array('admin',$permassets)) {
+  $this->writeLog('Must be admin to create admin users','errorlog');
+  throw new Exception('Must be admin to setup non-standard users');
+ }
+ if (!$options['pass']) {
+  $this->writeLog('Tried to create user without password','errorlog');
+  throw new Exception('Password required');
+ }
+ if (!$options['email']) {
+  $this->writeLog('Tried to create user without email address','errorlog');
+  throw new Exception('Email required');
+ }
+ if (!$this->nameFree($login)) {
+  $this->writeLog('Tried to create user, name was already taken. Name: '.$login,'errorlog');
+  throw new Exception('Username already taken');
+ }
+ $this->clearCache(array('token'=>$this->getAPIToken()));
  $useroptions = array(
   'login' => $login,
   'pass' => md5($options['pass']),
@@ -522,7 +582,15 @@ public function createUser($login, $options = array()) {
   'service' => $options['service'],
   'service_id' => $options['service_id']
  );
- return $this->api_call_finish($this->db->insertItem('users',$useroptions));
+ $userid = $this->db->insertItem('users',$useroptions);
+ if ($userid) {
+  $this->writeLog('Created new user, '.$login.' ID:'.$userid);
+  return $userid;
+ }
+ else {
+  $this->writeLog('Error creating user '.$login,'errorlog');
+  throw new Exception('Error creating user '.$login);
+ }
 }
 
 public function nameFree($login, $options = array()) {
@@ -539,19 +607,35 @@ public function getUser($value, $options = array()) {
  $user = $this->db->getItem('users',$value,array('field'=>$options['callby']));
  if (!$user) return FALSE;//throw an exception here?
  $user['email_hash'] = md5($user['email']);
- $user['avatar'] = $this->getAvatarPath($user['email_hash'],$user['service']);
- if ($auth['class']!='internal') {
+ $authuser = $this->getAuthUser();
+ if (!in_array('internal',$permassets) && !in_array('admin',$permassets) && ($authuser['id'] != $user['id'])) {
   unset($user['pass']);
   unset($user['email']);
  }
+ $user['avatar'] = $this->getAvatarPath($user);
  return $this->api_call_finish($user);
+}
+
+public function getUserList($options = array()) {
+ $setup['options'] = $options;
+ $setup['perms'] = array(
+  'admin'
+ );
+ extract($setup_result = $this->api_call_setup($setup));
+ $results = $this->db->getTable('users');
+ if ($results) {
+  foreach ($results as $key=>$result) {
+   $users[$key] = $this->getUser($result['id'],array('callby'=>'id'));
+  }
+ }
+ return $this->api_call_finish($users);
 }
 
 public function getAuthUser($options = array()) {
  $setup['options'] = $options;
  extract($setup_result = $this->api_call_setup($setup));
  $user = $this->user;
- if ($auth['class']!='internal') {
+ if (!in_array('internal',$permassets)) {
   unset($user['pass']);
   unset($user['email']);
  }
@@ -567,7 +651,10 @@ protected function checkRBL($ip, $options = array()) {
  require_once('rbl.php');
  $rbl = new http_bl(HTTP_BL_KEY);
  $result = $rbl->query($ip);
- if ($result == 2) return TRUE;
+ if ($result == 2) {
+  $this->writeLog('RBL failure: '.$ip,'errorlog');
+  throw new Exception('IP listed on RBL, spam account rejected',1003);
+ }
  return FALSE;
 }
 
@@ -578,37 +665,44 @@ public function sendMessage($options = array()) {
   'name' => 'Contact Form User'
  );
  extract($setup_result = $this->api_call_setup($setup));
+ $this->checkRBL($remote_ip);
  $data['message'] = $options['message'];
  $mailoptions = array(
   'data' => $data,
   'from_email' => $options['email'],
   'from_name' => $options['name'],
   'subject' => 'New Contact Form Message',
-  'template' => 'contact_form',
-  'token' => $this->getAPIToken()
+  'template' => 'contact_form'
  );
  if ($this->sendMail($mailoptions)) return $this->api_call_finish(TRUE);
+ $this->writeLog('Message sending failure','errorlog');
  throw new Exception('Message failed to send',1002); 
 }
 
-protected function getAvatarPath($hash, $service) {
- if ($service == '0' || $service == '1') {
-  return 'http://www.gravatar.com/avatar.php?gravatar_id='.$hash.'&r=r';
+protected function getAvatarPath($user) {
+ if ($user['service'] == '0' || $user['service'] == '1') {
+  return 'http://www.gravatar.com/avatar.php?gravatar_id='.$user['email_hash'].'&r=r';
+ }
+ if ($user['service'] == '2') {
+  return 'http://graph.facebook.com/'.$user['service_id'].'/picture?type=normal';
  }
 }
 
 protected function setCookie($name, $value, $expire=1893456000) {
- return setcookie($name, $value, $expire, "/");
+ if (!headers_sent()) {
+  return setcookie($name, $value, $expire, "/");
+ }
+ return FALSE;
 }
 
-protected function writeLog($text) {
- if (!isset($this->log)) {
-  $logfile = LOG_DIR.'api.log';
-  $this->log = fopen($logfile,'a');
+protected function writeLog($text, $type='log') {
+ if (!isset($this->{$type})) {
+  $logfile = LOG_DIR.$type.'.log';
+  $this->{$type} = fopen($logfile,'a');
  }
  $timestamp = date('c');
- $log = $timestamp.' '.$_SERVER['REMOTE_ADDR'].' '.$text."\n";
- return fwrite($this->log,$log);
+ $log = $timestamp."\t".$_SERVER['REMOTE_ADDR']."\t".$text."\n";
+ return fwrite($this->{$type},$log);
 }
 
 protected function callURL($url,$post=NULL) {
@@ -663,22 +757,50 @@ public function getSetting($setting, $options = array()) {
   'expires' => $options['expires']
  );
  $setting = $this->db->getItem('settings',$setting, $dboptions);
- if (!$setting) throw new Exception('Setting not found');
- if ($auth['class']!='internal' && !$setting['public']) throw new Exception('Unauthorized to access setting', 403);
+ if (!$setting) {
+  $this->writeLog('Setting not found: '.$setting,'errorlog');
+  throw new Exception('Setting not found');
+ }
+ if ((!in_array('internal',$permassets) && !in_array('admin',$permassets)) && !$setting['public']) {
+  $this->writeLog('Insufficent permissions for setting: '.$setting,'errorlog');
+  throw new Exception('Unauthorized to access setting', 403);
+ }
  return $this->api_call_finish($setting);
 }
 
-protected function getFilters($options = array()) {
+public function getSettingList($options = array()) {
  $setup['options'] = $options;
- $setup['defaults'] = array(
-  'expires' => 1440
+ $setup['perms'] = array(
+  'admin'
  );
  extract($setup_result = $this->api_call_setup($setup));
- $dboptions = array(
-  'htmlParse' => FALSE
+ $results = $this->db->getTable('settings');
+ if ($results) {
+  foreach ($results as $key=>$result) {
+   $settings[$key] = $this->getSetting($result['name']);
+  }
+ }
+ return $this->api_call_finish($settings);
+}
+
+public function editSetting($name, $options = array()) {
+ $setup['options'] = $options;
+ $setup['perms'] = array(
+  'admin'
  );
- $filters = $this->db->getTable('filters',$dboptions);
- return $this->api_call_finish($filters);
+ extract($setup_result = $this->api_call_setup($setup));
+ $setting = $this->getSetting($name);
+
+ $settingdata = array();
+ if (isset($options['value'])) $settingdata['value'] = $options['value'];
+ if (isset($options['public'])) $settingdata['public'] = $options['public']; 
+ 
+ if ($this->db->updateItem('settings',$setting[id],$settingdata)) {
+  $this->clearCache(array('token'=>$this->getAPIToken()));
+  return $this->api_call_finish(TRUE);
+ }
+ $this->writeLog('Setting edit failed for setting '.$name,'errorlog');
+ throw new Exception('There was an error saving the setting');
 }
 
 public function getImageDetails($name, $options = array()) {
@@ -686,6 +808,38 @@ public function getImageDetails($name, $options = array()) {
  extract($setup_result = $this->api_call_setup($setup));
  $image = $this->db->getItem('images',$name,array('field'=>'name'));
  return $this->api_call_finish($image);
+}
+
+public function search($term, $options = array()) {
+ $setup['options'] = $options;
+ $setup['defaults'] = array(
+  'blogid' => '2'
+ );
+ extract($setup_result = $this->api_call_setup($setup));
+ $sql = 'SELECT entry_id FROM `entry` WHERE entry_blog_id = "'.$this->db->sqlClean($options['blogid']).'" AND MATCH (entry_keywords,entry_title,entry_excerpt) AGAINST ("'.$this->db->sqlClean($term).'");';
+ $sqlresults = $this->db->directProcessMultiQuery($sql,array('sortkey'=>'entry_id'));
+ $count = 0;
+ if ($sqlresults) {
+  foreach($sqlresults as $sqlresult) {
+   $count++;
+   $results[$count] = $this->getEntry($sqlresult['entry_id'],array('callby'=>'id'));
+  }
+ }
+ $output = array(
+  'count'=>$count,
+  'results'=>$results
+ );
+ return $this->api_call_finish($output);
+}
+
+public function clearCache($options = array()) {
+ $setup['options'] = $options;
+ $setup['perms'] = array(
+  'admin',
+  'internal'
+ );
+ extract($setup_result = $this->api_call_setup($setup));
+ return $this->api_call_finish($this->cache->clear());
 }
 
 /**********************************
@@ -728,17 +882,6 @@ public function getQueryLog($options = array()) {
  return $this->api_call_finish($this->db->getQueryLog());
 }
 
-public function getAPIMethods($options = array()) {
- return $this->api_call_finish($this->db->getTable('api_methods',array('orderBy'=>'value','key'=>'value')));
-}
-
-public function getMethodParameters($methodid, $options = array()) {
- $options = array(
-  'where' => 'method = '.$this->db->sqlClean($methodid)
- );
- return $this->api_call_finish($this->db->getTable('api_parameters',$options));
-}
-
 public function getQueryCount() {
  return $this->api_call_finish($this->db->getQueryCount());
 }
@@ -747,18 +890,75 @@ public function getDirectQueryCount() {
  return $this->api_call_finish($this->db->getDirectQueryCount);
 }
 
-public function clearCache() {
- return $this->cache->clear();
+/**********************************
+   API Management Methods
+**********************************/
+
+public function getAPIMethod($method, $options = array()) {
+ $setup['options'] = $options;
+ $setup['defaults'] = array(
+  'callby' => 'value'
+ );
+ extract($setup_result = $this->api_call_setup($setup));
+ $dboptions = array(
+  'field' => $options['callby']
+ );
+ $method = $this->db->getItem('api_methods',$method,$dboptions);
+ $method['params'] = $this->getMethodParameters($method['id']);
+ return $this->api_call_finish($method);
 }
 
+public function getAPIMethods($options = array()) {
+ $setup['options'] = $options;
+ extract($setup_result = $this->api_call_setup($setup));
+ $results = $this->db->getTable('api_methods',array('orderBy'=>'value','key'=>'value'));
+ if ($results) {
+  foreach ($results as $key=>$result) {
+   $methods[$key] = $this->getAPIMethod($result['value']);
+  }
+ }
+ return $this->api_call_finish($methods);
+}
+
+public function getMethodParameter($paramid, $options = array()) {
+ return $this->api_call_finish($this->db->getItem('api_parameters',$paramid));
+}
+
+public function getMethodParameters($methodid, $options = array()) {
+ $options = array(
+  'where' => 'method = '.$this->db->sqlClean($methodid)
+ );
+ $results = $this->db->getTable('api_parameters',$options);
+ if ($results) {
+  foreach ($results as $key=>$result) {
+   $params[$key] = $this->getMethodParameter($result['id']);
+  }
+ }
+ return $this->api_call_finish($params);
+}
+
+public function getMethodCategories($options = array()) {
+ return $this->api_call_finish($this->db->getTable('api_method_category'));
+}
 
 /**********************************
    Helper Methods
 **********************************/
 
 protected function api_call_setup($setup) {
+ $permassets = array();
+ $user = $this->user;
+ if ($setup['options']['token'] == $this->getAPIToken()) array_push($permassets,'internal');
+ if ($user['id']) array_push($permassets,'user');
+ if ($user['type'] == 'admin') array_push($permassets,'admin');
+ if ($setup['perms']) {
+  if (!array_intersect($permassets,$setup['perms'])) {
+   $this->writeLog('Insufficient permissions for method','errorlog');
+   throw new Exception('Insufficient permissions', 403);
+  };
+ }
  if ($setup['defaults']) $result['options'] = $this->setOptions($setup['options'],$setup['defaults']);
- $result['auth'] = $this->methodAuth($setup['options']['token']);
+ $result['permassets'] = $permassets;
  $result['remote_ip'] = $_SERVER['REMOTE_ADDR'];
  return $result;
 }
@@ -788,7 +988,7 @@ public function __construct() {
  $this->cache = new Cache;
  //connect to database
  require_once('db.php');
- $this->db = new DB(DB_HOST,DB_USER,DB_PASS,array('prefix'=>DB_PREFIX,'cache'=>$this->cache));
+ $this->db = new DB(DB_HOST,DB_USER,DB_PASS,DB_NAME,array('cache'=>$this->cache));
  //setup user token/login
  if ($_COOKIE['guid']) {
   $this->tokenLogin($_COOKIE['guid']);
@@ -800,15 +1000,16 @@ public function __construct() {
 }
 
 public function __destruct() {
- //for debugging
- $this->writeLog(print_r($this->getQueryLog(),1));
  //close database
  if (isset($this->db)) {
   unset($this->db);
  }
- //close logfile
+ //close logfiles
  if (isset($this->log)) {
   fclose($this->log);
+ }
+ if (isset($this->errorlog)) {
+  fclose($this->errorlog);
  }
 }
 

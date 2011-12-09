@@ -1,5 +1,7 @@
-<div>Layout &copy; 2010, Content &copy; 2003-{$smarty.now|date_format:'%Y'} Cameron Bulock</div>
-<!-- SQL Queries: {$query_count} -->
-<!-- Cached Queries: {$cache_count} -->
+<footer>Design &copy; 2010-{$smarty.now|date_format:'%Y'}, Content &copy; 2003-{$smarty.now|date_format:'%Y'} Cameron Bulock</footer>
+
+{include file='js.tpl'}
+{*<!-- SQL Queries: {$query_count} --> *}
+{* <!-- Cached Queries: {$cache_count} --> *}
 </body>
 </html>

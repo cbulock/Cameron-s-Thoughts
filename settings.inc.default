@@ -1,10 +1,12 @@
 <?php
-define('LOCATION','');
+define('LOCATION','');//No trailing slash
+define('STATIC_LOCATION','');
 define('DB_HOST','');
 define('DB_USER','');
 define('DB_PASS','');
-define('DB_PREFIX','');
+define('DB_NAME','');
 define('ROOT_DIR','');
+define('DEFAULT_CACHE_EXPIRES',10); //can't pull from settings db as the db calls need a cache time
 define('FACEBOOK_APP_ID','');
 define('FACEBOOK_SECRET','');
 define('BITLY_API_KEY','');

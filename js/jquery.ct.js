@@ -1,5 +1,6 @@
 (function($){
  $.ct = {
+
   apiClient : function (method, req, opt) {
    type = 'GET';
    if (opt) {
@@ -31,74 +32,46 @@
    return this.apiClient(method, req, opt);
   },
 
-  //Entries
-  getEntry : function(id, opt) {
-   return this.apiClient('getEntry',[id],opt);
-  },
-  postEntry : function(opt) {
-   return this.apiClient('postEntry',null,opt);
-  },
-  prevEntry : function(id, opt) {
-   return this.apiClient('prevEntry',[id],opt);
-  },
-  nextEntry : function(id, opt) {
-   return this.apiClient('nextEntry',[id],opt);
-  },
-  lastEntry : function(opt) {
-   return this.apiClient('lastEntry',null,opt);
-  },
-  getNewEntries : function(opt) {
-   return this.apiClient('getNewEntries',null,opt);
-  },
-  getMonthlyEntries : function(month,year,opt) {
-   return this.apiClient('getMonthlyEntries',[month],[year],opt);//don't think this will work, the reqs should be one array
-  },
+  //spinner() from http://raphaeljs.com/spin-spin-spin.html
+  spinner : function (holderid, R1, R2, count, stroke_width, colour) {
+   var sectorsCount = count || 12,
+   color = colour || "#fff",
+   width = stroke_width || 15,
+   r1 = Math.min(R1, R2) || 35,
+   r2 = Math.max(R1, R2) || 60,
+   cx = r2 + width,
+   cy = r2 + width,
+   r = Raphael(holderid, r2 * 2 + width * 2, r2 * 2 + width * 2),
 
-  //Comments
-  commentCount : function(postid, opt) {
-   return this.apiClient('commentCount',[postid],opt);
-  },
-  commentCountText : function(count, opt) {
-   return this.apiClient('commentCountText',[count],opt);
-  },
-  getComments : function(postid, opt) {
-   return this.apiClient('getComments',[postid],opt);
-  },
-  postComment : function(postid, opt) {
-   return this.apiClient('postComment',[postid],opt);
-  },
+   sectors = [],
+   opacity = [],
+   beta = 2 * Math.PI / sectorsCount,
 
-  //Categories
-  getCatID : function(entryid, opt) {
-   return this.apiClient('getCatID',[entryid],opt);
-  },
-  getCat : function(catid, opt) {
-   return this.apiClient('getCat',[catid],opt);
-  },
-  getCatEntries : function(catid, opt) {
-   return this.apiClient('getCatEntries',[catid],opt);
-  },
-  getCatList : function() {
-   return this.apiClient('getCatList',null,opt);
-  },
-
-  //Authentication
-  getUser : function(value, opt) {
-   return this.apiClient('getUser',[value],opt);
-  },
-  login : function(username, opt) {
-   return this.apiClient('login',[username],opt);
-  },
-  logout : function() {
-   return this.apiClient('logout');
-  },
-  getAuthUser : function() {
-   return this.apiClient('getAuthUser');
-  },
-
-  //Status
-  getLatestStatus : function() {
-   return this.apiClient('getLatestStatus');
+   pathParams = {stroke: color, "stroke-width": width, "stroke-linecap": "round"};
+   Raphael.getColor.reset();
+   for (var i = 0; i < sectorsCount; i++) {
+    var alpha = beta * i - Math.PI / 2,
+    cos = Math.cos(alpha),
+    sin = Math.sin(alpha);
+    opacity[i] = 1 / sectorsCount * i;
+    sectors[i] = r.path([["M", cx + r1 * cos, cy + r1 * sin], ["L", cx + r2 * cos, cy + r2 * sin]]).attr(pathParams);
+    if (color == "rainbow") {
+     sectors[i].attr("stroke", Raphael.getColor());
+    }
+   }
+   var tick;
+   (function ticker() {
+    opacity.unshift(opacity.pop());
+    for (var i = 0; i < sectorsCount; i++) {
+     sectors[i].attr("opacity", opacity[i]);
+    }
+    r.safari();
+    tick = setTimeout(ticker, 1000 / sectorsCount);
+   })();
+   return function () {
+    clearTimeout(tick);
+    r.remove();
+   };
   }
 
  };

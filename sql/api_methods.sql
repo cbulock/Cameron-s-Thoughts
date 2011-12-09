@@ -2,7 +2,7 @@ CREATE TABLE `api_methods` (
    `id` int(6) not null auto_increment,
    `value` varchar(64),
    UNIQUE KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=29;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=36;
 
 INSERT INTO `api_methods` (`id`, `value`) VALUES ('1', 'getEntry');
 INSERT INTO `api_methods` (`id`, `value`) VALUES ('2', 'prevEntry');
@@ -32,3 +32,10 @@ INSERT INTO `api_methods` (`id`, `value`) VALUES ('25', 'getLatestStatus');
 INSERT INTO `api_methods` (`id`, `value`) VALUES ('26', 'getCatList');
 INSERT INTO `api_methods` (`id`, `value`) VALUES ('27', 'sendMessage');
 INSERT INTO `api_methods` (`id`, `value`) VALUES ('28', 'getSetting');
+INSERT INTO `api_methods` (`id`, `value`) VALUES ('29', 'clearCache');
+INSERT INTO `api_methods` (`id`, `value`) VALUES ('30', 'getImageDetails');
+INSERT INTO `api_methods` (`id`, `value`) VALUES ('31', 'getComment');
+INSERT INTO `api_methods` (`id`, `value`) VALUES ('32', 'createUser');
+INSERT INTO `api_methods` (`id`, `value`) VALUES ('33', 'nameFree');
+INSERT INTO `api_methods` (`id`, `value`) VALUES ('34', 'search');
+INSERT INTO `api_methods` (`id`, `value`) VALUES ('35', 'addStat');

@@ -9,7 +9,7 @@ $method = explode('.',$request);
 $method = explode('/',$method[0]);
 $method = $method[0];
 
-$url_parameters[] = $_POST;
+$url_parameters[] = $_REQUEST;
 
 $statdata = array(
  'ip' => $_SERVER['REMOTE_ADDR'],
@@ -28,7 +28,7 @@ $ct->addStat($statdata);
 
 try {
  $result = @call_user_func_array(array($ct,$method),$url_parameters);
- if (!$result) throw new Exception('API Error');
+ if (!$result) throw new Exception('API Error',2000);
 }
 catch(Exception $e) {
  $result = array(
