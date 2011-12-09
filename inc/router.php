@@ -5,9 +5,7 @@ $full_request = $raw_request[0];
 $query = $raw_request[1];
 $request = explode('/',trim($full_request,'/'));
 
-//page specific requests will need to go up front
-
-switch($full_request) {//old redirects
+switch($full_request) {
  case '/about_me.html':
   header('HTTP/1.1 301 Moved Permanently');
   header('Location: http:'.LOCATION.'/about/me/');
@@ -23,10 +21,23 @@ switch($full_request) {//old redirects
   header('Location: http:'.LOCATION.'/rss');
   exit();
  break;
-
-
+ case '/about/me/':
+  $basename = 'about_me';
+  include(INCLUDE_DIR.'pages/static.php');
+ break;
+ case '/about/ct/':
+  $basename = 'about_this_site';
+  include(INCLUDE_DIR.'pages/static.php');
+ break;
+ case '/rss':
+  $pagetype = 'rss';
+  include(INCLUDE_DIR.'pages/home.php');
+ break;
+ case '/opensearch':
+  $pagetype = 'opensearch';
+  include(INCLUDE_DIR.'pages/home.php');
+ break;
 }
-
 
 switch(substr($request[0],0,2)) {//general pages
  case ''://homepage
