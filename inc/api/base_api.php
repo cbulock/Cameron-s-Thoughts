@@ -567,6 +567,10 @@ public function createUser($login, $options = array()) {
   $this->writeLog('Tried to create user without email address','errorlog');
   throw new Exception('Email required');
  }
+ if (!$login) {
+  $this->writeLog('Tried to create user with username blank','errorlog');
+  throw new Exception('Username can not be blank');
+ }
  if (!$this->nameFree($login)) {
   $this->writeLog('Tried to create user, name was already taken. Name: '.$login,'errorlog');
   throw new Exception('Username already taken');
