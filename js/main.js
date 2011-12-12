@@ -154,6 +154,12 @@ show = ({
      $.ct.login_box.dialog('close');
      show.signupForm();
     };
+    login = function() {
+     opt = {pass: $('#password').attr('value')};
+     if(call('login',[$('#username').val()],opt)) {
+      location.reload();
+     }
+    };
     $.ct.login_box = $('<div></div>').html(arguments[0]);
     $.ct.login_box.dialog({
      title: 'Login',
@@ -166,10 +172,7 @@ show = ({
        signup();
       },
       'Login': function() {
-       opt = {pass: $('#password').attr('value')};
-       if(call('login',[$('#username').val()],opt)) {
-        location.reload();
-       }
+       login();
       }
      },
      close: function() {
@@ -181,6 +184,11 @@ show = ({
     $('#login_box a').click(function(event) {
      event.preventDefault();
      signup();
+    });
+    $('#login_box input').bind('keydown', function(event) {
+     if(event.keyCode===13){
+      login();
+     }
     });
    });
   }
