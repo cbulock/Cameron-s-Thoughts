@@ -500,7 +500,7 @@ protected function getShortURL($url) {
 **********************************/
 
 protected function getMailTemplate($name,$data = array()) {
- $filename = TPL_DIR.TYPE.'/email/'.$name.'.tpl';
+ $filename = TPL_DIR.'default'.'/email/'.$name.'.tpl';
  $file = fopen($filename,'r'); 
  $template = fread($file,filesize($filename));
  foreach ($data as $v => $i) {
@@ -669,6 +669,10 @@ public function sendMessage($options = array()) {
   'name' => 'Contact Form User'
  );
  extract($setup_result = $this->api_call_setup($setup));
+ if (!$options['message']) {
+  $this->writeLog('Message body empty','errorlog');
+  throw new Exception('Must enter text into message body',1004);
+ }
  $this->checkRBL($remote_ip);
  $data['message'] = $options['message'];
  $mailoptions = array(
