@@ -446,6 +446,10 @@ function exception_handler(e) {
    break;
   case 1001: //blank comment
    $('#comment_submit').attr('disabled','');
+   $('#comment_text').focus();
    break;
+  case 1004: //blank message
+   $('#contact_message').focus();
+  break;
  }
 }
