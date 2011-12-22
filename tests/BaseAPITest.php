@@ -2,7 +2,6 @@
 //Requires PHPUnit
 require_once('../var.inc');
 require_once(API_DIR.'base_api.php');
-define(TYPE,'default');
 class BaseAPITest extends PHPUnit_Framework_TestCase {
  
  protected $api;
