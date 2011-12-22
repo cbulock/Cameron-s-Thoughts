@@ -2,6 +2,28 @@
 require_once(SMARTY_DIR.'Smarty.class.php');
 if (!$tpl) $tpl = new Smarty;
 
+if ($_REQUEST['pagetype']) {
+ define(TYPE,$_REQUEST['pagetype']);
+}
+elseif ($pagetype){
+ define(TYPE,$pagetype);
+}
+else {
+ define(TYPE,'default');
+}
+
+switch(TYPE) {
+ case 'rss':
+  header("Content-type: application/rss+xml; charset=UTF-8");
+  break;
+ case 'opensearch':
+  header("Content-type: application/opensearchdescription+xml; charset=UTF-8");
+  break;
+ default:
+  header("Content-type: text/html; charset=UTF-8");
+  break;
+}
+
 $tpl->setTemplateDir(TPL_DIR.TYPE.'/');
 $tpl->setCacheDir(SMARTY_DIR.'../cache/');
 $tpl->setCompileDir(SMARTY_DIR.'../templates_c/');

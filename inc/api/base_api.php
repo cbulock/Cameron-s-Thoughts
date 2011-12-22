@@ -500,7 +500,7 @@ protected function getShortURL($url) {
 **********************************/
 
 protected function getMailTemplate($name,$data = array()) {
- $filename = TPL_DIR.TYPE.'/email/'.$name.'.tpl';
+ $filename = TPL_DIR.'default'.'/email/'.$name.'.tpl';
  $file = fopen($filename,'r'); 
  $template = fread($file,filesize($filename));
  foreach ($data as $v => $i) {
@@ -566,6 +566,10 @@ public function createUser($login, $options = array()) {
  if (!$options['email']) {
   $this->writeLog('Tried to create user without email address','errorlog');
   throw new Exception('Email required');
+ }
+ if (!$login) {
+  $this->writeLog('Tried to create user with username blank','errorlog');
+  throw new Exception('Username can not be blank');
  }
  if (!$this->nameFree($login)) {
   $this->writeLog('Tried to create user, name was already taken. Name: '.$login,'errorlog');
@@ -665,6 +669,10 @@ public function sendMessage($options = array()) {
   'name' => 'Contact Form User'
  );
  extract($setup_result = $this->api_call_setup($setup));
+ if (!$options['message']) {
+  $this->writeLog('Message body empty','errorlog');
+  throw new Exception('Must enter text into message body',1004);
+ }
  $this->checkRBL($remote_ip);
  $data['message'] = $options['message'];
  $mailoptions = array(
@@ -882,23 +890,63 @@ public function getQueryLog($options = array()) {
  return $this->api_call_finish($this->db->getQueryLog());
 }
 
-public function getAPIMethods($options = array()) {
- return $this->api_call_finish($this->db->getTable('api_methods',array('orderBy'=>'value','key'=>'value')));
-}
-
-public function getMethodParameters($methodid, $options = array()) {
- $options = array(
-  'where' => 'method = '.$this->db->sqlClean($methodid)
- );
- return $this->api_call_finish($this->db->getTable('api_parameters',$options));
-}
-
 public function getQueryCount() {
  return $this->api_call_finish($this->db->getQueryCount());
 }
 
 public function getDirectQueryCount() {
  return $this->api_call_finish($this->db->getDirectQueryCount);
+}
+
+/**********************************
+   API Management Methods
+**********************************/
+
+public function getAPIMethod($method, $options = array()) {
+ $setup['options'] = $options;
+ $setup['defaults'] = array(
+  'callby' => 'value'
+ );
+ extract($setup_result = $this->api_call_setup($setup));
+ $dboptions = array(
+  'field' => $options['callby']
+ );
+ $method = $this->db->getItem('api_methods',$method,$dboptions);
+ $method['params'] = $this->getMethodParameters($method['id']);
+ return $this->api_call_finish($method);
+}
+
+public function getAPIMethods($options = array()) {
+ $setup['options'] = $options;
+ extract($setup_result = $this->api_call_setup($setup));
+ $results = $this->db->getTable('api_methods',array('orderBy'=>'value','key'=>'value'));
+ if ($results) {
+  foreach ($results as $key=>$result) {
+   $methods[$key] = $this->getAPIMethod($result['value']);
+  }
+ }
+ return $this->api_call_finish($methods);
+}
+
+public function getMethodParameter($paramid, $options = array()) {
+ return $this->api_call_finish($this->db->getItem('api_parameters',$paramid));
+}
+
+public function getMethodParameters($methodid, $options = array()) {
+ $options = array(
+  'where' => 'method = '.$this->db->sqlClean($methodid)
+ );
+ $results = $this->db->getTable('api_parameters',$options);
+ if ($results) {
+  foreach ($results as $key=>$result) {
+   $params[$key] = $this->getMethodParameter($result['id']);
+  }
+ }
+ return $this->api_call_finish($params);
+}
+
+public function getMethodCategories($options = array()) {
+ return $this->api_call_finish($this->db->getTable('api_method_category'));
 }
 
 /**********************************

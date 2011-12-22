@@ -2,7 +2,6 @@
 //Requires PHPUnit
 require_once('../var.inc');
 require_once(API_DIR.'base_api.php');
-define(TYPE,'default');
 class BaseAPITest extends PHPUnit_Framework_TestCase {
  
  protected $api;
@@ -330,7 +329,6 @@ class BaseAPITest extends PHPUnit_Framework_TestCase {
   }
   $this->fail('An expected exception has not been raised.');
  }
- /* This should thrown an exception, currently a known bug
  public function test_createUser_loginfail() {
   try {
    $user = $this->api->createUser(
@@ -347,7 +345,7 @@ class BaseAPITest extends PHPUnit_Framework_TestCase {
    return;
   }
   $this->fail('An expected exception has not been raised.');
- }*/
+ }
  public function test_createUser_adminfail() {
   try {
    $user = $this->api->createUser(
