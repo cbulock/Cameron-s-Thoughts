@@ -2,6 +2,8 @@
 require_once(SMARTY_DIR.'Smarty.class.php');
 if (!$tpl) $tpl = new Smarty;
 
+require_once(INCLUDE_DIR.'/pages/pagetype.inc');
+
 $tpl->setTemplateDir(TPL_DIR.TYPE.'/admin/');
 $tpl->setCacheDir(SMARTY_DIR.'../cache/');
 $tpl->setCompileDir(SMARTY_DIR.'../templates_c/');
