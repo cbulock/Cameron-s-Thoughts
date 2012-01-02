@@ -426,7 +426,16 @@ class BaseAPITest extends PHPUnit_Framework_TestCase {
  public function test_sendMessage_success() {
   $result = $this->api->sendMessage(array('name'=>'Test Sender','message'=>'This is sent from unit tester.'));
   $this->assertTrue($result);
- } 
+ }
+ public function test_sendMessage_blank() {
+  try {
+   $result = $this->api->sendMessage(array('name'=>'Test Sender','message'=>''));
+  }
+  catch (Exception $e){
+   return;
+  }
+  $this->fail('An expected exception has not been raised.');
+ }  
  public function test_sendMessage_fail() {
   try {
    $result = $this->api->sendMessage(array('email'=>'test@','name'=>'Test Sender','message'=>'This is sent from unit tester.'));//bad email
