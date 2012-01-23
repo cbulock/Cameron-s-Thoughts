@@ -198,6 +198,10 @@ input, textarea, select { padding: 1px; }
   height: 120px;
 }
 #fb_login { display: none; }
+.gist pre {
+  color: black;
+  text-shadow: none;
+}
 #notice_box {
   display: none;
   padding: 6px 0 6px 0;
