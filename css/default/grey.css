@@ -180,6 +180,7 @@ h5 a:hover {
   color: #ffffff;
 }
 h5 a:visited { color: #ffffff; }
+article br { margin-bottom: 10px; }
 img { border: none; }
 input:focus { padding: 1px; }
 textarea:focus { padding: 1px; }
