@@ -87,7 +87,6 @@ a:hover {
 }
 a:visited { color: #ffffff; }
 a:visited:hover { color: #00b069; }
-article p { font-size: 120%; }
 code, pre {
   display: block;
   overflow: auto;
@@ -180,6 +179,8 @@ h5 a:hover {
   color: #ffffff;
 }
 h5 a:visited { color: #ffffff; }
+article { line-height: 1.5em; }
+article p { font-size: 120%; }
 article br { margin-bottom: 10px; }
 img { border: none; }
 input:focus { padding: 1px; }
