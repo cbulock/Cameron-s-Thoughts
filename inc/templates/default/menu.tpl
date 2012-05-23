@@ -18,7 +18,7 @@
   <li><p>Connect</p>
    <ul>
     <li><a href='/form/contact' id='contact'>Send Message</a></li>
-    <li><a rel='author' href='https://profiles.google.com/cbulock'>Google+</a></li>
+    <li><a rel='author' href='https://plus.google.com/109777251135927705263'>Google+</a></li>
     <li><a href='http://www.facebook.com/cbulock'>Facebook</a></li>
    </ul>
   </li>
